@@ -1,0 +1,71 @@
+---
+type: wiki-index
+generated-by: claude
+updated: 2026-04-10
+---
+
+# Wiki — Index
+
+The compiled layer of the vault. Every note here is distilled from sources in `Raw/` by [[AIOS/skills/ingest-source]]. Authored strategy and decisions live in [[Atlas/Atlas|Atlas]]; this folder is for concepts, techniques, tools, and people we've learned about from external material.
+
+## Navigation shortcuts
+- **By recency:** [[Wiki/log|log.md]] — append-only timeline of ingestion and edits
+- **By freshness:** [[Wiki/hot|hot.md]] — small recency buffer for the current AI session
+- **By source:** every wiki note's frontmatter has a `sources:` field linking back to the raw file(s)
+
+## Concepts
+
+Big ideas extracted from source material.
+
+- [[Wiki/concepts/LLM-Knowledge-Base]] — Karpathy's raw → compile → wiki pattern
+- [[Wiki/concepts/Compiler-Analogy]] — the source code → compile → executable mental model applied to knowledge
+
+## Techniques
+
+Specific methods we've learned.
+
+- [[Wiki/techniques/Hot-Cache]] — small recency buffer for fresh session context
+- [[Wiki/techniques/Linting-Wiki]] — LLM health-checks to keep the wiki clean
+
+## Tools
+
+Software and systems we reference.
+
+- [[Wiki/tools/Obsidian-Web-Clipper]] — web article → markdown capture
+- [[Wiki/tools/Marp]] — markdown → slide deck rendering inside Obsidian
+- [[Wiki/tools/Claude-Memory-Compiler]] — Cole Medin's self-evolving Claude Code memory system
+
+## People
+
+Humans whose work shaped how we think about this stuff.
+
+- [[Wiki/people/Andrej-Karpathy]] — LLM Knowledge Base pattern
+- [[Wiki/people/Nick-Milo]] — ACE framework, Ideaverse, MOCs
+- [[Wiki/people/Cole-Medin]] — claude-memory-compiler, session hooks, compiler analogy
+
+## Sources index
+
+Raw material captured in the vault. This is the input side of the compile loop.
+
+### Clippings
+- [[Raw/clippings/karpathy-llm-knowledge-bases]] — Karpathy tweet + gist + Cole Medin repo notes
+
+### Transcripts
+- [[Raw/transcripts/YT-Transcripts-2026-04-10]] — Nick Milo AI OS, Cole Medin self-evolving memory, Claude inside Obsidian
+- [[Raw/transcripts/YT-Transcripts-Batch-1]] — Obsidian + Claude Code workflows, Karpathy wiki, Vin on Obsidian slash-commands
+
+### Internal docs
+- [[Raw/docs/ExcelTech_Master_Knowledge_Base]] — canonical business context
+- [[Raw/docs/ExcelTech_Vision_and_Goals]] — phases, milestones, vision
+- [[Raw/docs/sourcing-architecture]] — sourcing architecture doc
+
+## How to add to this index
+1. Ingest new sources via [[AIOS/skills/ingest-source]].
+2. The ingestion skill updates this file automatically.
+3. Manual edits to this file are fine but prefer the skill so [[Wiki/log|log.md]] reflects the change.
+
+## Related
+- [[AIOS/vault-map]]
+- [[AIOS/skills/ingest-source]]
+- [[AIOS/skills/lint-wiki]]
+- [[Atlas/Concepts/AI-OS]]

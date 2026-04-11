@@ -1,0 +1,10 @@
+{
+  "enabledMcpjsonServers": [
+    "insforge"
+  ],
+  "permissions": {
+    "allow": [
+      "mcp__insforge__fetch-docs"
+    ]
+  }
+}
