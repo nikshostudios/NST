@@ -103,3 +103,4 @@ This prevents the same person getting 3 outreach emails from 3 recruiters becaus
 - [[Atlas/ExcelTech/India-Market]]
 - [[Atlas/ExcelTech/Singapore-Market]]
 - [[Raw/docs/sourcing-architecture]]
+- [[Atlas/Product/Sourcing-Architecture-v2]] — proposed upgrade: 8-channel mesh, sourcing inversion, market intelligence

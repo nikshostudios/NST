@@ -10,6 +10,23 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-11 — Sourcing troubleshooting ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/sourcing-troubleshooting-2026-04-11]]
+
+**Wiki notes created:**
+- [[Wiki/concepts/Candidate-Sourcing-Channels]]
+- [[Wiki/concepts/Bot-Detection-vs-Scraping]]
+- [[Wiki/tools/Firecrawl]]
+- [[Wiki/techniques/Direct-API-Interception]]
+- [[Wiki/sources/sourcing-troubleshooting-2026-04-11]]
+
+**Notes:** First ingestion of an internal troubleshooting doc (exception to the "only external research gets compiled" rule — this post-mortem contains reusable lessons about scraping, bot detection, and channel validation that apply beyond ExcelTech).
+
+---
+
 ## 2026-04-10 — Initial ingestion pass
 
 **Skill:** [[AIOS/skills/ingest-source]] (manual first pass)

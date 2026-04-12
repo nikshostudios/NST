@@ -141,3 +141,4 @@ Individual agents are just functions. The **skills layer** is where they get cha
 - [[Atlas/Product/Sourcing-Channels]]
 - [[Atlas/Product/Tech-Stack]]
 - [[Atlas/Concepts/Agents-vs-Tools]]
+- [[Atlas/Product/Agent-Layer-v2]] — proposed expansion: JD Parser, Reactivation, Market Intelligence agents + enhanced Sourcing and Screener

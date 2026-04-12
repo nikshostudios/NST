@@ -102,5 +102,7 @@ Row-level security is scoped but not aggressive yet — will tighten for multi-t
 - [[Atlas/Product/Database-Schema]]
 - [[Atlas/Product/Sourcing-Channels]]
 - [[Atlas/Product/Tech-Stack]]
+- [[Atlas/Product/Sourcing-Architecture-v2]] — proposed multi-channel sourcing mesh (8 channels)
+- [[Atlas/Product/Agent-Layer-v2]] — proposed 3 new agents + enhanced existing agents
 - [[Atlas/Concepts/Agents-vs-Tools]]
 - [[Atlas/Concepts/File-over-AI]]

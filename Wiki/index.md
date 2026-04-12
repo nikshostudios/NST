@@ -19,6 +19,8 @@ Big ideas extracted from source material.
 
 - [[Wiki/concepts/LLM-Knowledge-Base]] — Karpathy's raw → compile → wiki pattern
 - [[Wiki/concepts/Compiler-Analogy]] — the source code → compile → executable mental model applied to knowledge
+- [[Wiki/concepts/Candidate-Sourcing-Channels]] — the critical difference between candidate data and job posting data
+- [[Wiki/concepts/Bot-Detection-vs-Scraping]] — fingerprinting, Akamai, and the reliability hierarchy for scraping
 
 ## Techniques
 
@@ -26,6 +28,7 @@ Specific methods we've learned.
 
 - [[Wiki/techniques/Hot-Cache]] — small recency buffer for fresh session context
 - [[Wiki/techniques/Linting-Wiki]] — LLM health-checks to keep the wiki clean
+- [[Wiki/techniques/Direct-API-Interception]] — bypass headless browsers by calling SPA backend endpoints directly
 
 ## Tools
 
@@ -34,6 +37,7 @@ Software and systems we reference.
 - [[Wiki/tools/Obsidian-Web-Clipper]] — web article → markdown capture
 - [[Wiki/tools/Marp]] — markdown → slide deck rendering inside Obsidian
 - [[Wiki/tools/Claude-Memory-Compiler]] — Cole Medin's self-evolving Claude Code memory system
+- [[Wiki/tools/Firecrawl]] — web scraping API, strong for content scraping, weak against bot-protected portals
 
 ## People
 
@@ -58,6 +62,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/ExcelTech_Master_Knowledge_Base]] — canonical business context
 - [[Raw/docs/ExcelTech_Vision_and_Goals]] — phases, milestones, vision
 - [[Raw/docs/sourcing-architecture]] — sourcing architecture doc
+- [[Raw/docs/sourcing-troubleshooting-2026-04-11]] — production test post-mortem, 10 issues, sourcing channel validation failure
 
 ## How to add to this index
 1. Ingest new sources via [[AIOS/skills/ingest-source]].

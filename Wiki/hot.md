@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-10
+updated: 2026-04-11
 max-words: 1000
 ---
 
@@ -11,13 +11,17 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-10
+## Right now — 2026-04-11
+
+### CRITICAL: Sourcing pipeline partially broken
+Production test on April 11 revealed 3 of 4 sourcing channels return job postings, not candidates. Only Foundit Recruiter returns real candidates but is blocked by Akamai bot detection. See [[Raw/docs/sourcing-troubleshooting-2026-04-11]] and [[Atlas/Product/Sourcing-Strategy-v2]] for the revised plan.
+
+**Immediate actions:** (1) Intercept Foundit Recruiter XHR endpoint, (2) Fix Internal DB skill matching, (3) Push pending commits, (4) Evaluate Apollo.io paid plan.
 
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] is the sole Active effort. All 5 agents and 5 skills live in Nik's agency. Current focus: baseline metrics and per-recruiter voice tuning.
-- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1 on 2026-04-10 and demoted from Active. Maintenance only from here: lint-wiki passes, weekly drift checks, ingestion of new sources. See [[Efforts/Second-Brain-Setup/decisions/2026-04-10-ship-vault-v1|ship-v1 decision]].
-- 🌱 **Simmering** — [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] awaits its trigger: ExcelTech-Automation showing two weeks of stable production, then promote and start the Insforge migration.
-- 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]]. No round in 2026. Wakes late 2026 once Phase 2 has paying customers.
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed but sourcing pipeline needs fixes per [[Atlas/Product/Sourcing-Strategy-v2]]. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — architecture decided, Managed Agents demo next.
+- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode.
+- 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
 ### Freshly added to Atlas
 - [[Atlas/Concepts/AI-OS]] — the hybrid architecture (Milo ACE + Karpathy raw/wiki)
@@ -26,21 +30,23 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 - [[Atlas/Product/Architecture]] + [[Atlas/Product/Agents]] + [[Atlas/Product/Skills]] + [[Atlas/Product/Database-Schema]] + [[Atlas/Product/Sourcing-Channels]] + [[Atlas/Product/Tech-Stack]] — full product picture
 - [[Atlas/ExcelTech/India-Market]] + [[Atlas/ExcelTech/Singapore-Market]] + [[Atlas/ExcelTech/Current-Flow]] + [[Atlas/ExcelTech/New-Flow]] — the two markets and the before/after of the recruiter day
 
-### Freshly added to Wiki
-- [[Wiki/concepts/LLM-Knowledge-Base]] (Karpathy)
-- [[Wiki/concepts/Compiler-Analogy]] (Karpathy + Cole Medin)
-- [[Wiki/techniques/Hot-Cache]] (this file's pattern)
-- [[Wiki/techniques/Linting-Wiki]]
-- [[Wiki/tools/Claude-Memory-Compiler]] (Cole's project)
-- [[Wiki/people/Andrej-Karpathy]] + [[Wiki/people/Nick-Milo]] + [[Wiki/people/Cole-Medin]]
+### Freshly added to Wiki (April 11)
+- [[Wiki/concepts/Candidate-Sourcing-Channels]] — the job-postings vs candidates lesson
+- [[Wiki/concepts/Bot-Detection-vs-Scraping]] — fingerprinting hierarchy
+- [[Wiki/tools/Firecrawl]] — where it helps and where it fails
+- [[Wiki/techniques/Direct-API-Interception]] — the Foundit fix approach
+
+### Freshly added to Atlas (April 11)
+- [[Atlas/Product/Sourcing-Strategy-v2]] — revised channel strategy with 8 next actions
 
 ### Open decisions affecting the next session
-- Whether to implement Cowork session hooks (session-start, pre-compact, session-end) now or later. Leaning later.
-- How to measure "recruiter hours saved per day" in a way the team agrees is fair. Blocking the ExcelTech Phase-1 success metrics.
-- Insforge vs Railway boundary: ExcelTech stays on Railway; SaaS goes to Insforge. Decided. See [[Efforts/Niksho-SaaS-Product/Overview]].
+- Apollo.io: Basic ($49/mo) vs Professional ($79/mo) — depends on how many credits ExcelTech needs monthly
+- Naukri RMS: does ExcelTech already have a subscription? (Ask Nik's dad)
+- Foundit API partnership: worth pursuing? (Email cr@foundit.in)
 
 ### Open blockers
-None for the vault — Second-Brain-Setup shipped v1 today and is now Ongoing. Niksho-SaaS is unblocked structurally; the only thing holding it back is the trigger (two weeks of stable ExcelTech-Automation production).
+- **Sourcing pipeline** — Foundit Recruiter blocked by Akamai. Internal DB skill matching broken (composite skills). Zero working external channels until fixes land.
+- **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
@@ -53,4 +59,4 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Rewritten on 2026-04-10 — Second-Brain-Setup demoted from Active to Ongoing after v1 ship. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
+_Rewritten on 2026-04-11 — Sourcing pipeline post-mortem ingested, strategy v2 written, hot cache updated with blockers. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
