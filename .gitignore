@@ -3,3 +3,5 @@
 .obsidian/workspace.json.bak
 .DS_Store
 *.log
+
+.obsidian/plugins/obsidian-git/
