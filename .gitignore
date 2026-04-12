@@ -5,3 +5,6 @@
 *.log
 
 .obsidian/plugins/obsidian-git/
+
+.obsidian/plugins/obsidian-git/
+.obsidian/graph.json
