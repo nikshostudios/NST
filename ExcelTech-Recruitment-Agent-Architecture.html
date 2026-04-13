@@ -402,49 +402,57 @@
 
   <h3>Channel-by-Channel Breakdown</h3>
 
-  <!-- CHANNEL 1: Foundit API -->
+  <!-- CHANNEL 1: Foundit EDGE API (Official) -->
   <div class="agent-card sourcing">
     <div class="agent-header">
       <div class="agent-icon">F</div>
       <div>
-        <div class="agent-name">Channel 1: Foundit Direct API <span class="enhanced-badge">ENHANCED</span></div>
-        <span class="agent-model">India + SG &bull; Candidate Profiles</span>
+        <div class="agent-name">Channel 1: Foundit EDGE API <span class="enhanced-badge">OFFICIAL API — UPGRADE</span></div>
+        <span class="agent-model">India + SG &bull; Candidate Profiles &bull; Official ATS Integration Kit from Foundit</span>
       </div>
     </div>
     <dl class="agent-props">
-      <dt>Current</dt>
-      <dd>Firecrawl + session cookie (blocked by Akamai)</dd>
-      <dt>Proposed</dt>
-      <dd><strong>Reverse-engineer Foundit Recruiter SPA's internal REST API.</strong> Open Chrome DevTools on recruiter.foundit.in, run a search, capture the XHR request to their internal API. Call it directly via <code>httpx</code> with the session cookie. Bypasses Firecrawl, browser fingerprinting, and bot detection entirely.</dd>
-      <dt>Fallback</dt>
-      <dd>If internal API is also protected: use <strong>Bright Data's Web Scraper API</strong> (98.4% success rate, built-in anti-bot bypass, proxy rotation). Cost: ~$0.005/page. Or <strong>Apify's Foundit Scraper</strong> (managed headless browser with anti-detection).</dd>
-      <dt>Cookie Refresh</dt>
-      <dd>Build a lightweight Playwright script that runs once per 24h per Foundit account. 3 accounts × 1 login/day = 3 automated sessions. Store cookies in Supabase <code>scraper_sessions</code> table with TTL.</dd>
+      <dt>Previous Approach</dt>
+      <dd>Reverse-engineered Foundit Recruiter SPA internal API with manual cookie auth. Cookie expired every 24-48 hours, required manual Chrome login to refresh. Worked but fragile.</dd>
+      <dt>New Approach (Official EDGE API)</dt>
+      <dd><strong>Foundit provided their official ATS EDGE Search Integration kit</strong> (contact: Prayag Sanghvi, Sr Manager APAC). Five documented endpoints with API key + token auth — no more cookie scraping.
+      <br><br><strong>Authentication:</strong> <code>POST /recruiter-ats/generate/api/token</code> — takes <code>apiKey</code> (provided by Foundit), <code>username</code>, <code>password</code>, <code>corpId</code>, <code>channelId</code>, <code>subChannelId</code>. Returns a token valid for 45 minutes of inactivity. Auto-refresh on 401 — fully automated, zero manual intervention.
+      <br><br><strong>Search:</strong> <code>POST /recruiter-ats/search</code> — full structured + boolean search. Filters: skills (any/all/exclude), experience range, location (current + preferred), CTC range with currency, notice period (0/15/30/45/60/90 days), immediate joiner flag, serving notice period flag, education (UG/PG/PhD with specific degrees + institutions + year range), nationality + work auth, industry, company (include/exclude with current/past scope), designation, gender, company funding stage, employee count range, job type (fulltime/parttime/contract), dozens of education insight flags (IIT/IIM/top-100 college filters), verified email/mobile only filters. Sort by relevance/freshness/experience/most_viewed/least_viewed. Pagination via <code>from</code>/<code>size</code>, max 160 candidates per request. Returns <code>express_resumes</code> (premium) + <code>all_resumes</code> (standard) arrays.
+      <br><br><strong>Candidate Profile:</strong> <code>POST /recruiter-ats/candidate-profile-data</code> — pass <code>p_uuid</code> from search results → returns full profile with <strong>structured <code>email</code> and <code>mobile_details</code> fields</strong> + <code>resume_file_download_url</code> for CV download. This is the contact enrichment step.
+      <br><br><strong>Master Data:</strong> <code>POST /recruiter-ats/master-data</code> and <code>/master-data-v2</code> — returns valid values for all filter fields (locations, industries, designations, degrees, institutions, etc.).</dd>
+      <dt>Two-Step Retrieval Architecture</dt>
+      <dd>Search API returns rich profile data (name, skills, experience, employment, education, CTC, notice period, location, LinkedIn URL) — enough to screen and rank. <strong>Structured contact info (email, phone) requires a second call</strong> to Candidate Profile API using <code>p_uuid</code>. This is optimal: screen first → only fetch contacts for candidates who pass → saves API calls and aligns with phone-first enrichment strategy.</dd>
+      <dt>Singapore Config</dt>
+      <dd>Base URL: <code>https://recruiter.foundit.sg/recruiter-ats</code> &bull; ChannelId: 4 &bull; SubChannelId: 6 &bull; SiteContext: <code>monstersingapore</code> &bull; CorpId: 560219 (ExcelTech existing account)</dd>
+      <dt>India Config</dt>
+      <dd>Base URL: <code>https://recruiter.foundit.in/recruiter-ats</code> &bull; ChannelId: 1 &bull; SubChannelId: 1 &bull; SiteContext: <code>rexmonster</code></dd>
+      <dt>Migration from Cookie-Based</dt>
+      <dd>Existing <code>source_foundit_with_cookie()</code> in <code>sourcing.py</code> uses nearly identical payload structure. Migration = swap auth headers (apiKey + token instead of cookie), change endpoint URL (<code>/recruiter-ats/search</code> instead of <code>/edge/recruiter-search/api/search-middleware/v2/search</code>), add token management with auto-refresh, add Candidate Profile API call for contact enrichment.</dd>
       <dt>Output</dt>
-      <dd>Candidate profiles (name, skills, experience, location, current CTC, expected CTC, notice period, CV link)</dd>
+      <dd>Candidate profiles (name, skills, experience, location, current CTC, notice period, LinkedIn URL, education, certifications) from Search API + contact details (email, phone, resume download URL) from Candidate Profile API</dd>
+      <dt>Cost</dt>
+      <dd>Included in ExcelTech's existing Foundit recruiter subscription. API key provided by Foundit team upon onboarding.</dd>
     </dl>
   </div>
 
-  <!-- CHANNEL 2: Naukri -->
-  <div class="agent-card sourcing">
+  <!-- CHANNEL 2: Naukri (PAUSED) -->
+  <div class="agent-card sourcing" style="opacity: 0.5; border-left: 3px solid var(--text-dim);">
     <div class="agent-header">
       <div class="agent-icon">N</div>
       <div>
-        <div class="agent-name">Channel 2: Naukri.com <span class="new-badge">NEW</span></div>
-        <span class="agent-model">India &bull; Candidate Profiles</span>
+        <div class="agent-name">Channel 2: Naukri.com <span style="background: var(--text-dim); color: var(--bg); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">PAUSED — NO SUBSCRIPTION</span></div>
+        <span class="agent-model">India &bull; Candidate Profiles &bull; Code exists in sourcing.py but inactive</span>
       </div>
     </div>
     <dl class="agent-props">
-      <dt>Approach</dt>
-      <dd><strong>Option A (preferred):</strong> Apply for Naukri's enterprise Resume Search API via their partnership program. ExcelTech is a real agency with 14,000+ submissions — qualifies easily. This gives structured, legal access to India's largest resume database.
-      <br><strong>Option B:</strong> Same DevTools reverse-engineering approach as Foundit. Naukri Recruiter portal (resdex.naukri.com) has internal API endpoints.
-      <br><strong>Option C:</strong> Use Apify's <strong>Naukri Navigator actor</strong> — pre-built, handles anti-bot, managed cloud.</dd>
-      <dt>Why</dt>
-      <dd>Naukri is India's #1 job board with 80M+ resumes. Foundit is #2. Having both = near-complete India market coverage for IT roles.</dd>
+      <dt>Status</dt>
+      <dd><strong>Paused.</strong> ExcelTech does not currently have a Naukri/Resdex subscription. Code exists in <code>sourcing.py</code> (<code>source_naukri_with_cookie()</code>) but won't be activated for MVP.</dd>
+      <dt>Future Plan</dt>
+      <dd>Naukri becomes a selling point when going to market — "connect your Naukri account and we'll auto-source from India's #1 resume database." Part of the SaaS channel marketplace. Each tenant brings their own Naukri credentials.</dd>
+      <dt>Why Keep</dt>
+      <dd>Naukri is India's #1 job board with 80M+ resumes. Foundit is #2. Having both = near-complete India market coverage for IT roles. When ExcelTech subscribes (or when first paying tenant has Naukri access), activation is straightforward.</dd>
       <dt>Cost</dt>
-      <dd>Enterprise API: ~INR 15-30K/month. Apify: ~$5-20/month.</dd>
-      <dt>Output</dt>
-      <dd>Same candidate profile structure as Foundit (normalize in sourcing agent)</dd>
+      <dd>Enterprise API: ~INR 15-30K/month. Requires active Resdex subscription.</dd>
     </dl>
   </div>
 
@@ -1053,12 +1061,15 @@
     <div class="phase active">
       <div class="phase-content">
         <div class="phase-label">PHASE 1 — NOW</div>
-        <div class="phase-title">Fix Foundit Direct API</div>
+        <div class="phase-title">Migrate to Foundit Official EDGE API</div>
         <ul>
-          <li><strong>Stabilize Foundit Recruiter API</strong> — Nikhil has the API details. Update <code>sourcing.py</code> with reliable direct endpoint + cookie handling.</li>
-          <li><strong>Build cookie refresh automation</strong> — Playwright script, daily login, cookies in <code>scraper_sessions</code></li>
-          <li><strong>Test:</strong> Search "ServiceNow Bangalore 5+ years" → returns ≥10 candidates → upserted to Supabase</li>
-          <li><strong>Impact:</strong> Primary sourcing channel becomes reliable again</li>
+          <li><strong>Replace cookie-based auth with EDGE API token auth</strong> — Implement <code>POST /recruiter-ats/generate/api/token</code> with apiKey + credentials. Token auto-refreshes on 401 (45-min idle expiry). Eliminates manual Chrome cookie copying forever.</li>
+          <li><strong>Rewrite <code>source_foundit_with_cookie()</code></strong> → <code>source_foundit_edge()</code> — New endpoint <code>/recruiter-ats/search</code>, cleaner payload (documented fields only), boolean + structured search support, max 160 results per request with pagination.</li>
+          <li><strong>Add Candidate Profile API call</strong> — <code>POST /recruiter-ats/candidate-profile-data</code> with <code>p_uuid</code> from search results → returns structured <code>email</code> + <code>mobile_details</code> + <code>resume_file_download_url</code>. Call only for candidates who pass screening (saves API usage).</li>
+          <li><strong>Fetch Master Data</strong> — Call <code>/recruiter-ats/master-data</code> once, cache valid filter values (locations, industries, designations, degrees) for constructing proper search requests.</li>
+          <li><strong>Dual-market support</strong> — Singapore (ChannelId 4, SubChannelId 6, <code>recruiter.foundit.sg</code>) + India (ChannelId 1, SubChannelId 1, <code>recruiter.foundit.in</code>) from single codebase.</li>
+          <li><strong>Test:</strong> Search "ServiceNow Bangalore 5+ years" via EDGE API → returns ≥10 candidates → fetch profiles for top 5 → verify email + phone populated → upsert to Supabase</li>
+          <li><strong>Impact:</strong> Primary sourcing channel becomes reliable and fully automated. No manual intervention ever.</li>
         </ul>
       </div>
     </div>
