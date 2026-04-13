@@ -50,7 +50,7 @@ The right way — [[Wiki/concepts/Recursive-Skill-Building]]:
 
 ## Why not to download other people's skills
 
-Two reasons: security risk (skills can be attack vectors) and effectiveness (skills work best with your context, your workflow, your successful runs). Building your own = fundamentally more effective. His quote: "We have food at home."
+Two reasons: security risk (skills can be attack vectors) and effectiveness (skills work best with your context, your workflow, your successful runs). Building your own = fundamentally more effective. His quote: "mum can we get mcdonalds, we have food at home."
 
 ## Scale for productivity, not for cool factor
 
