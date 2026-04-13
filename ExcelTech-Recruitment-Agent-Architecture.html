@@ -337,7 +337,8 @@
   <a href="#stack">Stack</a>
   <a href="#roadmap">Roadmap</a>
   <a href="#costs">Costs</a>
-  <div class="status">SYSTEM DESIGN v2</div>
+  <a href="#bd-addon">BD Add-on</a>
+  <div class="status">SYSTEM DESIGN v2.1</div>
 </nav>
 
 <!-- ============ HERO ============ -->
@@ -1118,26 +1119,120 @@
   </div>
 </section>
 
-<!-- ============ SECTION 9: WHAT THIS ENABLES ============ -->
+<!-- ============ SECTION 9: BD ADD-ON MODULE ============ -->
+<section id="bd-addon">
+  <h2><span class="num">09</span>BD Add-on Module (Virtual Business Development Manager)</h2>
+  <p>A <strong>premium subscription add-on</strong> sold on top of the core recruitment automation product. While the core product answers "help me fill the JDs I already have faster," the BD module answers "help me find new clients and new JDs to fill." Different value prop, different buyer, different pricing tier.</p>
+
+  <div class="callout">
+    <div class="callout-title">PRICING MODEL</div>
+    <p>Core product: <strong>$X/month</strong> (recruiter multiplier — sourcing, screening, outreach, follow-up, formatting).</p>
+    <p>Core + BD add-on: <strong>$X + $200/month</strong> (adds market intelligence, demand spike alerts, new client lead discovery).</p>
+    <p>Cost to Niksho per BD tenant: ~$70/month (TheirStack $59 + SerpApi $5 + Claude tokens $5-10). <strong>Margin: ~$130/tenant/month.</strong></p>
+  </div>
+
+  <h3>BD Add-on Channels</h3>
+
+  <div class="agent-card intelligence">
+    <div class="agent-header">
+      <div class="agent-icon">T</div>
+      <div>
+        <div class="agent-name">TheirStack Job Intelligence</div>
+        <span class="agent-model">Global &bull; Job Postings &bull; Company Intel</span>
+      </div>
+    </div>
+    <dl class="agent-props">
+      <dt>What</dt>
+      <dd><strong>315,000+ sources</strong> including LinkedIn, Indeed, Glassdoor, Naukri, and 16,000+ ATS platforms. Database updates every minute.</dd>
+      <dt>BD Use Cases</dt>
+      <dd>1. Discover companies hiring for ServiceNow/DevOps in India → pitch agency's services
+      <br>2. Match open jobs against existing candidate pool → proactive placement
+      <br>3. Track target client job postings → know before client sends JD
+      <br>4. Competitive intel: which agencies are scaling</dd>
+      <dt>Pricing</dt>
+      <dd><strong>$59/month</strong> (Starter). Filter by company size, funding, tech stack, location.</dd>
+    </dl>
+  </div>
+
+  <div class="agent-card intelligence">
+    <div class="agent-header">
+      <div class="agent-icon">G</div>
+      <div>
+        <div class="agent-name">Google Jobs via SerpApi</div>
+        <span class="agent-model">India + SG &bull; Job Postings</span>
+      </div>
+    </div>
+    <dl class="agent-props">
+      <dt>What</dt>
+      <dd>Google indexes jobs from <strong>1,000+ job boards</strong>. SerpApi provides structured JSON access. Broadest coverage per API call.</dd>
+      <dt>Pricing</dt>
+      <dd>$0.001-0.002 per request. ~$5/month at scale.</dd>
+    </dl>
+  </div>
+
+  <div class="agent-card intelligence">
+    <div class="agent-header">
+      <div class="agent-icon">In</div>
+      <div>
+        <div class="agent-name">Market Intelligence Agent</div>
+        <span class="agent-model">Sonnet 4</span>
+      </div>
+    </div>
+    <dl class="agent-props">
+      <dt>Function</dt>
+      <dd>Consumes TheirStack + SerpApi data. Runs nightly analysis:
+      <br>1. <strong>Demand spikes:</strong> "ServiceNow hiring in Bangalore up 40% this month"
+      <br>2. <strong>New client leads:</strong> "Infosys posted 12 ServiceNow roles but isn't your client"
+      <br>3. <strong>Candidate-job matching:</strong> Cross-reference idle candidates against market jobs → proactive placement outreach</dd>
+      <dt>Output</dt>
+      <dd>Weekly "Market Brief" — actionable, not noisy. Top 5 insights only. Delivered to agency leadership.</dd>
+    </dl>
+  </div>
+
+  <h3>BD Sourcing Waterfall</h3>
+  <div class="flow"><span class="p">BD MODULE — PROACTIVE LEAD GENERATION</span>
+
+  <span class="hl">Intelligence Agent</span> runs nightly:
+    │
+    ├──<span class="p"> TheirStack</span> → scan 315K+ sources for open jobs matching agency's specialties
+    │
+    ├──<span class="p"> SerpApi</span> → Google Jobs aggregation across 1,000+ job boards
+    │
+    ├── Cross-reference against agency's existing candidate pool
+    │
+    ├── Identify demand spikes, new client leads, salary drift
+    │
+    └──<span class="hl"> Weekly Market Brief</span> → delivered to agency leadership
+        │
+        └── "These 5 companies are hiring for roles you specialize in.
+             Here's your pitch."</div>
+</section>
+
+<!-- ============ SECTION 10: WHAT THIS ENABLES ============ -->
 <section>
-  <h2><span class="num">09</span>What This Enables for Phase 2 SaaS</h2>
-  <p>Every piece of this v2 architecture is designed to be <strong>tenant-portable</strong>. When Phase 2 SaaS launches on InsForge:</p>
+  <h2><span class="num">10</span>What This Enables for Phase 2 SaaS</h2>
+  <p>Every piece of this v2 architecture is designed to be <strong>tenant-portable</strong>. When Phase 2 SaaS launches:</p>
 
   <div class="card-grid">
     <div class="card">
       <div class="card-label" style="color: var(--accent);">TENANT CONFIG</div>
       <div class="card-title">Channel Marketplace</div>
-      <p>Each tenant chooses which sourcing channels to enable. "I use Naukri but not Foundit" = one toggle. TheirStack is shared infrastructure (Niksho pays, all tenants benefit from market intelligence).</p>
+      <p>Each tenant chooses which sourcing channels to enable. "I use Naukri but not Foundit" = one toggle. Apollo/Hunter/Lusha credentials per tenant. Channel health dashboard shows what's working.</p>
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--accent);">DEMO</div>
       <div class="card-title">"Paste a JD, See AI in 3 Minutes"</div>
-      <p>The JD Parser → Sourcing → Screener pipeline is the perfect demo flow. Prospect pastes a JD, sees a ranked shortlist in minutes. <strong>This is the conversion event.</strong></p>
+      <p>The JD Parser → Sourcing → Screener pipeline is the perfect demo flow. Prospect pastes a JD, sees a ranked shortlist with verified contact info in minutes. <strong>This is the conversion event.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--accent);">UPSELL PATH</div>
+      <div class="card-title">Core → Core + BD</div>
+      <p>Land with the core recruiter multiplier (clear, immediate ROI — more submissions/day). Once they're hooked, upsell the BD add-on ($200/mo) for proactive lead generation. Two revenue streams from one product.</p>
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--accent);">MOAT</div>
-      <div class="card-title">Network Effects</div>
-      <p>Every tenant's candidate pool improves the salary benchmarks and demand signals. More tenants = better Intelligence Agent = better value per tenant. This is the flywheel.</p>
+      <div class="card-title">Enrichment Network Effects</div>
+      <p>Every tenant's enrichment lookups populate the shared cache. More tenants = richer candidate data = better enrichment hit rates = lower per-lookup cost. This is the flywheel.</p>
     </div>
   </div>
 </section>
@@ -1145,7 +1240,7 @@
 <!-- ============ FOOTER ============ -->
 <section style="text-align: center; padding: 80px 48px;">
   <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin: 0 auto;">
-    Generated 2026-04-12 &bull; Niksho Vault &bull; ExcelTech Recruitment Agent Architecture v2
+    Generated 2026-04-13 &bull; Niksho Vault &bull; ExcelTech Recruitment Agent Architecture v2.1
     <br>This document is a system design proposal. Implementation follows the phased roadmap above.
   </p>
 </section>
