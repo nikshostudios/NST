@@ -453,15 +453,15 @@
     <div class="agent-header">
       <div class="agent-icon">Ap</div>
       <div>
-        <div class="agent-name">Channel 3: Apollo.io <span class="new-badge">NEW</span></div>
-        <span class="agent-model">Global &bull; Candidate Profiles + Contact Data</span>
+        <div class="agent-name">Channel 3: Apollo.io <span class="enhanced-badge">LIVE — UPGRADE</span></div>
+        <span class="agent-model">Global &bull; Candidate Profiles + Contact Data &bull; Already integrated in sourcing.py</span>
       </div>
     </div>
     <dl class="agent-props">
       <dt>What</dt>
       <dd><strong>275M+ verified contacts</strong> with direct emails, phone numbers, job titles, companies, tech stacks, and career history. Apollo is both a <strong>discovery engine</strong> (search for "ServiceNow Developer, 8+ years, Bangalore") and an <strong>enrichment tool</strong> (paste a LinkedIn URL, get the full contact card).</dd>
       <dt>Why It Matters</dt>
-      <dd>This is the <strong>single biggest new unlock</strong>. Unlike Foundit/Naukri where you're limited to people who uploaded resumes, Apollo indexes professionals who have never touched a job board. Passive candidates — the ones who aren't looking but would move for the right offer — are where the best placements come from. Apollo finds them <em>and</em> gives you their direct phone number.</dd>
+      <dd><strong>Already proven in production.</strong> Nikhil used Apollo to find 30 fresh candidates for a senior sourcing manager role in Singapore after Foundit and MCF were exhausted. Unlike job boards where you're limited to active job seekers, Apollo indexes professionals who have never touched a job board — passive candidates who'd move for the right offer. Apollo finds them <em>and</em> gives you their direct phone number.</dd>
       <dt>Use Cases</dt>
       <dd>1. <strong>Direct candidate search:</strong> "ServiceNow ITSM, 8+ years, Bangalore, currently at Infosys/Wipro/TCS" → returns candidates with verified emails + phones
       <br>2. <strong>Enrichment:</strong> Candidate found on Foundit has no phone → Apollo lookup fills in direct mobile + personal email
@@ -469,8 +469,8 @@
       <br>4. <strong>Lookalike search:</strong> "Find 20 people similar to this placed candidate" → replicate successful placements</dd>
       <dt>Pricing</dt>
       <dd><strong>Free tier:</strong> 10,000 records/month (generous for start). Paid: $49/mo (Basic), $99/mo (Professional). API access on paid tiers.</dd>
-      <dt>Integration</dt>
-      <dd>REST API → Sourcing Agent queries Apollo as Channel 3 in the waterfall → Results normalized to candidate schema → Dedup against Foundit/Naukri results via email hash</dd>
+      <dt>Current Code</dt>
+      <dd><strong><code>search_apollo()</code> in <code>sourcing.py</code> is already live.</strong> Calls <code>api.apollo.io/v1/mixed_people/search</code> with keyword + location filters. Returns name, email, title, organization, linkedin_url. <strong>v2 upgrade:</strong> Add phone number extraction, company-based targeting ("all DevOps engineers at HCL"), and lookalike search ("find 20 people similar to this placed candidate").</dd>
     </dl>
   </div>
 
@@ -499,27 +499,33 @@
     </dl>
   </div>
 
-  <!-- CHANNEL 5: Hunter.io + Lusha (Enrichment Layer) -->
+  <!-- CHANNEL 5: Lusha + Hunter.io (Contact Enrichment) -->
   <div class="agent-card sourcing">
     <div class="agent-header">
-      <div class="agent-icon">E+</div>
+      <div class="agent-icon">Lu</div>
       <div>
-        <div class="agent-name">Channel 5: Hunter.io + Lusha (Enrichment Layer) <span class="new-badge">NEW</span></div>
-        <span class="agent-model">Global &bull; Email + Phone Enrichment</span>
+        <div class="agent-name">Channel 5: Lusha (Primary) + Hunter.io (Secondary) <span class="new-badge">NEW — TO BUILD</span></div>
+        <span class="agent-model">Global &bull; Phone Numbers + Email Verification</span>
       </div>
     </div>
     <dl class="agent-props">
-      <dt>What</dt>
-      <dd><strong>Hunter.io:</strong> Email finder + verifier. Given a name + company, returns verified professional email. 107M+ indexed addresses. Also does bulk domain search ("all emails @hcl.com").
-      <br><strong>Lusha:</strong> Direct phone number + personal email finder. 100M+ business profiles. The tool recruiters use when they need a candidate's mobile number, not their company switchboard.</dd>
-      <dt>Why</dt>
-      <dd>This is the <strong>last-mile enrichment</strong> that makes every other channel 10x more useful. You find a great candidate on Foundit but there's no phone number. You found someone on GitHub but only have their email. Lusha fills in the phone. Hunter.io verifies the email is deliverable before the Outreach Agent drafts anything. <strong>No more bounced emails. No more "number not reachable."</strong></dd>
-      <dt>How It Works</dt>
-      <dd>This isn't a standalone search channel — it's an <strong>enrichment step built into the Sourcing Agent's pipeline</strong>. After candidates are found from Channels 1-4, any record missing a direct phone or verified email gets auto-enriched via Hunter.io/Lusha before being presented to the recruiter.</dd>
+      <dt>Priority</dt>
+      <dd><strong>Phone numbers are what recruiters actually need.</strong> Email is secondary — if a recruiter has a phone number, they can WhatsApp or call directly. That's how Indian and Singapore recruitment actually works. The enrichment priority is: <strong>phone first (Lusha → Apollo fallback), then email verification (Hunter.io).</strong></dd>
+      <dt>Lusha (Phone)</dt>
+      <dd><strong>Direct phone number finder.</strong> 100M+ business profiles. Given name + company (or LinkedIn URL), returns direct mobile number + personal email. This is the #1 enrichment tool for recruiters globally. <strong>Not yet implemented — needs to be built into sourcing.py.</strong></dd>
+      <dt>Hunter.io (Email)</dt>
+      <dd><strong>Email finder + verifier.</strong> 107M+ indexed addresses. Primary use: verify that emails from Foundit/Naukri/Apollo are still deliverable before Outreach Agent drafts anything. Secondary: find professional email when only name + company is known. <strong>Not yet implemented — needs to be built into sourcing.py.</strong></dd>
+      <dt>Enrichment Pipeline</dt>
+      <dd>Built into the Sourcing Agent as a post-processing step — <strong>not a separate agent</strong>:
+      <br>1. Candidate sourced from any channel (Foundit/Naukri/Apollo/GitHub/Inbound)
+      <br>2. <strong>Missing phone?</strong> → Lusha lookup (name + company) → if Lusha fails → Apollo enrichment endpoint
+      <br>3. <strong>Missing/unverified email?</strong> → Hunter.io verify → if no email → Hunter.io finder (name + company domain)
+      <br>4. Cache all lookups in <code>enrichment_cache</code> table (avoid duplicate API calls, respect rate limits)
+      <br>5. Candidate presented to recruiter with verified phone + email</dd>
       <dt>Cost</dt>
-      <dd><strong>Hunter.io:</strong> Free tier (25 searches/month), Starter $49/mo (500 searches). <strong>Lusha:</strong> Free tier (50 credits/month), Pro $49/mo (160 credits). Combined: ~$50-100/month for full enrichment coverage.</dd>
-      <dt>Integration</dt>
-      <dd>Sourcing Agent calls Hunter/Lusha APIs as a post-processing step → enriched contact fields written to candidate record → Outreach Agent receives candidates with verified, deliverable contact info</dd>
+      <dd><strong>Lusha:</strong> Free (50 credits/mo), Pro $49/mo (160 credits). <strong>Hunter.io:</strong> Free (25 searches/mo), Starter $49/mo (500 searches). <strong>Smart caching reduces lookups by ~40%</strong> (same candidate found across multiple channels only enriched once).</dd>
+      <dt>Implementation</dt>
+      <dd>Add <code>enrich_candidate_contact()</code> function to <code>sourcing.py</code>. Call Lusha API (<code>api.lusha.com/person</code>) and Hunter.io API (<code>api.hunter.io/v2/email-finder</code>). Both are simple REST APIs with API key auth. ~50 lines of code each.</dd>
     </dl>
   </div>
 
@@ -596,11 +602,11 @@
     ├──<span class="o"> 3. Naukri API</span> (India: enterprise or Apify actor)
     │   └── Top 50 profiles → <span class="b">Enrich via Hunter/Lusha</span> → Screener → Shortlist
     │
-    ├──<span class="hl"> 4. Apollo.io</span> (275M+ contacts, passive candidates, direct phones)
-    │   └── Candidate profiles with verified contact data → Screener → Shortlist
+    ├──<span class="hl"> 4. Apollo.io</span> (275M+ contacts, passive candidates — ALREADY LIVE)
+    │   └── Candidate profiles with direct contact data → Screener → Shortlist
     │
     ├──<span class="p"> 5. GitHub</span> (tech roles only: DevOps, Data Eng, Full Stack, Cloud)
-    │   └── Developer profiles → <span class="b">Enrich via Apollo/Hunter</span> → Screener → Shortlist
+    │   └── Developer profiles → <span class="b">Enrich via Lusha/Apollo</span> → Screener → Shortlist
     │
     ├──<span class="hl"> 6. Inbound Portal</span> (passive: candidates apply to excelt.ai, 24/7)
     │   └── Auto-parsed CV → Screener Agent → Shortlist
@@ -608,9 +614,12 @@
     ├──<span class="r"> 7. LinkedIn</span> (manual search, AI-generated Boolean strings)
     │   └── Recruiter copies profile → <span class="b">Auto-enrich</span> → Candidate record created
     │
-    └──<span class="b"> ↕ ENRICHMENT LAYER</span> (runs on ALL channels automatically)
-        └── Hunter.io (email verify) + Lusha (phone) + Apollo (fallback)
-            Every candidate presented to recruiter has verified email + direct phone</div>
+    └──<span class="b"> ↕ ENRICHMENT LAYER</span> (runs on ALL candidates, all channels)
+        └── <span class="hl">Priority: PHONE FIRST</span>
+            1. Lusha → direct mobile number (what recruiters actually need)
+            2. Apollo → fallback phone + enrichment data
+            3. Hunter.io → email verification (prevent bounced outreach)
+            Cached in enrichment_cache — same candidate only enriched once</div>
 
   <div class="callout">
     <div class="callout-title">SALARY BENCHMARKING (BUILT-IN)</div>
