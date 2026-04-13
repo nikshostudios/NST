@@ -4,7 +4,7 @@ triggers: ["ingest this", "process raw", "add to wiki", "new source in raw", "lo
 reads: [Raw/, Wiki/index.md, Wiki/log.md, Wiki/hot.md, mi.md, Home.md, AIOS/vault-map.md]
 writes: [Raw/transcripts/, Raw/docs/, Raw/clippings/, Wiki/concepts/, Wiki/tools/, Wiki/people/, Wiki/techniques/, Wiki/digests/, Wiki/sources/, Wiki/index.md, Wiki/log.md, Wiki/hot.md]
 updated: 2026-04-14
-built-from: "Successful ingestion run on 2026-04-14 — 5 YouTube transcripts + 1 HTML architecture doc. Corrections applied after first-pass review."
+built-from: "Successful ingestion run on 2026-04-14 — 6 YouTube transcripts + 1 HTML architecture doc + 1 skill + 1 PDF. Corrections applied after first-pass review. Workflow visualisation pattern added after Tab 6 ingestion."
 ---
 
 # Skill: Ingest Source
@@ -72,6 +72,7 @@ tags: [relevant, tags]
 Each digest must include:
 - **Core argument** — one paragraph, what the video is actually saying
 - **Key principles/findings** — the substance, written in our own words (not a transcript summary)
+- **Workflow visualisations** — where the video describes a process, architecture, progression, or decision tree, include an ASCII diagram showing the flow. Use box-drawing characters (`┌ ─ ┐ │ └ ┘ ├ ┤ ┬ ┴ ┼ ▼ ▲ →`). Examples: before/after comparisons, decision trees, layered architectures, step progressions. Not every section needs one — only where a visual genuinely clarifies the structure better than prose.
 - **Relevance to Niksho** — how this connects to our business, product, or workflow. Reference specific vault files ([[Efforts/...]], [[Atlas/...]]). If there's no relevance, say so briefly and move on.
 - **See also** — backlinks to related digests, concepts, vault files. Be generous with links — the more connections, the more useful the vault becomes.
 

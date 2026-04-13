@@ -10,6 +10,41 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-14 — YouTube transcript batch ingestion (6 videos)
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/transcripts/YT-Transcripts-2026-04-14]] (6 tabs: strategic AI coding, senior dev review, elite websites, top 10 skills/plugins, agents & skills, context cleanup)
+- [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]] (v3 architecture doc, filed and versioned)
+- [[Raw/clippings/context-audit-skill-bradley-bonanno]] (context-audit SKILL.md)
+- [[Raw/docs/Claude-Code-Context-Cleanup-Guide.pdf]] (companion PDF guide)
+
+**Wiki notes created:**
+- [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]]
+- [[Wiki/digests/YT-Senior-Dev-Reviews-AI-App-2026-04-14]]
+- [[Wiki/digests/YT-Elite-Websites-Claude-Code-2026-04-14]]
+- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]]
+- [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]]
+- [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]]
+- [[Wiki/concepts/Progressive-Disclosure]]
+- [[Wiki/concepts/Recursive-Skill-Building]]
+- [[Wiki/concepts/Expert-In-The-Loop]]
+- [[Wiki/concepts/Context-Window-Management]]
+- [[Wiki/concepts/Scale-for-Productivity]]
+- [[Wiki/concepts/File-Over-AI-Portable-Identity]]
+- [[Wiki/concepts/Seven-Levels-of-Web-Design]]
+- [[Wiki/concepts/Five-Filter-Rule-Audit]]
+
+**Wiki notes updated:**
+- [[Wiki/concepts/Context-Window-Management]] — added implementation specifics from Bradley Bonanno (MCP costs, settings.json, daily habits)
+
+**Skill codified:**
+- [[AIOS/skills/ingest-source]] — built using Recursive Skill Building methodology (walk through → successful run → codify → corrections → update)
+
+**Notes:** First use of the hybrid digest + concept breakout approach. Tab 6 digest includes workflow visualisation diagrams (ASCII art showing context bloat architecture, progressive disclosure before/after, five-filter decision tree, daily habits flow). Visualisation pattern should be applied to future digests.
+
+---
+
 ## 2026-04-11 — Sourcing troubleshooting ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]
