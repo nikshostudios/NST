@@ -1046,32 +1046,62 @@
 
 <!-- ============ SECTION 7: IMPLEMENTATION ROADMAP ============ -->
 <section id="roadmap">
-  <h2><span class="num">07</span>Implementation Roadmap</h2>
-  <p>Phased rollout. Each phase delivers standalone value. No phase depends on a later phase completing.</p>
+  <h2><span class="num">07</span>Implementation Roadmap (Revised 2026-04-13)</h2>
+  <p>Revised based on what's actually available right now. <strong>Naukri paused</strong> (no subscription). Build order focuses on shipping a working product fast: fix sourcing → add core features → make it usable for any agency.</p>
 
   <div class="timeline">
     <div class="phase active">
       <div class="phase-content">
-        <div class="phase-label">PHASE 1 — WEEKS 1-2</div>
-        <div class="phase-title">Fix Foundit + Add Naukri</div>
+        <div class="phase-label">PHASE 1 — NOW</div>
+        <div class="phase-title">Fix Foundit Direct API</div>
         <ul>
-          <li><strong>Reverse-engineer Foundit Recruiter SPA API</strong> via Chrome DevTools. Replace Firecrawl with direct httpx calls.</li>
+          <li><strong>Stabilize Foundit Recruiter API</strong> — Nikhil has the API details. Update <code>sourcing.py</code> with reliable direct endpoint + cookie handling.</li>
           <li><strong>Build cookie refresh automation</strong> — Playwright script, daily login, cookies in <code>scraper_sessions</code></li>
-          <li><strong>Add Naukri channel</strong> — Apply for enterprise API or set up Apify actor. Normalize output to match Foundit schema.</li>
-          <li><strong>Ship JD Parser Agent</strong> — Fixes the skills extraction bug. Every new requirement gets properly parsed.</li>
-          <li><strong>Impact:</strong> Sourcing goes from 1 unreliable channel → 3 reliable channels</li>
+          <li><strong>Test:</strong> Search "ServiceNow Bangalore 5+ years" → returns ≥10 candidates → upserted to Supabase</li>
+          <li><strong>Impact:</strong> Primary sourcing channel becomes reliable again</li>
         </ul>
       </div>
     </div>
 
     <div class="phase">
       <div class="phase-content">
-        <div class="phase-label">PHASE 2 — WEEKS 3-4</div>
+        <div class="phase-label">PHASE 2</div>
+        <div class="phase-title">Quick Screen Page + CV Parser + JD Parser</div>
+        <ul>
+          <li><strong>Standalone "Quick Screen" page</strong> — Upload resumes (PDFs) + paste/upload JD → AI screens all resumes against JD → ranked results with scores and reasoning. Works without creating a requirement in the system. <strong>Perfect for demos.</strong></li>
+          <li><strong>CV Auto-Parser</strong> — Upload a CV → Claude extracts all structured fields (name, skills, experience, CTC, notice period, education) → pre-fills candidate record. Eliminates manual data entry.</li>
+          <li><strong>JD Parser Agent</strong> — Extracts skills, experience, salary, location from pasted JDs. Quality gate for everything downstream.</li>
+          <li><strong>Fix Screener salary logic</strong> — Client budget is primary, market data is secondary. No penalty when candidate is within budget.</li>
+          <li><strong>Test:</strong> Upload 5 real CVs + 1 real JD → get ranked results with correct salary scoring</li>
+          <li><strong>Impact:</strong> Any recruiter can immediately screen resumes in minutes. Demo-ready feature.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-content">
+        <div class="phase-label">PHASE 3</div>
+        <div class="phase-title">Excel CRM Tracking Sheet</div>
+        <ul>
+          <li><strong>Excel CRM export</strong> — Mirrors ExcelTech's existing tracking sheet format (Nikhil to provide). One-click download from web app. Pulls from Supabase: requirements, candidates, submissions, statuses.</li>
+          <li><strong>Duplicate candidate detection</strong> — Screen new candidates against the tracking sheet/DB. Flag: "This candidate was already contacted for Req #34 — here's their status." Uses email + phone + fuzzy name matching.</li>
+          <li><strong>Candidate availability tracker</strong> — Daily scan: candidates whose availability_date is within 15 days → auto-match against open reqs → notify recruiter.</li>
+          <li><strong>Test:</strong> Export tracking sheet → verify it matches ExcelTech's format. Upload duplicate candidate → flag detected.</li>
+          <li><strong>Impact:</strong> TL, recruiters, and managers can see everything in familiar Excel format. Zero learning curve.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-content">
+        <div class="phase-label">PHASE 4</div>
         <div class="phase-title">Vector Search + Reactivation</div>
         <ul>
           <li><strong>Enable pgvector</strong> on Supabase. Generate embeddings for all 2,300+ candidates.</li>
           <li><strong>Upgrade internal DB search</strong> from keyword to semantic vector matching.</li>
-          <li><strong>Ship Reactivation Agent</strong> — Weekly scan of dormant candidates vs open reqs.</li>
+          <li><strong>Ship Reactivation Agent</strong> — Context-aware: tracks rejection reasons, only resurfaces candidates when the blocker no longer applies.</li>
+          <li><strong>Add rejection_reason + rejection_category</strong> columns to screenings table.</li>
+          <li><strong>Test:</strong> Candidate rejected for salary at 25 LPA → new req with 28 LPA budget → resurfaces. Candidate rejected for skills gap → same skill needed → does NOT resurface.</li>
           <li><strong>Impact:</strong> Internal DB becomes the smartest search in the stack. Dormant candidates re-enter pipeline at $0 cost.</li>
         </ul>
       </div>
@@ -1079,42 +1109,30 @@
 
     <div class="phase">
       <div class="phase-content">
-        <div class="phase-label">PHASE 3 — WEEKS 5-6</div>
-        <div class="phase-title">Apollo + Enrichment Pipeline</div>
+        <div class="phase-label">PHASE 5</div>
+        <div class="phase-title">Enrichment + Recruiter Dashboard</div>
         <ul>
-          <li><strong>Integrate Apollo.io</strong> — candidate discovery (275M+ contacts) + enrichment API. Set up as Channel 3 in Sourcing Agent.</li>
-          <li><strong>Integrate Hunter.io + Lusha</strong> — email verification + direct phone lookup. Build as post-processing step in Sourcing Agent pipeline.</li>
-          <li><strong>Build enrichment_cache table</strong> — avoid redundant API lookups, respect rate limits.</li>
-          <li><strong>Integrate Adzuna free tier</strong> — salary benchmarks → Screener agent salary calibration.</li>
-          <li><strong>Impact:</strong> Every candidate now comes with verified email + direct phone. Passive candidates (not on job boards) are now discoverable. Recruiter gets complete, ready-to-call shortlists.</li>
+          <li><strong>Integrate Lusha</strong> — Phone enrichment (primary). Build <code>enrich_candidate_contact()</code> in sourcing.py.</li>
+          <li><strong>Integrate Hunter.io</strong> — Email verification (secondary).</li>
+          <li><strong>Build enrichment_cache table</strong> — avoid redundant API lookups.</li>
+          <li><strong>Recruiter performance dashboard</strong> — Per-recruiter metrics: sourced, emailed, replied, submitted, placed. Data already in DB, just needs UI.</li>
+          <li><strong>Integrate Adzuna free tier</strong> — salary benchmarks for enterprise clients.</li>
+          <li><strong>Test:</strong> Source candidate without phone → Lusha enriches → phone appears on candidate record.</li>
+          <li><strong>Impact:</strong> Complete candidate records. Management visibility into recruiter performance.</li>
         </ul>
       </div>
     </div>
 
     <div class="phase">
       <div class="phase-content">
-        <div class="phase-label">PHASE 4 — WEEKS 7-8</div>
-        <div class="phase-title">GitHub + Inbound + Polish</div>
+        <div class="phase-label">PHASE 6 (LATER)</div>
+        <div class="phase-title">GitHub + Inbound + Naukri + BD Add-on</div>
         <ul>
-          <li><strong>Add GitHub sourcing</strong> for tech roles — search by contribution history, repo topics, tech stack. Chain with Apollo/Hunter for enrichment.</li>
-          <li><strong>Build candidate portal</strong> on excelt.ai — "Submit Your CV" form with auto-parse</li>
-          <li><strong>Add Google for Jobs structured data</strong> to career pages → free organic traffic</li>
-          <li><strong>LinkedIn Boolean search generator</strong> — AI assists manual LinkedIn sourcing</li>
-          <li><strong>Screener: multi-requirement cross-matching</strong> — every new candidate scored against all open reqs</li>
-          <li><strong>Impact:</strong> Full 7-channel sourcing mesh live. Passive inbound grows candidate pool 24/7. GitHub unlocks tech talent invisible to job boards.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="phase">
-      <div class="phase-content">
-        <div class="phase-label">PHASE 5 — WEEKS 9-10 (OPTIONAL)</div>
-        <div class="phase-title">BD Add-on Module</div>
-        <ul>
-          <li><strong>Integrate TheirStack + SerpApi</strong> — market intelligence data pipeline</li>
-          <li><strong>Ship Intelligence Agent</strong> — weekly Market Brief with demand spikes, new client leads, salary drift</li>
-          <li><strong>Build BD dashboard</strong> — separate tab in web app showing market opportunities</li>
-          <li><strong>Impact:</strong> Agencies with BD add-on subscription can proactively discover new clients. Upsell path: core product + $200/mo BD module.</li>
+          <li><strong>Add Naukri</strong> when subscription is acquired</li>
+          <li><strong>Add GitHub sourcing</strong> for tech roles</li>
+          <li><strong>Build inbound candidate portal</strong> on excelt.ai</li>
+          <li><strong>BD Add-on Module</strong> (TheirStack + SerpApi + Intelligence Agent)</li>
+          <li><strong>Impact:</strong> Full channel mesh + BD upsell capability</li>
         </ul>
       </div>
     </div>
@@ -1280,35 +1298,37 @@
   <span class="hl">Step 1:</span> Fix Foundit direct API + cookie refresh
     │  └── Run: test_foundit_integration() → PASS → deploy
     ▼
-  <span class="hl">Step 2:</span> Verify Naukri Resdex API (already implemented)
-    │  └── Run: test_naukri_integration() → PASS → deploy
+  <span class="hl">Step 2:</span> Build Quick Screen page (standalone upload resumes + JD)
+    │  └── Run: test_quick_screen() with 5 real CVs + 1 JD → PASS → deploy
     ▼
-  <span class="hl">Step 3:</span> Upgrade Apollo (phone extraction, company-based search)
-    │  └── Run: test_apollo_upgrade() → PASS → deploy
+  <span class="hl">Step 3:</span> Ship CV Auto-Parser
+    │  └── Run: test_cv_parser() with diverse CV formats → PASS → deploy
     ▼
-  <span class="hl">Step 4:</span> Ship JD Parser Agent
-    │  └── Run: test_jd_parser() with 10 real JDs → PASS → deploy
+  <span class="hl">Step 4:</span> Ship JD Parser Agent + fix Screener salary logic
+    │  └── Run: test_jd_parser() + test_screener_salary() → PASS → deploy
     ▼
-  <span class="hl">Step 5:</span> Fix Screener salary logic
-    │  └── Run: test_screener_salary() → PASS → deploy
+  <span class="hl">Step 5:</span> Build Excel CRM export (matching ExcelTech format)
+    │  └── Run: test_excel_export() → verify format matches → PASS → deploy
     ▼
-  <span class="hl">Step 6:</span> Enable pgvector + generate embeddings
+  <span class="hl">Step 6:</span> Duplicate candidate detection + availability tracker
+    │  └── Run: test_dedup() + test_availability_tracker() → PASS → deploy
+    ▼
+  <span class="hl">Step 7:</span> Enable pgvector + generate embeddings for 2,300+ candidates
     │  └── Run: test_vector_search() → PASS → deploy
     ▼
-  <span class="hl">Step 7:</span> Ship Reactivation Agent (with rejection tracking)
+  <span class="hl">Step 8:</span> Ship Reactivation Agent (context-aware rejection tracking)
     │  └── Run: test_reactivation() → PASS → deploy
     ▼
-  <span class="hl">Step 8:</span> Integrate Lusha (phone enrichment)
-    │  └── Run: test_lusha_enrichment() → PASS → deploy
+  <span class="hl">Step 9:</span> Integrate Lusha (phone) + Hunter.io (email)
+    │  └── Run: test_lusha_enrichment() + test_hunter() → PASS → deploy
     ▼
-  <span class="hl">Step 9:</span> Integrate Hunter.io (email verification)
-    │  └── Run: test_hunter_enrichment() → PASS → deploy
-    ▼
-  <span class="hl">Step 10:</span> Build inbound portal + GitHub sourcing
-    │  └── Run: test_inbound_portal() + test_github_sourcing() → PASS → deploy
+  <span class="hl">Step 10:</span> Recruiter performance dashboard
+    │  └── Run: test_dashboard_metrics() → PASS → deploy
     ▼
   <span class="hl">Step 11:</span> Full E2E pipeline test
-    │  └── Run: test_full_pipeline_e2e() → PASS → <span class="hl">v2 COMPLETE</span></div>
+    │  └── Run: test_full_pipeline_e2e() → PASS → <span class="hl">v2 CORE COMPLETE</span>
+    ▼
+  <span class="p">LATER: Naukri (when subscription acquired) → GitHub → Inbound → BD Add-on</span></div>
 
   <div class="callout">
     <div class="callout-title">AUTOMATED TEST EXECUTION</div>
