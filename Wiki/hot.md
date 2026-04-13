@@ -14,7 +14,7 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 ## Right now — 2026-04-14
 
 ### v2 System Architecture designed
-Full v2 architecture designed on April 13: 8 sourcing channels, 7 agents (5 enhanced + 2 new: JD Parser, Reactivation), 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment strategy. BD add-on as separate optional module. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v2.html]].
+Full v2 architecture designed on April 13: 8 sourcing channels, 7 agents (5 enhanced + 2 new: JD Parser, Reactivation), 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment strategy. BD add-on as separate optional module. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
 
 **Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
 

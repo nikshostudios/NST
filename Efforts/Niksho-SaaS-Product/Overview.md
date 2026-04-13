@@ -198,7 +198,7 @@ A non-technical agency owner can paste a JD and in under 5 minutes say "I want t
 
 ## v2 Architecture (2026-04-13)
 
-The v2 architecture redesign restructured sourcing, enrichment, and the agent layer. Build tracker: [[Efforts/Niksho-SaaS-Product/v2-Planning-Log]]. Full source document: [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v2.html]].
+The v2 architecture redesign restructured sourcing, enrichment, and the agent layer. Build tracker: [[Efforts/Niksho-SaaS-Product/v2-Planning-Log]]. Full source document: [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
 
 **Key decisions:**
 - [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-foundit-edge-api]] — switch to official API

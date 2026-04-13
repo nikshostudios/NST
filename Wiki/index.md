@@ -77,7 +77,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/ExcelTech_Vision_and_Goals]] — phases, milestones, vision
 - [[Raw/docs/sourcing-architecture]] — sourcing architecture doc
 - [[Raw/docs/sourcing-troubleshooting-2026-04-11]] — production test post-mortem, 10 issues, sourcing channel validation failure
-- [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v2.html]] — v2 system architecture: 8 sourcing channels, 7 agents, 4 implementation phases
+- [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]] — v2 system architecture: 8 sourcing channels, 7 agents, 4 implementation phases
 
 ## How to add to this index
 1. Ingest new sources via [[AIOS/skills/ingest-source]].
