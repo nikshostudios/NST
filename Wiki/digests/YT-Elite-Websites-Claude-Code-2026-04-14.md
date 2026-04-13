@@ -43,5 +43,8 @@ The SaaS product landing page ([[Efforts/Niksho-SaaS-Product/Overview]] Phase D)
 
 ## See also
 
-- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — tools that enable Levels 2-5
+- [[Wiki/concepts/Seven-Levels-of-Web-Design]] — the framework as a standalone concept
+- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — tools that enable Levels 2-5 (Awesome Design.md, Site Teardown, Playwright CLI)
 - [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]] — the coding discipline that keeps design iteration productive
+- [[Wiki/concepts/Recursive-Skill-Building]] — same iteration mindset applies to design: iterate 20+ times, don't one-shot
+- [[Atlas/Product/Architecture]] — the system we'd be building a frontend for

@@ -24,6 +24,10 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Progressive-Disclosure]] — skills load context on demand (~50 tokens) vs agent.md files (~900+ tokens every turn)
 - [[Wiki/concepts/Recursive-Skill-Building]] — walk-through → codify → fail → fix → update loop for building robust skills
 - [[Wiki/concepts/Expert-In-The-Loop]] — why "expert in the loop" ≠ "human in the loop" and what that means for agent design
+- [[Wiki/concepts/Context-Window-Management]] — keep context lean: what fills the window, the degradation curve, practical rules
+- [[Wiki/concepts/Scale-for-Productivity]] — start with 1 agent, build skills, add sub-agents only when justified
+- [[Wiki/concepts/File-Over-AI-Portable-Identity]] — mi.md pattern: portable identity file any AI tool can read
+- [[Wiki/concepts/Seven-Levels-of-Web-Design]] — progression from generic prompt output to custom 3D/WebGL
 
 ## Techniques
 

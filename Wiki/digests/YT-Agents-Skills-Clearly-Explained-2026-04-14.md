@@ -77,6 +77,10 @@ This is the methodological backbone for how we should be building all our automa
 
 - [[Wiki/concepts/Progressive-Disclosure]] — the core mechanism that makes skills efficient
 - [[Wiki/concepts/Recursive-Skill-Building]] — the full methodology extracted as a standalone concept
+- [[Wiki/concepts/Context-Window-Management]] — the broader principle behind "less is more" with tokens
+- [[Wiki/concepts/Scale-for-Productivity]] — the 1-agent → sub-agents progression
 - [[Wiki/concepts/Expert-In-The-Loop]] — related: the human role in the agent loop
+- [[Wiki/concepts/File-Over-AI-Portable-Identity]] — why mi.md > claude.md
 - [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]] — complementary: the coding discipline side
-- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — tools that support this workflow
+- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — tools that support this workflow (especially Skill Creator for measuring skill performance)
+- [[Atlas/Concepts/File-over-AI]] — our existing principle that aligns with this

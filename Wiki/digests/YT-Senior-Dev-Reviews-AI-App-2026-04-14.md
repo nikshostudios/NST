@@ -50,5 +50,8 @@ This is a direct mirror of our situation. The ExcelTech Railway app was built fa
 ## See also
 
 - [[Wiki/concepts/Expert-In-The-Loop]] — the standalone concept
+- [[Wiki/concepts/Scale-for-Productivity]] — related: don't ship complexity before you've validated the basics
 - [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]] — complementary: how to review AI code properly
+- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — Codeex plugin for adversarial code review addresses exactly this gap
 - [[Efforts/ExcelTech-Automation/Overview]] — open risk: recruiter trust erosion
+- [[Atlas/Product/Tech-Stack]] — our own stack choices that need this level of scrutiny

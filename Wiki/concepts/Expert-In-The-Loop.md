@@ -31,7 +31,7 @@ This principle is already embedded in the ExcelTech design:
 - **Follow-up agent:** extracts intent from replies, but edge cases (sarcasm, ambiguous "maybe") need recruiter judgment.
 - **TL approval:** Raja reviews formatted submissions before they go to clients. He's the expert on what each client actually wants.
 
-The risk is that as the system gets better, the expert starts rubber-stamping instead of reviewing. Guard against this — see [[Efforts/ExcelTech-Automation/Overview]] open risk on recruiter trust erosion.
+The risk is that as the system gets better, the expert starts rubber-stamping — approving output on autopilot without actually reading or evaluating it, because "it's been right the last 50 times." Guard against this — see [[Efforts/ExcelTech-Automation/Overview]] open risk on recruiter trust erosion.
 
 ## Related
 
