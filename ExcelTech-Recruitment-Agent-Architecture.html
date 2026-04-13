@@ -604,11 +604,11 @@
     ├──<span class="hl"> 1. Internal DB</span> (vector search, 2,300+ candidates, $0, &lt;2 sec)
     │   └── Semantic matches → Screener Agent → Shortlist
     │
-    ├──<span class="o"> 2. Foundit API</span> (India: 3 accounts, SG: .sg subscription)
-    │   └── Top 50 profiles → <span class="b">Enrich via Hunter/Lusha</span> → Screener → Shortlist
+    ├──<span class="o"> 2. Foundit EDGE API</span> (Official API — India + SG, token auth)
+    │   └── Search → Screen top results → Candidate Profile API for contact data → Shortlist
     │
-    ├──<span class="o"> 3. Naukri API</span> (India: enterprise or Apify actor)
-    │   └── Top 50 profiles → <span class="b">Enrich via Hunter/Lusha</span> → Screener → Shortlist
+    ├──<span class="o"> 3. Naukri API</span> (PAUSED — no subscription, code ready)
+    │   └── [Activate when subscription acquired or SaaS tenant provides credentials]
     │
     ├──<span class="hl"> 4. Apollo.io</span> (275M+ contacts, passive candidates — ALREADY LIVE)
     │   └── Candidate profiles with direct contact data → Screener → Shortlist
@@ -967,18 +967,18 @@
     <div class="card">
       <div class="card-label" style="color: var(--accent);">CANDIDATE SOURCING APIs</div>
       <div class="card-title">Discovery + Enrichment Layer</div>
+      <p><strong>Foundit EDGE API</strong> — Official ATS integration, search + profiles + contact data, included in subscription</p>
       <p><strong>Apollo.io</strong> — 275M+ contacts, discovery + enrichment, $49-99/mo</p>
-      <p><strong>Hunter.io</strong> — Email finder + verifier, 107M+ addresses, $49/mo</p>
-      <p><strong>Lusha</strong> — Direct phone numbers, 100M+ profiles, $49/mo</p>
+      <p><strong>Hunter.io</strong> — Email finder (last resort only), 107M+ addresses, $49/mo</p>
+      <p><strong>Lusha</strong> — Direct phone numbers (primary enrichment), 100M+ profiles, $49/mo</p>
       <p><strong>GitHub API</strong> — Developer sourcing by contribution history, free</p>
       <p><strong>Adzuna</strong> — Salary benchmarks (baked into Screener), free tier</p>
-      <p><strong>Bright Data</strong> — Fallback scraper if Foundit API fails, ~$50/mo contingency</p>
+      <span class="pill green">Foundit EDGE</span>
       <span class="pill green">Apollo</span>
-      <span class="pill green">Hunter.io</span>
       <span class="pill green">Lusha</span>
+      <span class="pill blue">Hunter.io</span>
       <span class="pill blue">GitHub</span>
       <span class="pill blue">Adzuna</span>
-      <span class="pill orange">Bright Data</span>
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--blue);">VECTOR SEARCH</div>
@@ -1156,14 +1156,14 @@
 
   <div class="card-grid">
     <div class="card">
-      <div class="card-label" style="color: var(--red);">RISK</div>
-      <div class="card-title">Foundit/Naukri API Fragility</div>
-      <p>Reverse-engineered APIs can break when the platform updates their SPA. <strong>Mitigation:</strong> Monitor response shapes with schema validation. Alert on breakage within 15 min. Bright Data as fallback. Never depend on a single channel.</p>
+      <div class="card-label" style="color: var(--accent);">RESOLVED</div>
+      <div class="card-title">Foundit API Fragility — RESOLVED</div>
+      <p><strong>Previously:</strong> Reverse-engineered SPA API could break on updates, cookie expired every 24-48h. <strong>Now:</strong> Official EDGE API with documented endpoints, API key auth, and token management. Stable, supported, and part of ExcelTech's subscription. Naukri remains paused (no subscription).</p>
     </div>
     <div class="card">
-      <div class="card-label" style="color: var(--red);">RISK</div>
-      <div class="card-title">Cookie/Session Expiry</div>
-      <p>Automated login via Playwright can be detected. <strong>Mitigation:</strong> Run from residential IP (Bright Data proxies if Railway IP gets blocked). Randomize login timing. Only 3-4 logins/day total.</p>
+      <div class="card-label" style="color: var(--accent);">RESOLVED</div>
+      <div class="card-title">Cookie/Session Expiry — RESOLVED</div>
+      <p><strong>Previously:</strong> Required Playwright automation for daily cookie refresh across 3 accounts. <strong>Now:</strong> EDGE API uses <code>apiKey</code> + programmatic token generation. Token auto-refreshes on 401, no browser sessions needed, no Playwright scripts, no residential proxies. Fully serverless.</p>
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--orange);">TRADE-OFF</div>
@@ -1246,16 +1246,16 @@
     </thead>
     <tbody>
       <tr>
-        <td><strong>Foundit API (direct)</strong></td>
+        <td><strong>Foundit EDGE API</strong></td>
         <td>Integration</td>
-        <td>1. Search "ServiceNow Bangalore 5+ years" → returns ≥10 candidates<br>2. Cookie expiry → auto-refresh fires<br>3. Pagination → page 2 returns different candidates<br>4. Dedup → same candidate from page 1 and 2 not duplicated</td>
-        <td>Valid candidate records upserted to Supabase. No crashes on empty results.</td>
+        <td>1. Generate token via <code>/generate/api/token</code> → returns valid token<br>2. Search "ServiceNow Bangalore 5+ years" via <code>/search</code> → returns ≥10 candidates with name, skills, experience<br>3. Token auto-refresh on 401 → re-generates and retries<br>4. Candidate Profile API → fetch <code>p_uuid</code> → returns structured email + mobile_details<br>5. Resume download URL → valid link or "not uploaded" message<br>6. Pagination (from=0,size=40 → from=40,size=40) → page 2 returns different candidates<br>7. Dedup → same candidate from page 1 and 2 not duplicated<br>8. Singapore search (ChannelId 4, SubChannelId 6) → returns SG-based candidates<br>9. Boolean search "(Java) AND (Spring Boot) NOT (Python)" → correct filtering</td>
+        <td>Valid candidate records with contact data upserted to Supabase. Token management fully automated. No crashes on empty results.</td>
       </tr>
       <tr>
-        <td><strong>Naukri API</strong></td>
+        <td><strong>Naukri API (PAUSED)</strong></td>
         <td>Integration</td>
-        <td>1. Search "DevOps Engineer Mumbai" → returns candidates<br>2. Experience filter (8-12 years) → all results within range<br>3. Cookie expiry handling</td>
-        <td>Normalized candidate schema matches Foundit output structure.</td>
+        <td>Paused — no subscription. Code exists in sourcing.py. Tests to be written when activated.</td>
+        <td>N/A — activation deferred to SaaS marketplace phase.</td>
       </tr>
       <tr>
         <td><strong>Apollo.io Sourcing</strong></td>
@@ -1306,8 +1306,8 @@
 
   <div class="flow"><span class="hl">DEPLOYMENT ORDER — SERIAL, TEST GATE ON EACH</span>
 
-  <span class="hl">Step 1:</span> Fix Foundit direct API + cookie refresh
-    │  └── Run: test_foundit_integration() → PASS → deploy
+  <span class="hl">Step 1:</span> Migrate to Foundit EDGE API (token auth, search, candidate profile)
+    │  └── Run: test_foundit_edge_integration() → PASS → deploy
     ▼
   <span class="hl">Step 2:</span> Build Quick Screen page (standalone upload resumes + JD)
     │  └── Run: test_quick_screen() with 5 real CVs + 1 JD → PASS → deploy

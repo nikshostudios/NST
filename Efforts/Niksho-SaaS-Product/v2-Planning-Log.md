@@ -33,17 +33,35 @@ related:
 
 ## Decision Log (Reverse Chronological)
 
-### 2026-04-13 — Foundit API Assessment
+### 2026-04-13 — Foundit EDGE API: Full Analysis Complete ✅
 
-**Context:** Received email from Prayag Sanghvi (Sr Manager APAC, Foundit) with "complete kit for Search & Job Postings." Two attachments: ATS-EDGE-Integration doc and ATS 2.0 API kit.
+**Context:** Received email from Prayag Sanghvi (Sr Manager APAC, Foundit) with official ATS EDGE Integration kit. Nikhil uploaded 17 documentation files including the 50-page ATS Edge Search Documentation V3 PDF, sample JSON responses, and job posting API docs.
 
-**Critical flag:** The email describes two methods (FTP and RTP) that are specifically about **pushing job postings TO Foundit**, not pulling candidate resumes FROM Foundit. The "Search" component may be in the attachments but needs verification.
+**Key finding:** The kit includes a **full Search API** — not just job posting. This replaces our fragile cookie-based approach entirely.
 
-**Decision:** Use **RTP (Real-Time Posting)** method if we proceed — it's HTTP POST-based, integrates directly with our FastAPI backend, and goes live in ~1 minute (vs 3-5 hour FTP lag).
+**Five endpoints in the kit:**
+1. `POST /recruiter-ats/generate/api/token` — API key + credentials → token (45-min idle expiry, auto-refresh on 401)
+2. `POST /recruiter-ats/search` — Full boolean + structured search (skills, experience, location, CTC, notice period, education, nationality, industry, company, dozens of insight filters). Max 160 results, pagination via from/size. Returns `express_resumes` + `all_resumes` arrays.
+3. `POST /recruiter-ats/candidate-profile-data` — Pass `p_uuid` → structured `email` + `mobile_details` + `resume_file_download_url`
+4. `POST /recruiter-ats/master-data` — Valid filter values (locations, industries, designations, degrees)
+5. `POST /recruiter-ats/master-data-v2` — Enhanced master data with company names
 
-**Action needed:** Nikhil to upload the two API doc attachments so Shoham can verify whether the search/resume API endpoints are included.
+**Two-step retrieval architecture:** Search returns rich profiles (name, skills, exp, employment, education, CTC, notice period) — enough to screen. Contact info (email, phone) requires separate Candidate Profile API call using `p_uuid`. This is optimal: screen first → fetch contacts only for passing candidates → saves API calls.
 
-**Current Foundit integration:** `sourcing.py` already has a working direct API call to `recruiter.foundit.sg/edge/recruiter-search/api/search-middleware/v2/search` using cookie auth. This may remain the primary search method even if the official API is for job posting only.
+**Decision:** Replace cookie-based `source_foundit_with_cookie()` with official EDGE API `source_foundit_edge()`.
+- Token auth eliminates manual Chrome cookie refresh forever
+- Search payload is nearly identical to existing code, just cleaner
+- Candidate Profile API gives structured email/phone (no more parsing from resume_text)
+- Dual-market support: SG (ChannelId 4, SubChannelId 6) + India (ChannelId 1, SubChannelId 1)
+- ExcelTech CorpId 560219 maps directly
+
+**Migration effort:** ~1-2 days. Swap auth headers, change endpoint URL, add token management, add Candidate Profile API call, test both markets.
+
+**Previous concerns resolved:**
+- ~~Cookie expiry every 24-48h~~ → Token auto-refreshes programmatically
+- ~~Playwright automation for login~~ → Not needed, API key auth
+- ~~Bright Data fallback~~ → Not needed, official API is stable
+- ~~Contact info in resume_text only~~ → Candidate Profile API has structured fields
 
 ---
 
@@ -151,7 +169,7 @@ related:
 
 | Phase | What | Status |
 |-------|------|--------|
-| 1 | Fix Foundit direct API | Waiting for API docs |
+| 1 | Migrate to Foundit EDGE API (token auth, search, candidate profile) | **Ready to build** — API docs analyzed, endpoints documented |
 | 2 | Quick Screen page + CV Parser + JD Parser + Screener fix | Not started |
 | 3 | Excel CRM tracking sheet + dedup + availability tracker | Waiting for tracking sheet |
 | 4 | Vector search + Reactivation Agent | Not started |
@@ -181,7 +199,8 @@ related:
 
 ## Open Items
 
-- [ ] Nikhil to upload Foundit API attachments (ATS-EDGE doc + ATS 2.0 API kit)
+- [x] ~~Nikhil to upload Foundit API attachments~~ — Done. 17 files analyzed. Official EDGE API confirmed with Search + Profile endpoints.
 - [ ] Nikhil to upload ExcelTech tracking sheet (Excel CRM format reference)
 - [ ] Decide on Lusha subscription tier (Free: 50 credits/mo, Pro: $49/mo)
 - [ ] Pricing model discussion (deferred — build working product first)
+- [ ] Obtain Foundit EDGE API key from Prayag Sanghvi (required for token generation)
