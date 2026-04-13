@@ -647,8 +647,8 @@
       <dd>Foundit + MCF + Internal DB (1 unreliable channel)</dd>
       <dt>v2</dt>
       <dd><strong>7-channel sourcing mesh + built-in enrichment.</strong> Channel router selects which channels to activate based on requirement type (India vs SG, tech vs non-tech, volume vs precision). Parallel execution across channels. Results normalized into unified candidate schema. Dedup across channels via email + phone hash.</dd>
-      <dt>New: Enrichment Pipeline</dt>
-      <dd><strong>Every candidate gets auto-enriched before hitting the recruiter's screen.</strong> After sourcing from any channel, the agent checks: does this candidate have a verified email? A direct phone number? If not, it runs Hunter.io (email) → Lusha (phone) → Apollo (fallback) lookups automatically. The recruiter never sees an incomplete candidate record.</dd>
+      <dt>New: Enrichment Pipeline (Phone-First)</dt>
+      <dd><strong>Every candidate gets auto-enriched before hitting the recruiter's screen.</strong> After sourcing from any channel, the agent checks: does this candidate have a direct phone number? A verified email? If not, it runs: <strong>Lusha (phone) → Apollo (fallback phone + data) → Hunter.io (email verify)</strong>. Phone is the priority — that's what recruiters use to WhatsApp or call candidates directly. Results cached in <code>enrichment_cache</code> table to avoid duplicate API calls. <strong>Not yet built — Lusha and Hunter.io integrations need ~50 lines each in sourcing.py.</strong></dd>
       <dt>New: Adaptive Queries</dt>
       <dd><strong>Adaptive query generation.</strong> When initial Foundit/Naukri search returns &lt;10 results, agent automatically broadens search terms (e.g., "ServiceNow ITSM" → "ServiceNow OR ITSM OR IT Service Management"). When it returns 200+, it narrows (adds salary range, location, experience filters).</dd>
       <dt>New: Apollo Discovery</dt>
@@ -669,8 +669,11 @@
     <dl class="agent-props">
       <dt>v1</dt>
       <dd>Match score 0-100, risk flags, reasoning</dd>
-      <dt>v2: Salary Benchmarking</dt>
-      <dd><strong>Market-aware scoring.</strong> Ingests salary benchmarks from Adzuna (free tier). When candidate asks 22 LPA for a role where market median is 18 LPA, the flag says "Above market by 22%" instead of just "salary mismatch." Useful for enterprise clients who don't specify budget upfront. When the client already gave a budget (most agency work), the Screener uses the client's number directly.</dd>
+      <dt>v2: Salary Scoring (Fixed Logic)</dt>
+      <dd><strong>Client budget is the primary reference. Market data is secondary.</strong>
+      <br><br><strong>Rule 1 — Client gave a budget (most agency work):</strong> If the candidate's expected CTC is within the client's stated budget, <strong>do NOT penalize the score</strong> — even if the candidate is asking above market rate. If the client says "budget is 25 LPA" and candidate asks 22 LPA, that's a perfect fit. Only penalize when candidate's ask <em>exceeds the client's budget</em>. Penalty scales: 5-10% over budget = minor flag, 10-20% = moderate, 20%+ = major red flag.
+      <br><br><strong>Rule 2 — No client budget (enterprise/internal TA):</strong> Fall back to Adzuna market benchmarks. Show "Above market by X%" as an informational flag, not a score penalty. These clients are usually flexible — the flag helps them negotiate, not reject.
+      <br><br><strong>Implementation:</strong> Update <code>screener.md</code> prompt to check <code>requirements.salary_budget</code> first. If present, use it as the ceiling. If null/empty, query <code>market_salary_benchmarks</code> for the role + location. Current screener uses a simple yes/no/unknown for salary_fit — upgrade to a numeric scale with reasoning.</dd>
       <dt>v2: Multi-Req Matching</dt>
       <dd><strong>Multi-requirement matching.</strong> When a new candidate enters the system (via any channel), screen against ALL open requirements, not just the one being sourced. "This candidate was sourced for Req #45 but also matches Req #62 at 87%." Surfaces cross-selling opportunities — the single fastest way to increase submissions per day.</dd>
     </dl>
@@ -734,17 +737,25 @@
     </div>
     <dl class="agent-props">
       <dt>Problem</dt>
-      <dd>ExcelTech has 2,300+ candidates in the DB but most are "cold" — sourced months ago, not contacted recently. Meanwhile, new requirements come in daily that might match these dormant candidates.</dd>
+      <dd>ExcelTech has 2,300+ candidates in the DB but most are "cold" — sourced months ago, not contacted recently. Meanwhile, new requirements come in daily that might match these dormant candidates. Currently, <strong>no one tracks why a candidate was rejected</strong> — so when a new requirement comes in that would actually fit, nobody knows to look back.</dd>
       <dt>Solution</dt>
-      <dd><strong>Scheduled agent that runs weekly.</strong> For each open requirement, scans the full internal DB (vector search) for candidates who:
+      <dd><strong>Context-aware reactivation with rejection memory.</strong> Two parts:
+      <br><br><strong>Part 1 — Rejection Tracking (schema change):</strong> Add <code>rejection_reason</code> column to <code>screenings</code> table. When a candidate is rejected or deprioritized, record <em>why</em>: "salary too high (asked 25 LPA, budget was 18 LPA)", "notice period too long (90 days, client needed 30)", "location mismatch (Bangalore, role was Chennai)", "overqualified", "skills gap in X". This data becomes the Reactivation Agent's intelligence.
+      <br><br><strong>Part 2 — Smart Weekly Scan:</strong> For each open requirement, scans the full internal DB (vector search) for candidates who:
       <br>1. Were sourced 30+ days ago
-      <br>2. Were never submitted (or were rejected for a different role)
+      <br>2. Were rejected for a <em>different</em> role — and the rejection reason no longer applies
       <br>3. Match the current requirement at 70%+ confidence
-      <br>Generates a "Reactivation Queue" — recruiters see "These 8 candidates from your old pipeline might fit Req #67."</dd>
+      <br><br><strong>Context-aware examples:</strong>
+      <br>• "Rejected for Req #34 because salary too high at 25 LPA — but Req #67 has 28 LPA budget" → <span style="color: var(--accent);">RESURFACE</span>
+      <br>• "Rejected for Req #40 because notice period was 90 days — Req #67 has flexible start date" → <span style="color: var(--accent);">RESURFACE</span>
+      <br>• "Rejected for Req #34 because skills gap in Kubernetes — Req #67 also needs Kubernetes" → <span style="color: var(--red);">SKIP</span>
+      <br><br>Generates a "Reactivation Queue" with context: "These 8 candidates from your old pipeline might fit Req #67. Here's why they were rejected before and why it doesn't apply now."</dd>
       <dt>Why</dt>
-      <dd>Reactivation is a <strong>$0 sourcing cost</strong> channel. These candidates already have CVs parsed, contact info confirmed, sometimes even field data from prior outreach. The fastest path to a placement is often someone already in the system.</dd>
+      <dd>Reactivation is a <strong>$0 sourcing cost</strong> channel. These candidates already have CVs parsed, contact info confirmed, sometimes even field data from prior outreach. The fastest path to a placement is often someone already in the system. Context-aware resurfacing means recruiters don't waste time re-reviewing candidates who'd be rejected for the same reason.</dd>
       <dt>Trigger</dt>
-      <dd>APScheduler: weekly Sunday night. Also on-demand when new high-priority req is created.</dd>
+      <dd>APScheduler: weekly Sunday night. Also <strong>on-demand when any new requirement is created</strong> — the first thing the system does before external sourcing is check if there's a match sitting dormant in the DB.</dd>
+      <dt>Implementation</dt>
+      <dd><strong>Schema:</strong> Add <code>rejection_reason TEXT</code> and <code>rejection_category TEXT</code> (salary/notice/location/skills/overqualified/other) to <code>screenings</code> table. <strong>Agent:</strong> Prompt Haiku to compare rejection_reason against new requirement's budget, timeline, and location to determine if the blocker still applies. <strong>Route:</strong> Existing <code>/candidates/reactivation-scan</code> endpoint needs upgrade. <strong>Effort:</strong> ~2-3 hours of work.</dd>
     </dl>
   </div>
 
@@ -794,10 +805,11 @@
     │                 ├─ GitHub (tech roles only — DevOps, Data Eng, etc.)
     │                 └─ Inbound portal (passive matches, 24/7)
     │
-    │   <span class="b">┌── ENRICHMENT LAYER (automatic on all results) ──┐</span>
-    │   <span class="b">│  Hunter.io → verify email                        │</span>
-    │   <span class="b">│  Lusha → direct phone number                     │</span>
-    │   <span class="b">│  Apollo → fallback enrichment                    │</span>
+    │   <span class="b">┌── ENRICHMENT LAYER (automatic, phone-first) ────┐</span>
+    │   <span class="b">│  1. Lusha → direct mobile number (PRIMARY)       │</span>
+    │   <span class="b">│  2. Apollo → fallback phone + profile data       │</span>
+    │   <span class="b">│  3. Hunter.io → email verification               │</span>
+    │   <span class="b">│  Cached — same candidate only enriched once      │</span>
     │   <span class="b">└──────────────────────────────────────────────────┘</span>
     ▼
   <span class="hl">Screener Agent</span> → scores all sourced candidates 0-100
@@ -1125,6 +1137,163 @@
       <div class="card-title">Embedding Model Choice</div>
       <p>Claude doesn't have a dedicated embeddings endpoint. <strong>Options:</strong> Use Voyage AI (Anthropic-recommended), OpenAI text-embedding-3-small ($0.00002/1K tokens), or Cohere embed-v3. All produce 1536-dim vectors. Voyage likely best for Claude-ecosystem coherence.</p>
     </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 8.5: ADDITIONAL FEATURES ============ -->
+<section>
+  <h2><span class="num">08b</span>Additional Feature Recommendations</h2>
+  <p>Based on the codebase audit and recruitment domain knowledge, these features would materially increase the product's value. Ordered by <strong>impact × implementation effort</strong>.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-label" style="color: var(--accent);">HIGH IMPACT / LOW EFFORT</div>
+      <div class="card-title">WhatsApp Integration via Twilio/WhatsApp Business API</div>
+      <p>You said it yourself — recruiters WhatsApp candidates first before emailing. Right now that's fully manual. <strong>Add WhatsApp template messaging:</strong> after a candidate is shortlisted, auto-draft a WhatsApp message (interest check) that the recruiter sends with one click. Same pattern as the Outreach Agent (draft, review, send). Uses WhatsApp Business API via Twilio (~$0.05/message). <strong>This alone could save 30+ minutes/day per recruiter.</strong></p>
+      <p><strong>Feasibility:</strong> Twilio WhatsApp API is well-documented, REST-based, ~100 lines of Python. Needs WhatsApp Business account verification (1-2 weeks). Message templates need Meta approval. <strong>Effort: 1 week.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--accent);">HIGH IMPACT / LOW EFFORT</div>
+      <div class="card-title">CV Auto-Parser (Resume → Structured Data)</div>
+      <p>When a candidate sends their CV (via email, WhatsApp, or inbound portal), <strong>auto-extract all fields</strong> using Claude: name, skills, experience, education, current CTC, notice period, certifications. Pre-fill the <code>candidate_details</code> record. Recruiter only needs to verify, not type. <strong>Saves the entire "candidate fills in the table" step</strong> for candidates who already have a detailed CV.</p>
+      <p><strong>Feasibility:</strong> Claude can parse PDFs and DOCXs natively. The Formatter Agent already has the output schema. Reverse it: CV → structured JSON → upsert to candidate_details. <strong>Effort: 3-4 hours.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--accent);">HIGH IMPACT / MEDIUM EFFORT</div>
+      <div class="card-title">Duplicate Candidate Detection Across Requirements</div>
+      <p>When the same candidate appears from multiple channels or across multiple requirements, <strong>merge intelligently</strong> instead of creating duplicates. Current dedup is email-first, name+employer fallback. Upgrade to: phone match, LinkedIn URL match, and fuzzy name matching (Jaro-Winkler similarity). Surface to recruiter: "This candidate was already contacted for Req #34 — here's their status."</p>
+      <p><strong>Feasibility:</strong> Most dedup logic exists in <code>sourcing.py</code>. Adding phone + LinkedIn + fuzzy match is ~50 lines. Schema already has linkedin_url column. <strong>Effort: 1-2 days.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--orange);">MEDIUM IMPACT / MEDIUM EFFORT</div>
+      <div class="card-title">Candidate Availability Tracker</div>
+      <p>Many candidates say "I'm interested but my notice period ends in 60 days." The system should <strong>auto-schedule a follow-up</strong> for Day 45, auto-draft a "checking in" message, and auto-match them against any requirements open at that future date. Turns "not now" into "scheduled placement."</p>
+      <p><strong>Feasibility:</strong> <code>candidate_details.availability_date</code> already exists. APScheduler already runs. Add a daily scan: candidates whose availability_date is within 15 days → auto-match against open reqs → notify recruiter. <strong>Effort: 1 day.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--orange);">MEDIUM IMPACT / LOW EFFORT</div>
+      <div class="card-title">Recruiter Performance Dashboard</div>
+      <p>Track per-recruiter metrics: candidates sourced, emails sent, replies received, submissions made, placements closed. <strong>Data already exists in the DB</strong> — it just needs a dashboard view. Shows management which recruiters are productive and where the pipeline is bottlenecked.</p>
+      <p><strong>Feasibility:</strong> All data lives in <code>outreach_log</code>, <code>submissions</code>, <code>screenings</code>. Dashboard component in React. SQL aggregation queries. <strong>Effort: 2-3 days.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color: var(--blue);">FUTURE / HIGH EFFORT</div>
+      <div class="card-title">Voice Agent for Initial Candidate Screening Calls</div>
+      <p>An AI voice agent that makes initial interest-check calls to shortlisted candidates: "Hi, I'm calling from ExcelTech about a ServiceNow opportunity in Bangalore. Are you open to hearing more?" Captures yes/no/callback time. <strong>Replaces the most time-consuming recruiter task</strong> — the initial phone screen. Uses Twilio + Vapi/Retell AI. This is Phase 3 territory but could be a massive differentiator.</p>
+      <p><strong>Feasibility:</strong> Vapi.ai and Retell.ai both offer production-grade voice agents with API. Cost: ~$0.10-0.20/min. Needs careful compliance review for automated calling laws in India/SG. <strong>Effort: 2-3 weeks. Phase 3.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 8c: TESTING STRATEGY ============ -->
+<section>
+  <h2><span class="num">08c</span>Testing Strategy & Deployment Plan</h2>
+  <p>Every feature ships behind a test gate. <strong>No feature goes to production without passing its test suite.</strong> Tests are designed so that when you prompt Claude, it can automatically run them and verify everything works before moving on.</p>
+
+  <h3>Feature-by-Feature Test Plan</h3>
+
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>Test Type</th><th>Test Cases</th><th>Pass Criteria</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Foundit API (direct)</strong></td>
+        <td>Integration</td>
+        <td>1. Search "ServiceNow Bangalore 5+ years" → returns ≥10 candidates<br>2. Cookie expiry → auto-refresh fires<br>3. Pagination → page 2 returns different candidates<br>4. Dedup → same candidate from page 1 and 2 not duplicated</td>
+        <td>Valid candidate records upserted to Supabase. No crashes on empty results.</td>
+      </tr>
+      <tr>
+        <td><strong>Naukri API</strong></td>
+        <td>Integration</td>
+        <td>1. Search "DevOps Engineer Mumbai" → returns candidates<br>2. Experience filter (8-12 years) → all results within range<br>3. Cookie expiry handling</td>
+        <td>Normalized candidate schema matches Foundit output structure.</td>
+      </tr>
+      <tr>
+        <td><strong>Apollo.io Sourcing</strong></td>
+        <td>Integration</td>
+        <td>1. Search "ServiceNow ITSM Bangalore" → returns candidates with emails<br>2. Company-based search "DevOps at HCL" → returns results<br>3. Rate limit handling (429 response) → backoff + retry<br>4. Dedup against Foundit/Naukri results</td>
+        <td>Candidates have name + email + title + organization. Dedup works across channels.</td>
+      </tr>
+      <tr>
+        <td><strong>Lusha Enrichment</strong></td>
+        <td>Integration</td>
+        <td>1. Enrich candidate with name + company → returns phone number<br>2. Candidate already in enrichment_cache → no API call made<br>3. Lusha returns no phone → fallback to Apollo enrichment<br>4. Rate limit handling</td>
+        <td>Phone number written to candidate record. Cache prevents duplicate calls.</td>
+      </tr>
+      <tr>
+        <td><strong>Hunter.io Enrichment</strong></td>
+        <td>Integration</td>
+        <td>1. Verify known valid email → returns "deliverable"<br>2. Verify known invalid email → returns "undeliverable"<br>3. Find email by name + domain → returns email<br>4. Cache hit → no API call</td>
+        <td>Email verification status written to candidate record.</td>
+      </tr>
+      <tr>
+        <td><strong>JD Parser Agent</strong></td>
+        <td>Unit + LLM</td>
+        <td>1. Well-formatted JD → extracts all fields correctly<br>2. Messy JD (wall of text) → still extracts skills + experience<br>3. JD with unrealistic requirements (10 yrs ServiceNow, 3 LPA) → flags red flag<br>4. "ServiceNow JavaScript ITSM" → three separate skills<br>5. SG JD with nationality requirement → extracted correctly</td>
+        <td>Structured JSON output with all required fields. Skills normalized to canonical taxonomy.</td>
+      </tr>
+      <tr>
+        <td><strong>Screener Salary Logic</strong></td>
+        <td>Unit + LLM</td>
+        <td>1. Candidate asks 22 LPA, client budget 25 LPA → NO penalty<br>2. Candidate asks 30 LPA, client budget 25 LPA → penalty flagged<br>3. No client budget, candidate asks above market → informational flag only, no penalty<br>4. Candidate salary unknown → salary_fit = "unknown", no penalty</td>
+        <td>Score not reduced when candidate is within budget. Penalty only when exceeding client budget.</td>
+      </tr>
+      <tr>
+        <td><strong>Reactivation Agent</strong></td>
+        <td>Integration</td>
+        <td>1. Candidate rejected for salary (25 LPA vs 18 LPA budget) → new req with 28 LPA → RESURFACE<br>2. Candidate rejected for skills gap → new req needs same skill → SKIP<br>3. Candidate rejected for notice period → new req has flexible timeline → RESURFACE<br>4. No dormant candidates match → empty queue (no false positives)</td>
+        <td>Context-aware resurfacing. No candidates resurface when the rejection reason still applies.</td>
+      </tr>
+      <tr>
+        <td><strong>Full Pipeline E2E</strong></td>
+        <td>E2E</td>
+        <td>1. Create requirement → JD parsed → sourcing runs → candidates scored → shortlist appears in UI<br>2. Approve candidate → outreach drafted → email staged in Outlook<br>3. Simulate reply → follow-up agent extracts fields → candidate_details updated<br>4. All fields complete → formatter generates doc → appears in TL queue</td>
+        <td>Complete pipeline from JD to client submission with ≤4 human touchpoints.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Deployment Sequence (Serial, Each Feature Tested Before Next)</h3>
+
+  <div class="flow"><span class="hl">DEPLOYMENT ORDER — SERIAL, TEST GATE ON EACH</span>
+
+  <span class="hl">Step 1:</span> Fix Foundit direct API + cookie refresh
+    │  └── Run: test_foundit_integration() → PASS → deploy
+    ▼
+  <span class="hl">Step 2:</span> Verify Naukri Resdex API (already implemented)
+    │  └── Run: test_naukri_integration() → PASS → deploy
+    ▼
+  <span class="hl">Step 3:</span> Upgrade Apollo (phone extraction, company-based search)
+    │  └── Run: test_apollo_upgrade() → PASS → deploy
+    ▼
+  <span class="hl">Step 4:</span> Ship JD Parser Agent
+    │  └── Run: test_jd_parser() with 10 real JDs → PASS → deploy
+    ▼
+  <span class="hl">Step 5:</span> Fix Screener salary logic
+    │  └── Run: test_screener_salary() → PASS → deploy
+    ▼
+  <span class="hl">Step 6:</span> Enable pgvector + generate embeddings
+    │  └── Run: test_vector_search() → PASS → deploy
+    ▼
+  <span class="hl">Step 7:</span> Ship Reactivation Agent (with rejection tracking)
+    │  └── Run: test_reactivation() → PASS → deploy
+    ▼
+  <span class="hl">Step 8:</span> Integrate Lusha (phone enrichment)
+    │  └── Run: test_lusha_enrichment() → PASS → deploy
+    ▼
+  <span class="hl">Step 9:</span> Integrate Hunter.io (email verification)
+    │  └── Run: test_hunter_enrichment() → PASS → deploy
+    ▼
+  <span class="hl">Step 10:</span> Build inbound portal + GitHub sourcing
+    │  └── Run: test_inbound_portal() + test_github_sourcing() → PASS → deploy
+    ▼
+  <span class="hl">Step 11:</span> Full E2E pipeline test
+    │  └── Run: test_full_pipeline_e2e() → PASS → <span class="hl">v2 COMPLETE</span></div>
+
+  <div class="callout">
+    <div class="callout-title">AUTOMATED TEST EXECUTION</div>
+    <p>Every test function above will be implemented as a Python test in <code>tests/</code>. When you prompt Claude to work on a feature, it will: (1) implement the feature, (2) run the test suite, (3) only proceed to the next step if all tests pass. If a test fails, Claude shows you the failure and fixes it before moving on. <strong>No manual QA needed for individual features.</strong></p>
   </div>
 </section>
 
