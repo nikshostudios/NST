@@ -1,106 +1,122 @@
 ---
 type: atlas-note
 area: Product
-updated: 2026-04-10
+updated: 2026-04-14
+generated-by: claude-opus-4-6
 sources: ["[[Raw/docs/sourcing-architecture]]", "[[Raw/docs/ExcelTech_Master_Knowledge_Base]]"]
 ---
 
 # Product — Sourcing Channels
 
-How we actually get candidates into the system. Four active channels, each with different mechanics, costs, and constraints.
+How we get candidates into the system. Six core channels, each with different mechanics, costs, and constraints. Enrichment (phone/email lookup) is handled separately — see [[Atlas/Product/Enrichment-Strategy]].
+
+> **v2 update (2026-04-13):** Channel lineup restructured. Foundit upgraded to official EDGE API. MyCareersFuture removed (returns job postings, not candidates). TheirStack/SerpApi/Adzuna moved to BD add-on. Apollo, GitHub, Lusha added to core. Naukri paused (no subscription). See decision records in [[Efforts/Niksho-SaaS-Product/decisions/]].
 
 ## Channel matrix
 
-| Channel | Market | Method | Cost | Constraint |
-|---|---|---|---|---|
-| **Foundit** | India + SG | Firecrawl + credentialed sessions, 3 shared accounts | Per-credit | Rate limits, account lockouts |
-| **MyCareersFuture** | SG only | Public government API | Free | SG candidates only |
-| **Internal DB** | Both | Direct Postgres query | Free | Only as big as our history |
-| **LinkedIn** | Both | **Manual only** | Time | Hard rule: no scraping |
+| # | Channel | Market | Method | Status | Cost |
+|---|---------|--------|--------|--------|------|
+| 1 | **Internal DB** | Both | pgvector semantic search | Working | Free |
+| 2 | **Foundit EDGE API** | India + SG | Official ATS API, token auth | Ready to build | Included in subscription |
+| 3 | **Apollo.io** | Global | People Search API | **Live** in sourcing.py | $49-99/mo |
+| 4 | **GitHub** | Global | Public API, tech roles only | To build | Free |
+| 5 | **Inbound Portal** | Both | Candidates self-submit on excelt.ai | To build | Free |
+| 6 | **LinkedIn** | Both | Manual only + AI boolean strings | Live (manual) | Free |
 
-## Foundit
+**Paused:** Naukri (no subscription — code exists, activate when tenant brings credentials)
 
-The workhorse for India. Three shared company accounts:
+## Priority waterfall
 
-| Account | Login | Holder |
-|---|---|---|
-| 01 | `xExcelTech_Cominx01` | Rakesh |
-| 02 | `xExcelTech_Cominx02` | Devesh |
-| 03 | `xExcelTech_Cominx03` | Bhuwan |
+When a requirement arrives, the Sourcing Agent searches channels in this order:
 
-### How the rotation works
-- The Sourcing agent picks the least-recently-used account for a given search.
-- If an account hits a Foundit rate limit (429-like response), it's marked `cooldown` for 30 minutes and the next call routes to another account.
-- If all three are in cooldown, the skill queues the search for retry on the next scheduler tick.
-- Credentials are stored encrypted in Supabase (see [[AIOS/skills/ship-check|ship-check]] for the pre-deploy verification).
+```
+JD Parser extracts skills, salary, location
+    │
+    1. Internal DB (vector search, 2,300+ candidates, $0, <2 sec)
+    │   └── Semantic matches → Screener → Shortlist
+    │
+    2. Foundit EDGE API (official API, India + SG, token auth)
+    │   └── Search → Screen top results → Profile API for contacts → Shortlist
+    │
+    3. Apollo.io (275M+ contacts, passive candidates)
+    │   └── Candidates with direct contact data → Screener → Shortlist
+    │
+    4. GitHub (tech roles only: DevOps, Data Eng, Full Stack, Cloud)
+    │   └── Developer profiles → Enrich via Lusha/Apollo → Screener → Shortlist
+    │
+    5. Inbound Portal (passive: candidates apply via excelt.ai, 24/7)
+    │   └── Auto-screen on arrival → notify recruiter of matches
+    │
+    6. LinkedIn (manual + AI boolean strings)
+    │   └── Recruiter copies profiles into app → CV Parser → Screener
+```
 
-### Search construction
-The agent doesn't just dump the JD into the Foundit search bar. It:
-1. Extracts must-have skills from `requirements.jd_structured`.
-2. Maps JD terms to Foundit's taxonomy (e.g. "Snow Developer" → "ServiceNow Developer").
-3. Constructs boolean queries with location + experience filters.
-4. Paginates through results, pulls each profile, stores CVs.
+## Channel details
 
-See [[Raw/docs/sourcing-architecture]] for the original architecture doc.
+### 1. Internal DB
 
-### Firecrawl budget caps
-Firecrawl credits are the operational cost floor for sourcing. A runaway loop would be expensive. Caps:
-- Per-day hard cap (configurable env var)
-- Per-requirement cap (prevents one JD from burning the whole day's budget)
-- Alert when 80% of daily cap consumed
+Our own candidate history — 2,300+ candidates who reached interview stage, plus thousands more. Always searched first because it's free and fast.
 
-## MyCareersFuture (SG only)
+v2 upgrade: **pgvector semantic search.** Instead of keyword matching, embeddings from candidate CVs are compared against the JD semantically. "Find someone like this candidate" becomes possible.
 
-Free **public API** from Singapore's government careers portal. This is a gift and we should use it heavily for SG reqs.
+### 2. Foundit EDGE API
 
-- No scraping required. Proper paginated JSON endpoints.
-- No terms-of-service risk.
-- Candidate records include work authorisation (SC/PR/EP), which feeds directly into the nationality filter for GeBIZ reqs.
-- Rate limits are generous for API usage.
+The workhorse for India and Singapore. Official ATS EDGE Integration with five documented endpoints, API key + token authentication, no more cookie scraping.
 
-The SG Sourcing flow hits MyCareersFuture first, Foundit second, internal DB third.
+Full reference: [[Atlas/Product/Foundit-EDGE-Integration]]
 
-## Internal database
+**Key architecture detail:** Search returns profiles (enough to screen), but structured contact data (email, phone) requires a second call to the Candidate Profile API using the candidate's `p_uuid`. We only make this call for candidates who pass screening — saves API usage.
 
-Our own candidate history — 2,300+ candidates who reached interview stage, plus thousands of others who didn't. This is cheap gold:
-- Zero marginal cost to query.
-- Candidates we've already talked to = lower friction to re-engage.
-- Match scoring uses the same Screener agent as external channels.
+Three shared ExcelTech accounts (Rakesh, Devesh, Bhuwan) rotate for India searches. Singapore uses the `.sg` subscription.
 
-The Sourcing agent always checks the internal DB before going external. Saves money and speeds up time-to-shortlist.
+### 3. Apollo.io
 
-## LinkedIn — manual only
+275M+ verified contacts with direct emails, phone numbers, job titles, companies, tech stacks, and career history. Both a discovery engine and an enrichment tool.
 
-**Hard rule, non-negotiable.** Reasons:
-1. LinkedIn's Terms of Service explicitly forbid automated scraping. We don't want the litigation risk when we pitch this as SaaS.
-2. Scraping LinkedIn at any scale gets IPs banned and accounts suspended — not a sustainable pipeline.
-3. The credibility story for Phase 2 GTM depends on us being the agency that **didn't** cut corners. See [[Atlas/Business-Model/Phase-2-GTM]].
+**Already proven in production.** Nikhil used Apollo to find 30 fresh candidates for a senior sourcing manager role in Singapore after Foundit and MCF were exhausted.
+
+Use cases: direct candidate search by skills/title/location, company-based sourcing ("all DevOps engineers at HCL"), enrichment (LinkedIn URL → full contact card), lookalike search ("20 people similar to this placed candidate").
+
+### 4. GitHub
+
+For tech roles only. GitHub's public API exposes developer profiles with contribution history, tech stacks, and location. Free.
+
+Target roles: DevOps, Data Engineering, Full Stack, Cloud Architecture — roles where GitHub activity is a meaningful signal.
+
+### 5. Inbound Portal
+
+Candidates self-submit on excelt.ai. A careers page with active openings. When a candidate applies, the CV Parser extracts structured data and the Screener Agent auto-scores them against open requirements.
+
+### 6. LinkedIn — manual only
+
+**Hard rule, non-negotiable.** No automated scraping, crawling, or API hitting of LinkedIn. Ever. Reasons: ToS litigation risk, IP bans, and credibility for Phase 2 SaaS.
 
 **What IS allowed:**
-- Recruiters manually searching LinkedIn and copy-pasting candidate info into the web app.
-- Recruiters receiving candidate CVs from LinkedIn messages.
-- Posting JDs on recruiters' personal LinkedIn feeds to generate inbound.
+- Recruiters manually searching LinkedIn and copy-pasting into the app
+- AI-generated boolean search strings for recruiters to paste into LinkedIn search
+- Posting JDs on recruiters' LinkedIn feeds to generate inbound
+- Receiving candidate CVs via LinkedIn messages
 
-**What is NOT allowed:**
-- Any automated scraping, crawling, or API hitting of LinkedIn.
-- Any agent that "reads" LinkedIn profiles in the background.
-- Any Firecrawl job pointed at LinkedIn URLs.
+This rule is echoed in [[mi]] NOT-to-do list.
 
-This rule is echoed in [[mi]] NOT-to-do list and [[AIOS/skills/ship-check|ship-check]] verifies it on every deploy.
+### Naukri (PAUSED)
+
+India's #1 job board with 80M+ resumes. ExcelTech does not currently have a Naukri/Resdex subscription. Code exists in `sourcing.py` (`source_naukri_with_cookie()`) but is inactive.
+
+**Future plan:** Naukri becomes a selling point for the SaaS product — each tenant brings their own Naukri credentials. Part of the channel marketplace.
 
 ## Deduping across channels
-Candidates are deduped by `(email || phone || name+city)` hash. When the Sourcing agent pulls a CV that already exists:
-- Don't create a new candidate record.
-- Update the existing record's `last_seen_on` and `source` array.
-- Link the candidate to the new requirement via `submissions`.
 
-This prevents the same person getting 3 outreach emails from 3 recruiters because they appeared in 3 channels.
+Candidates are deduped by `(email || phone || name+city)` hash. When the Sourcing agent pulls a candidate that already exists: update `last_seen_on` and `source` array, link to the new requirement, don't create a duplicate record.
 
 ## Related
-- [[Atlas/Product/Agents#Sourcing-agent]]
-- [[Atlas/Product/Skills#source-and-screen]]
-- [[Atlas/Product/Database-Schema]]
+
+- [[Atlas/Product/Foundit-EDGE-Integration]] — detailed Foundit API reference
+- [[Atlas/Product/Enrichment-Strategy]] — how we get phone/email for sourced candidates
+- [[Atlas/Product/Agents#Sourcing-agent]] — the agent that orchestrates this
+- [[Atlas/Product/Database-Schema]] — where candidates land
 - [[Atlas/ExcelTech/India-Market]]
 - [[Atlas/ExcelTech/Singapore-Market]]
-- [[Raw/docs/sourcing-architecture]]
-- [[Atlas/Product/Sourcing-Architecture-v2]] — proposed upgrade: 8-channel mesh, sourcing inversion, market intelligence
+
+---
+*Template: Atlas note · Home: [[Home]]*
