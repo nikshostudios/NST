@@ -10,6 +10,22 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-14 — YouTube transcript batch ingestion (7th video: AI GTM Stack)
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/transcripts/YT-Transcripts-2026-04-14]] (Tab 7 appended: "3 MCPs, 2 AI tools to make $$ in the AI era")
+
+**Wiki notes created:**
+- [[Wiki/digests/YT-AI-GTM-Stack-2026-04-14]]
+- [[Wiki/concepts/Agent-Traffic-Arbitrage]]
+- [[Wiki/concepts/AI-GTM-Stack]]
+- [[Wiki/tools/Idea-Browser]]
+- [[Wiki/tools/Paper-Design]]
+- [[Wiki/tools/Humbalytics]]
+
+---
+
 ## 2026-04-14 — YouTube transcript batch ingestion (6 videos)
 
 **Skill:** [[AIOS/skills/ingest-source]]
