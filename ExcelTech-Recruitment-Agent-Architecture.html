@@ -447,72 +447,78 @@
     </dl>
   </div>
 
-  <!-- CHANNEL 3: TheirStack -->
+  <!-- CHANNEL 3: Apollo.io -->
   <div class="agent-card sourcing">
     <div class="agent-header">
-      <div class="agent-icon">T</div>
+      <div class="agent-icon">Ap</div>
       <div>
-        <div class="agent-name">Channel 3: TheirStack Job Intelligence <span class="new-badge">NEW</span></div>
-        <span class="agent-model">Global &bull; Job Postings &bull; Company Intel</span>
+        <div class="agent-name">Channel 3: Apollo.io <span class="new-badge">NEW</span></div>
+        <span class="agent-model">Global &bull; Candidate Profiles + Contact Data</span>
       </div>
     </div>
     <dl class="agent-props">
       <dt>What</dt>
-      <dd><strong>315,000+ sources</strong> including LinkedIn, Indeed, Glassdoor, Naukri, and 16,000+ ATS platforms (Greenhouse, Lever, Workable, etc.). Database updates every minute. Built-in deduplication.</dd>
+      <dd><strong>275M+ verified contacts</strong> with direct emails, phone numbers, job titles, companies, tech stacks, and career history. Apollo is both a <strong>discovery engine</strong> (search for "ServiceNow Developer, 8+ years, Bangalore") and an <strong>enrichment tool</strong> (paste a LinkedIn URL, get the full contact card).</dd>
       <dt>Why It Matters</dt>
-      <dd>This is the <strong>market intelligence layer</strong>. TheirStack doesn't give you candidates — it tells you <strong>who is hiring, for what, right now</strong>. Use cases:
-      <br>1. Discover companies hiring for ServiceNow/Snow/DevOps in India → pitch ExcelTech's services
-      <br>2. Match open jobs against ExcelTech's 2,300+ candidate pool → proactive placement
-      <br>3. Track HCL/TechM/Paytm job postings → know before client sends JD
-      <br>4. Competitive intel: which agencies are hiring recruiters (tells you who's scaling)</dd>
+      <dd>This is the <strong>single biggest new unlock</strong>. Unlike Foundit/Naukri where you're limited to people who uploaded resumes, Apollo indexes professionals who have never touched a job board. Passive candidates — the ones who aren't looking but would move for the right offer — are where the best placements come from. Apollo finds them <em>and</em> gives you their direct phone number.</dd>
+      <dt>Use Cases</dt>
+      <dd>1. <strong>Direct candidate search:</strong> "ServiceNow ITSM, 8+ years, Bangalore, currently at Infosys/Wipro/TCS" → returns candidates with verified emails + phones
+      <br>2. <strong>Enrichment:</strong> Candidate found on Foundit has no phone → Apollo lookup fills in direct mobile + personal email
+      <br>3. <strong>Company-based sourcing:</strong> "Show me all DevOps engineers at HCL in Bangalore" → target specific talent pools
+      <br>4. <strong>Lookalike search:</strong> "Find 20 people similar to this placed candidate" → replicate successful placements</dd>
       <dt>Pricing</dt>
-      <dd><strong>$59/month</strong> (Starter). Free tier: 200 credits/month for prototyping. Filter by company size, funding, tech stack, location.</dd>
+      <dd><strong>Free tier:</strong> 10,000 records/month (generous for start). Paid: $49/mo (Basic), $99/mo (Professional). API access on paid tiers.</dd>
       <dt>Integration</dt>
-      <dd>REST API → <code>market_jobs</code> table in Supabase → Intelligence Agent matches against internal candidate pool + open requirements</dd>
+      <dd>REST API → Sourcing Agent queries Apollo as Channel 3 in the waterfall → Results normalized to candidate schema → Dedup against Foundit/Naukri results via email hash</dd>
     </dl>
   </div>
 
-  <!-- CHANNEL 4: SerpApi Google Jobs -->
+  <!-- CHANNEL 4: GitHub -->
   <div class="agent-card sourcing">
     <div class="agent-header">
-      <div class="agent-icon">G</div>
+      <div class="agent-icon">GH</div>
       <div>
-        <div class="agent-name">Channel 4: Google Jobs via SerpApi <span class="new-badge">NEW</span></div>
-        <span class="agent-model">India + SG &bull; Job Postings</span>
+        <div class="agent-name">Channel 4: GitHub Talent Sourcing <span class="new-badge">NEW</span></div>
+        <span class="agent-model">Global &bull; Tech Candidates &bull; Passive Talent</span>
       </div>
     </div>
     <dl class="agent-props">
       <dt>What</dt>
-      <dd>Google indexes jobs from <strong>1,000+ job boards</strong> — Indeed, LinkedIn, Glassdoor, Naukri, Foundit, company career pages, and more. SerpApi provides structured JSON access to Google Jobs search results.</dd>
+      <dd>GitHub has <strong>100M+ developers</strong> with public profiles, contribution histories, and tech stack fingerprints. By searching repos, commit activity, and profile bios, we can find developers by <strong>what they actually build</strong>, not just what they claim on a resume.</dd>
       <dt>Why</dt>
-      <dd>Broadest coverage per API call. One search for "ServiceNow Developer Bangalore" returns results aggregated from dozens of sources. <strong>Perfect for the "harvest jobs" side of the sourcing inversion.</strong></dd>
-      <dt>Pricing</dt>
-      <dd>$0.001-0.002 per request. 100 searches/month for active reqs = <strong>~$0.20/month</strong>. Absurdly cheap.</dd>
-      <dt>Speed</dt>
-      <dd>~1.2 seconds per request (Ludicrous mode). No browser needed.</dd>
-      <dt>Integration</dt>
-      <dd>Feed results into <code>market_jobs</code> table. Dedup against TheirStack data. Use for both market intelligence and to find direct-apply links for candidates.</dd>
+      <dd>For tech roles (DevOps, Data Engineering, Full Stack, Cloud), GitHub is the highest-signal channel. A developer with 500+ commits to ServiceNow-related repos in the last year is more qualified than someone who listed "ServiceNow" on their Naukri profile 3 years ago. This is <strong>proof of work</strong>, not self-reported skills.</dd>
+      <dt>Approach</dt>
+      <dd><strong>GitHub API (free):</strong> Search users by location + language + bio keywords. Check contribution frequency, repo topics, and starred technologies.
+      <br><strong>Enrichment chain:</strong> GitHub profile → extract email from public commits (git log) → if no email, pass to Hunter.io/Apollo for enrichment → create candidate record.
+      <br><strong>Apify GitHub Scrapers:</strong> Pre-built actors for structured profile extraction if API rate limits are hit.</dd>
+      <dt>Cost</dt>
+      <dd><strong>GitHub API: Free</strong> (5,000 requests/hour with auth token). Apify actors: ~$5-10/month if needed.</dd>
+      <dt>Best For</dt>
+      <dd>DevOps, Data Engineering, Full Stack, Cloud, Security roles. Not useful for non-tech roles (ServiceNow functional consultants, BAs).</dd>
     </dl>
   </div>
 
-  <!-- CHANNEL 5: Adzuna -->
+  <!-- CHANNEL 5: Hunter.io + Lusha (Enrichment Layer) -->
   <div class="agent-card sourcing">
     <div class="agent-header">
-      <div class="agent-icon">A</div>
+      <div class="agent-icon">E+</div>
       <div>
-        <div class="agent-name">Channel 5: Adzuna API <span class="new-badge">NEW</span></div>
-        <span class="agent-model">India + SG + Global &bull; Job Postings + Salary Data</span>
+        <div class="agent-name">Channel 5: Hunter.io + Lusha (Enrichment Layer) <span class="new-badge">NEW</span></div>
+        <span class="agent-model">Global &bull; Email + Phone Enrichment</span>
       </div>
     </div>
     <dl class="agent-props">
       <dt>What</dt>
-      <dd>Job aggregator covering Australia, UK, US, Canada, India, Singapore, and more. Free developer API with real-time posts, historical data, and <strong>salary statistics</strong>.</dd>
-      <dt>Unique Value</dt>
-      <dd><strong>Salary benchmarking.</strong> When a candidate says "I want 22 LPA for ServiceNow" — Adzuna's salary API can tell you whether that's market rate. Feeds directly into the Screener agent's salary mismatch detection.</dd>
+      <dd><strong>Hunter.io:</strong> Email finder + verifier. Given a name + company, returns verified professional email. 107M+ indexed addresses. Also does bulk domain search ("all emails @hcl.com").
+      <br><strong>Lusha:</strong> Direct phone number + personal email finder. 100M+ business profiles. The tool recruiters use when they need a candidate's mobile number, not their company switchboard.</dd>
+      <dt>Why</dt>
+      <dd>This is the <strong>last-mile enrichment</strong> that makes every other channel 10x more useful. You find a great candidate on Foundit but there's no phone number. You found someone on GitHub but only have their email. Lusha fills in the phone. Hunter.io verifies the email is deliverable before the Outreach Agent drafts anything. <strong>No more bounced emails. No more "number not reachable."</strong></dd>
+      <dt>How It Works</dt>
+      <dd>This isn't a standalone search channel — it's an <strong>enrichment step built into the Sourcing Agent's pipeline</strong>. After candidates are found from Channels 1-4, any record missing a direct phone or verified email gets auto-enriched via Hunter.io/Lusha before being presented to the recruiter.</dd>
       <dt>Cost</dt>
-      <dd><strong>Free tier</strong> available. Paid tiers from $99/month for higher volume.</dd>
+      <dd><strong>Hunter.io:</strong> Free tier (25 searches/month), Starter $49/mo (500 searches). <strong>Lusha:</strong> Free tier (50 credits/month), Pro $49/mo (160 credits). Combined: ~$50-100/month for full enrichment coverage.</dd>
       <dt>Integration</dt>
-      <dd>REST API → salary data into <code>market_salary_benchmarks</code> table → Screener agent references during scoring</dd>
+      <dd>Sourcing Agent calls Hunter/Lusha APIs as a post-processing step → enriched contact fields written to candidate record → Outreach Agent receives candidates with verified, deliverable contact info</dd>
     </dl>
   </div>
 
@@ -521,7 +527,7 @@
     <div class="agent-header">
       <div class="agent-icon">DB</div>
       <div>
-        <div class="agent-name">Channel 6: Internal Candidate DB <span class="enhanced-badge">ENHANCED</span></div>
+        <div class="agent-name">Channel 6: Internal Candidate DB (Vector Search) <span class="enhanced-badge">ENHANCED</span></div>
         <span class="agent-model">India + SG &bull; Candidate Profiles</span>
       </div>
     </div>
@@ -577,35 +583,44 @@
     </dl>
   </div>
 
-  <h3>Sourcing Priority Waterfall</h3>
-  <div class="flow"><span class="hl">REQUIREMENT ARRIVES</span>
+  <h3>Sourcing Priority Waterfall (Core Product)</h3>
+  <div class="flow"><span class="hl">REQUIREMENT ARRIVES → JD Parser extracts skills, salary, location</span>
     │
     ├──<span class="hl"> 1. Internal DB</span> (vector search, 2,300+ candidates, $0, &lt;2 sec)
-    │   └── Ranked matches → Screener Agent → Shortlist
+    │   └── Semantic matches → Screener Agent → Shortlist
     │
     ├──<span class="o"> 2. Foundit API</span> (India: 3 accounts, SG: .sg subscription)
-    │   └── Top 50 profiles → Screener Agent → Shortlist
+    │   └── Top 50 profiles → <span class="b">Enrich via Hunter/Lusha</span> → Screener → Shortlist
     │
     ├──<span class="o"> 3. Naukri API</span> (India: enterprise or Apify actor)
-    │   └── Top 50 profiles → Screener Agent → Shortlist
+    │   └── Top 50 profiles → <span class="b">Enrich via Hunter/Lusha</span> → Screener → Shortlist
     │
-    ├──<span class="b"> 4. TheirStack</span> (market scan: who else is hiring for this role?)
-    │   └── Companies hiring same role → <span class="p">Intelligence Agent</span> → Pitch opportunities
+    ├──<span class="hl"> 4. Apollo.io</span> (275M+ contacts, passive candidates, direct phones)
+    │   └── Candidate profiles with verified contact data → Screener → Shortlist
     │
-    ├──<span class="b"> 5. Google Jobs / Adzuna</span> (broad market scan + salary benchmarks)
-    │   └── Salary data → Screener Agent (calibrate expectations)
+    ├──<span class="p"> 5. GitHub</span> (tech roles only: DevOps, Data Eng, Full Stack, Cloud)
+    │   └── Developer profiles → <span class="b">Enrich via Apollo/Hunter</span> → Screener → Shortlist
     │
-    ├──<span class="hl"> 6. Inbound Portal</span> (passive: candidates apply to excelt.ai)
-    │   └── Auto-parsed → Screener Agent → Shortlist
+    ├──<span class="hl"> 6. Inbound Portal</span> (passive: candidates apply to excelt.ai, 24/7)
+    │   └── Auto-parsed CV → Screener Agent → Shortlist
     │
-    └──<span class="r"> 7. LinkedIn</span> (manual search, AI-generated Boolean strings)
-        └── Recruiter copies profile → System auto-creates candidate record</div>
+    ├──<span class="r"> 7. LinkedIn</span> (manual search, AI-generated Boolean strings)
+    │   └── Recruiter copies profile → <span class="b">Auto-enrich</span> → Candidate record created
+    │
+    └──<span class="b"> ↕ ENRICHMENT LAYER</span> (runs on ALL channels automatically)
+        └── Hunter.io (email verify) + Lusha (phone) + Apollo (fallback)
+            Every candidate presented to recruiter has verified email + direct phone</div>
+
+  <div class="callout">
+    <div class="callout-title">SALARY BENCHMARKING (BUILT-IN)</div>
+    <p><strong>Adzuna API (free tier)</strong> provides market salary data by role + location. This is baked into the Screener Agent — not a separate channel. When a candidate's expected CTC is above/below market median, the Screener flags it with a percentage indicator. Useful for enterprise clients who don't specify budget upfront. Zero cost, always on.</p>
+  </div>
 </section>
 
 <!-- ============ SECTION 2: AGENT LAYER ============ -->
 <section id="agents">
   <h2><span class="num">02</span>The Agent Layer (v2)</h2>
-  <p>v1 shipped 5 agents. v2 keeps all 5 and adds <strong>3 new agents</strong> that unlock capabilities the current system can't do.</p>
+  <p>v1 shipped 5 agents. v2 keeps all 5 (with major enhancements to Sourcing and Screener) and adds <strong>2 new core agents</strong> focused on throughput. A third agent (Market Intelligence) lives in the optional BD Add-on module.</p>
 
   <h3>Existing Agents (Enhanced)</h3>
 
@@ -613,17 +628,23 @@
     <div class="agent-header">
       <div class="agent-icon">S</div>
       <div>
-        <div class="agent-name">Sourcing Agent <span class="enhanced-badge">ENHANCED</span></div>
+        <div class="agent-name">Sourcing Agent <span class="enhanced-badge">MAJOR UPGRADE</span></div>
         <span class="agent-model">Haiku 4.5 (queries) + Sonnet 4 (reasoning)</span>
       </div>
     </div>
     <dl class="agent-props">
       <dt>v1</dt>
-      <dd>Foundit + MCF + Internal DB</dd>
+      <dd>Foundit + MCF + Internal DB (1 unreliable channel)</dd>
       <dt>v2</dt>
-      <dd><strong>8-channel sourcing mesh.</strong> Channel router selects which channels to activate based on requirement type (India vs SG, tech vs non-tech, volume vs precision). Parallel execution across channels. Results normalized into unified candidate schema. Dedup across channels via email + phone hash.</dd>
-      <dt>New Capability</dt>
+      <dd><strong>7-channel sourcing mesh + built-in enrichment.</strong> Channel router selects which channels to activate based on requirement type (India vs SG, tech vs non-tech, volume vs precision). Parallel execution across channels. Results normalized into unified candidate schema. Dedup across channels via email + phone hash.</dd>
+      <dt>New: Enrichment Pipeline</dt>
+      <dd><strong>Every candidate gets auto-enriched before hitting the recruiter's screen.</strong> After sourcing from any channel, the agent checks: does this candidate have a verified email? A direct phone number? If not, it runs Hunter.io (email) → Lusha (phone) → Apollo (fallback) lookups automatically. The recruiter never sees an incomplete candidate record.</dd>
+      <dt>New: Adaptive Queries</dt>
       <dd><strong>Adaptive query generation.</strong> When initial Foundit/Naukri search returns &lt;10 results, agent automatically broadens search terms (e.g., "ServiceNow ITSM" → "ServiceNow OR ITSM OR IT Service Management"). When it returns 200+, it narrows (adds salary range, location, experience filters).</dd>
+      <dt>New: Apollo Discovery</dt>
+      <dd><strong>Passive candidate sourcing.</strong> For roles where job board candidates aren't enough, the agent taps Apollo's 275M+ contact database to find professionals who aren't on Foundit/Naukri — people who aren't actively looking but match the JD perfectly.</dd>
+      <dt>New: GitHub (Tech Roles)</dt>
+      <dd>For DevOps, Data Engineering, Cloud, and Full Stack roles, automatically searches GitHub for developers by contribution history, repo topics, and tech stack. Finds candidates by <strong>what they build</strong>, not just what they list on a resume.</dd>
     </dl>
   </div>
 
@@ -638,10 +659,10 @@
     <dl class="agent-props">
       <dt>v1</dt>
       <dd>Match score 0-100, risk flags, reasoning</dd>
-      <dt>v2 Enhancement</dt>
-      <dd><strong>Market-aware scoring.</strong> Ingests salary benchmarks from Adzuna. When candidate asks 22 LPA for a role where market median is 18 LPA, the flag says "Above market by 22%" instead of just "salary mismatch." Gives recruiters negotiation ammo.</dd>
-      <dt>v2 Enhancement</dt>
-      <dd><strong>Multi-requirement matching.</strong> When a new candidate enters the system (via any channel), screen against ALL open requirements, not just the one being sourced. "This candidate was sourced for Req #45 but also matches Req #62 at 87%." Surfaces cross-selling opportunities.</dd>
+      <dt>v2: Salary Benchmarking</dt>
+      <dd><strong>Market-aware scoring.</strong> Ingests salary benchmarks from Adzuna (free tier). When candidate asks 22 LPA for a role where market median is 18 LPA, the flag says "Above market by 22%" instead of just "salary mismatch." Useful for enterprise clients who don't specify budget upfront. When the client already gave a budget (most agency work), the Screener uses the client's number directly.</dd>
+      <dt>v2: Multi-Req Matching</dt>
+      <dd><strong>Multi-requirement matching.</strong> When a new candidate enters the system (via any channel), screen against ALL open requirements, not just the one being sourced. "This candidate was sourced for Req #45 but also matches Req #62 at 87%." Surfaces cross-selling opportunities — the single fastest way to increase submissions per day.</dd>
     </dl>
   </div>
 
@@ -717,29 +738,26 @@
     </dl>
   </div>
 
-  <div class="agent-card intelligence">
-    <div class="agent-header">
-      <div class="agent-icon">In</div>
-      <div>
-        <div class="agent-name">Market Intelligence Agent <span class="new-badge">NEW</span></div>
-        <span class="agent-model">Sonnet 4</span>
-      </div>
-    </div>
-    <dl class="agent-props">
-      <dt>Problem</dt>
-      <dd>ExcelTech is <strong>reactive</strong> — they wait for clients (HCL, TechM) to send JDs. They have no visibility into what the broader market is hiring for, what competitors are doing, or where new client opportunities exist.</dd>
-      <dt>Solution</dt>
-      <dd><strong>Consumes TheirStack + SerpApi + Adzuna data.</strong> Runs nightly analysis:
-      <br>1. <strong>Demand spikes:</strong> "ServiceNow hiring in Bangalore up 40% this month" → alert Raja to pitch ExcelTech's ServiceNow bench
-      <br>2. <strong>New client leads:</strong> "Infosys posted 12 ServiceNow roles this week but isn't an ExcelTech client" → BD opportunity
-      <br>3. <strong>Salary drift:</strong> "GCP Data Engineer salaries in India trending up 15% QoQ" → adjust candidate expectations
-      <br>4. <strong>Candidate-job matching:</strong> Cross-reference ExcelTech's idle candidates against market jobs → proactive placement outreach</dd>
-      <dt>Output</dt>
-      <dd>Weekly "Market Brief" email to Raja + Nikhil's dad. Actionable, not noisy. Top 5 insights only.</dd>
-      <dt>Cost</dt>
-      <dd>TheirStack ($59/mo) + Sonnet 4 analysis (~$2-5/month in tokens) = ~$65/month for intelligence that no 10-person agency has.</dd>
-    </dl>
+  <div class="callout">
+    <div class="callout-title">MARKET INTELLIGENCE AGENT → BD ADD-ON</div>
+    <p>The Market Intelligence Agent (TheirStack + SerpApi + Adzuna data, demand spikes, new client lead discovery) has been moved to the <strong>BD Add-on Module</strong> (Section 09). It's a business development tool, not a recruiter throughput tool. Agencies that want proactive lead generation can subscribe to the BD add-on for an additional fee. <strong>Salary benchmarking from Adzuna remains in the core product</strong>, baked directly into the Screener Agent.</p>
   </div>
+
+  <h3>Agent Summary</h3>
+  <table>
+    <thead>
+      <tr><th>Agent</th><th>Status</th><th>Model</th><th>Throughput Impact</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Sourcing</strong></td><td>Major Upgrade</td><td>Haiku 4.5 + Sonnet 4</td><td>7 channels + enrichment → 5x more candidates per requirement</td></tr>
+      <tr><td><strong>Screener</strong></td><td>Enhanced</td><td>Sonnet 4</td><td>Multi-req matching + salary benchmarks → faster shortlisting</td></tr>
+      <tr><td><strong>Outreach</strong></td><td>Unchanged</td><td>Sonnet 4</td><td>Personalized emails in 30 sec vs 5 min manual</td></tr>
+      <tr><td><strong>Follow-up</strong></td><td>Unchanged</td><td>Haiku 4.5 + Sonnet 4</td><td>Automated inbox scan → no candidate reply falls through cracks</td></tr>
+      <tr><td><strong>Formatter</strong></td><td>Unchanged</td><td>Haiku 4.5</td><td>Auto-generates client-ready profiles → 0 manual formatting</td></tr>
+      <tr><td><strong>JD Parser</strong></td><td>New</td><td>Sonnet 4</td><td>Quality gate → better parsed JDs = better screening = fewer wasted submissions</td></tr>
+      <tr><td><strong>Reactivation</strong></td><td>New</td><td>Haiku 4.5</td><td>Resurfaces dormant candidates at $0 cost → free submissions</td></tr>
+    </tbody>
+  </table>
 </section>
 
 <!-- ============ SECTION 3: ORCHESTRATION FLOW ============ -->
