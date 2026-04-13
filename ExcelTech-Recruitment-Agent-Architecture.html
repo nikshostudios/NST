@@ -776,15 +776,22 @@
     │                  creates requirement record in Supabase
     │                  normalizes skills to canonical taxonomy
     ▼
-  <span class="hl">Sourcing Agent</span> → activates channels based on market + role type
-    │                 ┌─ Internal DB (vector search, always first)
+  <span class="hl">Sourcing Agent</span> → activates channels based on role type + market
+    │                 ┌─ Internal DB (vector search, always first, $0)
     │                 ├─ Foundit API (India roles)
     │                 ├─ Naukri API (India roles)
-    │                 ├─ TheirStack (market intel)
-    │                 └─ Inbound portal (passive matches)
+    │                 ├─ Apollo.io (passive candidates, 275M+ contacts)
+    │                 ├─ GitHub (tech roles only — DevOps, Data Eng, etc.)
+    │                 └─ Inbound portal (passive matches, 24/7)
+    │
+    │   <span class="b">┌── ENRICHMENT LAYER (automatic on all results) ──┐</span>
+    │   <span class="b">│  Hunter.io → verify email                        │</span>
+    │   <span class="b">│  Lusha → direct phone number                     │</span>
+    │   <span class="b">│  Apollo → fallback enrichment                    │</span>
+    │   <span class="b">└──────────────────────────────────────────────────┘</span>
     ▼
   <span class="hl">Screener Agent</span> → scores all sourced candidates 0-100
-    │                  market-calibrated salary flags
+    │                  salary benchmarks from Adzuna (when no client budget)
     │                  multi-requirement cross-matching
     │                  <span class="o">RANKED SHORTLIST → web app queue</span>
     ▼
@@ -819,9 +826,9 @@
   <span class="p">PARALLEL BACKGROUND PROCESSES (always running):</span>
 
   <span class="hl">Reactivation Agent</span> ──── weekly: scans dormant candidates vs open reqs
-  <span class="hl">Intelligence Agent</span> ──── nightly: market analysis, demand spikes, salary drift
   <span class="hl">Inbound Portal</span> ────── 24/7: candidates self-submit CVs on excelt.ai
-  <span class="hl">Follow-up Agent</span> ────── every 15 min: inbox scanning across all recruiters</div>
+  <span class="hl">Follow-up Agent</span> ────── every 15 min: inbox scanning across all recruiters
+  <span class="hl">Adzuna Salary Sync</span> ─── daily: refresh market salary benchmarks by role+location</div>
 
   <div class="callout">
     <div class="callout-title">HUMAN TOUCHPOINTS (4 TOTAL)</div>
@@ -838,25 +845,26 @@
   <h2><span class="num">04</span>New Database Schema</h2>
   <p>Additions to the existing Supabase schema to support v2 capabilities.</p>
 
+  <h4>Core Product Tables</h4>
   <table>
     <thead>
       <tr><th>Table</th><th>Purpose</th><th>Key Columns</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td><strong>market_jobs</strong></td>
-        <td>Job postings harvested from TheirStack, SerpApi, Adzuna</td>
-        <td>source, company, title, location, salary_range, skills[], posted_at, url, matched_candidates[]</td>
+        <td><strong>candidate_embeddings</strong></td>
+        <td>Vector embeddings for semantic search (pgvector)</td>
+        <td>candidate_id, embedding vector(1536), source_text_hash, created_at</td>
+      </tr>
+      <tr>
+        <td><strong>enrichment_cache</strong></td>
+        <td>Cached Apollo/Hunter/Lusha lookups to avoid redundant API calls</td>
+        <td>candidate_id, source (apollo|hunter|lusha), email_verified, phone_direct, enriched_at, ttl_days</td>
       </tr>
       <tr>
         <td><strong>market_salary_benchmarks</strong></td>
         <td>Salary data from Adzuna, aggregated by role + location</td>
         <td>role_normalized, location, percentile_25, median, percentile_75, sample_size, updated_at</td>
-      </tr>
-      <tr>
-        <td><strong>candidate_embeddings</strong></td>
-        <td>Vector embeddings for semantic search (pgvector)</td>
-        <td>candidate_id, embedding vector(1536), source_text_hash, created_at</td>
       </tr>
       <tr>
         <td><strong>scraper_sessions</strong></td>
@@ -874,14 +882,28 @@
         <td>canonical_name, aliases[], category, demand_trend</td>
       </tr>
       <tr>
-        <td><strong>market_briefs</strong></td>
-        <td>Weekly Intelligence Agent output</td>
-        <td>week_of, insights_json, demand_spikes[], salary_changes[], new_client_leads[]</td>
-      </tr>
-      <tr>
         <td><strong>inbound_applications</strong></td>
         <td>Candidates who self-submit via website</td>
         <td>name, email, phone, cv_url, parsed_skills[], auto_matched_reqs[], status</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>BD Add-on Tables (only for tenants with BD subscription)</h4>
+  <table>
+    <thead>
+      <tr><th>Table</th><th>Purpose</th><th>Key Columns</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>market_jobs</strong></td>
+        <td>Job postings harvested from TheirStack, SerpApi, Adzuna</td>
+        <td>source, company, title, location, salary_range, skills[], posted_at, url, matched_candidates[]</td>
+      </tr>
+      <tr>
+        <td><strong>market_briefs</strong></td>
+        <td>Weekly Intelligence Agent output</td>
+        <td>week_of, insights_json, demand_spikes[], salary_changes[], new_client_leads[]</td>
       </tr>
     </tbody>
   </table>
@@ -894,14 +916,18 @@
 
   <div class="card-grid">
     <div class="card">
-      <div class="card-label" style="color: var(--accent);">SOURCING APIs</div>
-      <div class="card-title">External Data Layer</div>
-      <p><strong>TheirStack</strong> — $59/mo, 315K+ job sources, REST API</p>
-      <p><strong>SerpApi</strong> — $0.001/req, Google Jobs, ~$5/mo at scale</p>
-      <p><strong>Adzuna</strong> — Free tier, salary benchmarks, global coverage</p>
-      <p><strong>Bright Data</strong> — Fallback scraper, 98% success, ~$50/mo if Foundit API fails</p>
-      <span class="pill green">TheirStack</span>
-      <span class="pill green">SerpApi</span>
+      <div class="card-label" style="color: var(--accent);">CANDIDATE SOURCING APIs</div>
+      <div class="card-title">Discovery + Enrichment Layer</div>
+      <p><strong>Apollo.io</strong> — 275M+ contacts, discovery + enrichment, $49-99/mo</p>
+      <p><strong>Hunter.io</strong> — Email finder + verifier, 107M+ addresses, $49/mo</p>
+      <p><strong>Lusha</strong> — Direct phone numbers, 100M+ profiles, $49/mo</p>
+      <p><strong>GitHub API</strong> — Developer sourcing by contribution history, free</p>
+      <p><strong>Adzuna</strong> — Salary benchmarks (baked into Screener), free tier</p>
+      <p><strong>Bright Data</strong> — Fallback scraper if Foundit API fails, ~$50/mo contingency</p>
+      <span class="pill green">Apollo</span>
+      <span class="pill green">Hunter.io</span>
+      <span class="pill green">Lusha</span>
+      <span class="pill blue">GitHub</span>
       <span class="pill blue">Adzuna</span>
       <span class="pill orange">Bright Data</span>
     </div>
@@ -909,10 +935,10 @@
       <div class="card-label" style="color: var(--blue);">VECTOR SEARCH</div>
       <div class="card-title">Semantic Matching</div>
       <p><strong>pgvector</strong> — Supabase extension, no extra infra</p>
-      <p><strong>Claude Haiku 4.5</strong> — Generates embeddings from CVs</p>
+      <p><strong>Voyage AI / OpenAI Embeddings</strong> — Generates embeddings from CVs</p>
       <p>Enables: "Find someone like this candidate" and semantic JD-to-CV matching beyond keyword overlap.</p>
       <span class="pill blue">pgvector</span>
-      <span class="pill purple">Haiku 4.5</span>
+      <span class="pill purple">Voyage AI</span>
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--orange);">INBOUND</div>
@@ -948,22 +974,31 @@
     <div class="cost-row"><span class="label">Firecrawl</span><span class="value">~$50</span></div>
     <div class="cost-row"><span class="label">MS Graph (Outlook)</span><span class="value">$0</span></div>
 
-    <h4>New Costs (v2 Additions)</h4>
-    <div class="cost-row"><span class="label">TheirStack (Starter)</span><span class="value">+$59</span></div>
-    <div class="cost-row"><span class="label">SerpApi (Google Jobs)</span><span class="value">+$5</span></div>
-    <div class="cost-row"><span class="label">Adzuna API</span><span class="value">$0 (free tier)</span></div>
-    <div class="cost-row"><span class="label">Claude API (3 new agents)</span><span class="value">+$30-50</span></div>
+    <h4>New Costs (v2 Core Product Additions)</h4>
+    <div class="cost-row"><span class="label">Apollo.io (Basic)</span><span class="value">+$49</span></div>
+    <div class="cost-row"><span class="label">Hunter.io (Starter)</span><span class="value">+$49</span></div>
+    <div class="cost-row"><span class="label">Lusha (Pro)</span><span class="value">+$49</span></div>
+    <div class="cost-row"><span class="label">GitHub API</span><span class="value">$0 (free)</span></div>
+    <div class="cost-row"><span class="label">Adzuna API (salary benchmarks)</span><span class="value">$0 (free tier)</span></div>
+    <div class="cost-row"><span class="label">Claude API (2 new agents)</span><span class="value">+$20-35</span></div>
     <div class="cost-row"><span class="label">pgvector embeddings (one-time)</span><span class="value">~$3</span></div>
     <div class="cost-row"><span class="label">Bright Data (if needed)</span><span class="value">+$50 (contingency)</span></div>
     <div class="cost-row"><span class="label">Naukri API or Apify</span><span class="value">+$20</span></div>
 
-    <h4>v2 Total Monthly</h4>
-    <div class="cost-row total"><span class="label">All-in monthly (optimistic)</span><span class="value">~SGD 520-650</span></div>
-    <div class="cost-row total"><span class="label">All-in monthly (with contingencies)</span><span class="value">~SGD 650-800</span></div>
+    <h4>v2 Core Product Total Monthly</h4>
+    <div class="cost-row total"><span class="label">All-in monthly (optimistic)</span><span class="value">~SGD 550-700</span></div>
+    <div class="cost-row total"><span class="label">All-in monthly (with contingencies)</span><span class="value">~SGD 700-850</span></div>
+
+    <h4>BD Add-on (Optional, per tenant)</h4>
+    <div class="cost-row"><span class="label">TheirStack (Starter)</span><span class="value">+$59</span></div>
+    <div class="cost-row"><span class="label">SerpApi (Google Jobs)</span><span class="value">+$5</span></div>
+    <div class="cost-row"><span class="label">Claude API (Intelligence Agent)</span><span class="value">+$5-10</span></div>
+    <div class="cost-row total"><span class="label">BD add-on cost to Niksho</span><span class="value">~$70/tenant</span></div>
+    <p style="font-size: 13px; color: var(--text-dim); margin-top: 8px;">Charge tenants $200+/month for BD add-on → healthy margin on intelligence data.</p>
 
     <div class="callout" style="margin-top: 24px;">
       <div class="callout-title">ROI</div>
-      <p>One additional placement per month = SGD 1,000-5,000+ in fees. The v2 additions cost ~SGD 100-250/month more than v1. <strong>ROI breakeven: a fraction of one extra placement.</strong> If the sourcing improvements add even 2-3 placements/month (conservative given 4-8 target), the return is 10-30x.</p>
+      <p>One additional placement per month = SGD 1,000-5,000+ in fees. The v2 core additions cost ~SGD 150-300/month more than v1. <strong>ROI breakeven: a fraction of one extra placement.</strong> If the sourcing + enrichment improvements add even 2-3 placements/month (conservative given the 2-3x throughput target), the return is 10-30x. The enrichment layer (Apollo + Hunter + Lusha) pays for itself if it contributes to <strong>one single extra placement per quarter</strong>.</p>
     </div>
   </div>
 </section>
@@ -1004,13 +1039,13 @@
     <div class="phase">
       <div class="phase-content">
         <div class="phase-label">PHASE 3 — WEEKS 5-6</div>
-        <div class="phase-title">Market Intelligence Layer</div>
+        <div class="phase-title">Apollo + Enrichment Pipeline</div>
         <ul>
-          <li><strong>Integrate TheirStack</strong> — nightly job harvest → <code>market_jobs</code> table</li>
-          <li><strong>Integrate SerpApi</strong> — Google Jobs search on new requirement creation</li>
-          <li><strong>Integrate Adzuna</strong> — salary benchmarks → Screener agent enhancement</li>
-          <li><strong>Ship Intelligence Agent</strong> — weekly Market Brief to Raja + Nikhil's dad</li>
-          <li><strong>Impact:</strong> ExcelTech goes from reactive (waiting for JDs) to proactive (pitching to companies that are hiring)</li>
+          <li><strong>Integrate Apollo.io</strong> — candidate discovery (275M+ contacts) + enrichment API. Set up as Channel 3 in Sourcing Agent.</li>
+          <li><strong>Integrate Hunter.io + Lusha</strong> — email verification + direct phone lookup. Build as post-processing step in Sourcing Agent pipeline.</li>
+          <li><strong>Build enrichment_cache table</strong> — avoid redundant API lookups, respect rate limits.</li>
+          <li><strong>Integrate Adzuna free tier</strong> — salary benchmarks → Screener agent salary calibration.</li>
+          <li><strong>Impact:</strong> Every candidate now comes with verified email + direct phone. Passive candidates (not on job boards) are now discoverable. Recruiter gets complete, ready-to-call shortlists.</li>
         </ul>
       </div>
     </div>
@@ -1018,13 +1053,27 @@
     <div class="phase">
       <div class="phase-content">
         <div class="phase-label">PHASE 4 — WEEKS 7-8</div>
-        <div class="phase-title">Inbound + Polish</div>
+        <div class="phase-title">GitHub + Inbound + Polish</div>
         <ul>
+          <li><strong>Add GitHub sourcing</strong> for tech roles — search by contribution history, repo topics, tech stack. Chain with Apollo/Hunter for enrichment.</li>
           <li><strong>Build candidate portal</strong> on excelt.ai — "Submit Your CV" form with auto-parse</li>
           <li><strong>Add Google for Jobs structured data</strong> to career pages → free organic traffic</li>
           <li><strong>LinkedIn Boolean search generator</strong> — AI assists manual LinkedIn sourcing</li>
           <li><strong>Screener: multi-requirement cross-matching</strong> — every new candidate scored against all open reqs</li>
-          <li><strong>Impact:</strong> Passive inbound channel grows candidate pool 24/7. LinkedIn sourcing gets faster.</li>
+          <li><strong>Impact:</strong> Full 7-channel sourcing mesh live. Passive inbound grows candidate pool 24/7. GitHub unlocks tech talent invisible to job boards.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-content">
+        <div class="phase-label">PHASE 5 — WEEKS 9-10 (OPTIONAL)</div>
+        <div class="phase-title">BD Add-on Module</div>
+        <ul>
+          <li><strong>Integrate TheirStack + SerpApi</strong> — market intelligence data pipeline</li>
+          <li><strong>Ship Intelligence Agent</strong> — weekly Market Brief with demand spikes, new client leads, salary drift</li>
+          <li><strong>Build BD dashboard</strong> — separate tab in web app showing market opportunities</li>
+          <li><strong>Impact:</strong> Agencies with BD add-on subscription can proactively discover new clients. Upsell path: core product + $200/mo BD module.</li>
         </ul>
       </div>
     </div>
@@ -1053,8 +1102,8 @@
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--orange);">TRADE-OFF</div>
-      <div class="card-title">TheirStack = Job Postings, Not Candidates</div>
-      <p>TheirStack, SerpApi, and Adzuna give you jobs, not candidate profiles. <strong>Decision:</strong> That's the point — it's the intelligence layer, not the sourcing layer. It feeds the Intelligence Agent and salary benchmarks, complementing the candidate-profile channels (Foundit, Naukri, Internal DB).</p>
+      <div class="card-title">Enrichment API Costs Scale With Volume</div>
+      <p>Apollo + Hunter + Lusha credits are consumed per lookup. At high volume (100+ candidates/day), costs scale. <strong>Mitigation:</strong> Enrichment cache avoids duplicate lookups. Only enrich candidates who pass initial Screener threshold (score 60+). Apollo free tier covers 10K records/month — substantial for early growth.</p>
     </div>
     <div class="card">
       <div class="card-label" style="color: var(--blue);">OPEN QUESTION</div>
