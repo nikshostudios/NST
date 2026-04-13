@@ -880,8 +880,8 @@
       </tr>
       <tr>
         <td><strong>enrichment_cache</strong></td>
-        <td>Cached Apollo/Hunter/Lusha lookups to avoid redundant API calls</td>
-        <td>candidate_id, source (apollo|hunter|lusha), email_verified, phone_direct, enriched_at, ttl_days</td>
+        <td>Cached Lusha/Apollo/Hunter lookups to avoid redundant API calls</td>
+        <td>candidate_id, source (lusha|apollo|hunter), phone_direct, phone_source, email_verified, email_deliverable (bool), enriched_at, ttl_days</td>
       </tr>
       <tr>
         <td><strong>market_salary_benchmarks</strong></td>
@@ -907,6 +907,25 @@
         <td><strong>inbound_applications</strong></td>
         <td>Candidates who self-submit via website</td>
         <td>name, email, phone, cv_url, parsed_skills[], auto_matched_reqs[], status</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Schema Modifications to Existing Tables</h4>
+  <table>
+    <thead>
+      <tr><th>Table</th><th>Change</th><th>New Columns</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>screenings</strong></td>
+        <td>Add rejection tracking for Reactivation Agent</td>
+        <td><code>rejection_reason TEXT</code>, <code>rejection_category TEXT</code> (salary|notice|location|skills|overqualified|other)</td>
+      </tr>
+      <tr>
+        <td><strong>candidates</strong></td>
+        <td>Add enrichment fields</td>
+        <td><code>phone_verified BOOL</code>, <code>email_verified BOOL</code>, <code>enrichment_source TEXT</code>, <code>last_enriched_at TIMESTAMP</code></td>
       </tr>
     </tbody>
   </table>
