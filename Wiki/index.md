@@ -1,7 +1,7 @@
 ---
 type: wiki-index
 generated-by: claude
-updated: 2026-04-10
+updated: 2026-04-14
 ---
 
 # Wiki — Index
@@ -21,6 +21,9 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Compiler-Analogy]] — the source code → compile → executable mental model applied to knowledge
 - [[Wiki/concepts/Candidate-Sourcing-Channels]] — the critical difference between candidate data and job posting data
 - [[Wiki/concepts/Bot-Detection-vs-Scraping]] — fingerprinting, Akamai, and the reliability hierarchy for scraping
+- [[Wiki/concepts/Progressive-Disclosure]] — skills load context on demand (~50 tokens) vs agent.md files (~900+ tokens every turn)
+- [[Wiki/concepts/Recursive-Skill-Building]] — walk-through → codify → fail → fix → update loop for building robust skills
+- [[Wiki/concepts/Expert-In-The-Loop]] — why "expert in the loop" ≠ "human in the loop" and what that means for agent design
 
 ## Techniques
 
@@ -29,6 +32,16 @@ Specific methods we've learned.
 - [[Wiki/techniques/Hot-Cache]] — small recency buffer for fresh session context
 - [[Wiki/techniques/Linting-Wiki]] — LLM health-checks to keep the wiki clean
 - [[Wiki/techniques/Direct-API-Interception]] — bypass headless browsers by calling SPA backend endpoints directly
+
+## Digests
+
+Video/podcast summaries with extracted knowledge and Niksho relevance.
+
+- [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]] — strategic AI coding vs vibe coding: specificity, context, review discipline
+- [[Wiki/digests/YT-Senior-Dev-Reviews-AI-App-2026-04-14]] — senior dev reviews AI-built app: security, testing, expert-in-the-loop
+- [[Wiki/digests/YT-Elite-Websites-Claude-Code-2026-04-14]] — 7 levels of building elite websites: from generic to custom
+- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — top 10 Claude Code skills, plugins & CLIs (April 2026)
+- [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]] — Ross Mike on context management, progressive disclosure, recursive skill building
 
 ## Tools
 
@@ -56,6 +69,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 
 ### Transcripts
 - [[Raw/transcripts/YT-Transcripts-2026-04-10]] — Nick Milo AI OS, Cole Medin self-evolving memory, Claude inside Obsidian
+- [[Raw/transcripts/YT-Transcripts-2026-04-14]] — strategic AI coding, senior dev review, elite websites, top 10 skills/plugins, agents & skills (Ross Mike)
 - [[Raw/transcripts/YT-Transcripts-Batch-1]] — Obsidian + Claude Code workflows, Karpathy wiki, Vin on Obsidian slash-commands
 
 ### Internal docs
@@ -63,6 +77,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/ExcelTech_Vision_and_Goals]] — phases, milestones, vision
 - [[Raw/docs/sourcing-architecture]] — sourcing architecture doc
 - [[Raw/docs/sourcing-troubleshooting-2026-04-11]] — production test post-mortem, 10 issues, sourcing channel validation failure
+- [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v2.html]] — v2 system architecture: 8 sourcing channels, 7 agents, 4 implementation phases
 
 ## How to add to this index
 1. Ingest new sources via [[AIOS/skills/ingest-source]].

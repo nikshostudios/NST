@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-11
+updated: 2026-04-14
 max-words: 1000
 ---
 
@@ -11,41 +11,41 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-11
+## Right now — 2026-04-14
 
-### CRITICAL: Sourcing pipeline partially broken
-Production test on April 11 revealed 3 of 4 sourcing channels return job postings, not candidates. Only Foundit Recruiter returns real candidates but is blocked by Akamai bot detection. See [[Raw/docs/sourcing-troubleshooting-2026-04-11]] and [[Atlas/Product/Sourcing-Strategy-v2]] for the revised plan.
+### v2 System Architecture designed
+Full v2 architecture designed on April 13: 8 sourcing channels, 7 agents (5 enhanced + 2 new: JD Parser, Reactivation), 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment strategy. BD add-on as separate optional module. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v2.html]].
 
-**Immediate actions:** (1) Intercept Foundit Recruiter XHR endpoint, (2) Fix Internal DB skill matching, (3) Push pending commits, (4) Evaluate Apollo.io paid plan.
+**Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
+
+### Knowledge ingestion — April 14
+5 YouTube transcripts ingested covering: strategic AI coding, senior dev code review patterns, elite website building progression, Claude Code tooling ecosystem, and agent/skill architecture (Ross Mike). Key concepts extracted: [[Wiki/concepts/Progressive-Disclosure]], [[Wiki/concepts/Recursive-Skill-Building]], [[Wiki/concepts/Expert-In-The-Loop]].
+
+**Actionable insight:** Our CLAUDE.md / mi.md setup loads ~137 lines every turn. Per the progressive disclosure principle, most of this should become skills. Audit planned for a follow-up session.
 
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed but sourcing pipeline needs fixes per [[Atlas/Product/Sourcing-Strategy-v2]]. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — architecture decided, Managed Agents demo next.
-- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode.
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, v2 architecture designed. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — v2 architecture + Foundit EDGE API integration spec complete.
+- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode. Obsidian-ingest skill being built.
 - 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
-### Freshly added to Atlas
-- [[Atlas/Concepts/AI-OS]] — the hybrid architecture (Milo ACE + Karpathy raw/wiki)
-- [[Atlas/Concepts/File-over-AI]] — markdown + git as the only portable substrate
-- [[Atlas/Concepts/Agents-vs-Tools]] — where judgement lives
-- [[Atlas/Product/Architecture]] + [[Atlas/Product/Agents]] + [[Atlas/Product/Skills]] + [[Atlas/Product/Database-Schema]] + [[Atlas/Product/Sourcing-Channels]] + [[Atlas/Product/Tech-Stack]] — full product picture
-- [[Atlas/ExcelTech/India-Market]] + [[Atlas/ExcelTech/Singapore-Market]] + [[Atlas/ExcelTech/Current-Flow]] + [[Atlas/ExcelTech/New-Flow]] — the two markets and the before/after of the recruiter day
-
-### Freshly added to Wiki (April 11)
-- [[Wiki/concepts/Candidate-Sourcing-Channels]] — the job-postings vs candidates lesson
-- [[Wiki/concepts/Bot-Detection-vs-Scraping]] — fingerprinting hierarchy
-- [[Wiki/tools/Firecrawl]] — where it helps and where it fails
-- [[Wiki/techniques/Direct-API-Interception]] — the Foundit fix approach
-
-### Freshly added to Atlas (April 11)
-- [[Atlas/Product/Sourcing-Strategy-v2]] — revised channel strategy with 8 next actions
+### Freshly added to Wiki (April 14)
+- [[Wiki/concepts/Progressive-Disclosure]] — skills load context on demand vs agent.md every turn
+- [[Wiki/concepts/Recursive-Skill-Building]] — the walk-through → codify → fail → fix → update methodology
+- [[Wiki/concepts/Expert-In-The-Loop]] — expert validation vs rubber-stamp human approval
+- [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]] — coding with AI, not vibe coding
+- [[Wiki/digests/YT-Senior-Dev-Reviews-AI-App-2026-04-14]] — production readiness gaps in AI-built apps
+- [[Wiki/digests/YT-Elite-Websites-Claude-Code-2026-04-14]] — 7-level progression for web design quality
+- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — tooling: Codeex, AutoResearch, Playwright CLI, Skill Creator, LightRAG, GWS
+- [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]] — Ross Mike on context, skills, scaling for productivity
 
 ### Open decisions affecting the next session
-- Apollo.io: Basic ($49/mo) vs Professional ($79/mo) — depends on how many credits ExcelTech needs monthly
+- **Foundit EDGE API key** — blocked on Prayag providing the API key. Once received, Phase 1 can start.
+- Apollo.io: Basic ($49/mo) vs Professional ($79/mo) — depends on monthly credit needs
 - Naukri RMS: does ExcelTech already have a subscription? (Ask Nik's dad)
-- Foundit API partnership: worth pursuing? (Email cr@foundit.in)
+- **CLAUDE.md audit** — should we strip mi.md down and convert sections to skills? (Planned for follow-up session)
 
 ### Open blockers
-- **Sourcing pipeline** — Foundit Recruiter blocked by Akamai. Internal DB skill matching broken (composite skills). Zero working external channels until fixes land.
+- **Foundit EDGE API key** — need from Prayag to start Phase 1.
 - **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
 
 ### Guardrails for the AI reading this
@@ -59,4 +59,4 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Rewritten on 2026-04-11 — Sourcing pipeline post-mortem ingested, strategy v2 written, hot cache updated with blockers. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
+_Rewritten on 2026-04-14 — v2 architecture ingested, 5 video transcripts processed, 3 new concepts + 5 digests added to Wiki, hot cache updated. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
