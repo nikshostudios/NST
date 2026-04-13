@@ -8,6 +8,7 @@ videos:
   - "The 7 Levels of Building ELITE Websites with Claude Code"
   - "Top 10 Claude Code Skills, Plugins & CLIs (April 2026)"
   - "How AI agents & Claude skills work (Clearly Explained)"
+  - "I Stopped Hitting Claude Code Usage Limits (Here's How)"
 ---
 
 # Tab 1
