@@ -344,11 +344,11 @@
 <div class="hero">
   <h1>The Recruitment<br><span>Agent Layer</span></h1>
   <p class="subtitle">
-    A system design for automating the entire recruitment pipeline at ExcelTech — from job discovery to client submission — using an army of AI agents. This document covers the enhanced sourcing architecture (the biggest unlock), three new agents, upgraded orchestration, and the tools/APIs that make it real.
+    A system design for automating the entire recruitment pipeline at ExcelTech — from requirement intake to client submission — using an army of AI agents. The single goal: <strong>double or triple recruiter throughput</strong> (from ~6 submissions/day to 12-20) by eliminating grunt work and multiplying sourcing reach. This document covers the enhanced multi-channel sourcing architecture, new agents, upgraded orchestration, and a modular BD add-on for agencies that want proactive business development.
   </p>
   <div class="meta-row">
     <span class="tag">Author: Shoham + Claude</span>
-    <span class="tag">Date: 2026-04-12</span>
+    <span class="tag">Date: 2026-04-13</span>
     <span class="tag">Status: DESIGN</span>
     <span class="tag">Builds on: ExcelTech v1 (live in production)</span>
   </div>
@@ -391,15 +391,12 @@
 <!-- ============ SECTION 1: SOURCING ARCHITECTURE ============ -->
 <section id="sourcing">
   <h2><span class="num">01</span>The Enhanced Sourcing Architecture</h2>
-  <p>The v2 design introduces a <strong>multi-channel sourcing mesh</strong> that eliminates single-channel dependency. Instead of relying on one fragile Foundit connection, we build a layered system with <strong>8 sourcing channels</strong>, each with different strengths, costs, and reliability profiles.</p>
-
-  <h3>The Sourcing Inversion</h3>
-  <p>Here's the key architectural insight: <strong>we flip from "search for candidates" to "harvest jobs, then attract candidates."</strong> The India market (Foundit/Naukri) is candidate-search-driven because recruiters pay to access resume databases. But the v2 approach adds a parallel track: <strong>discover open requirements from the market itself</strong> (via job board APIs), then use those as intelligence to target candidates more precisely, or to proactively pitch ExcelTech's existing candidate pool to companies that are hiring.</p>
+  <p>The v2 design introduces a <strong>multi-channel sourcing mesh</strong> that eliminates single-channel dependency. Instead of relying on one fragile Foundit connection, we build a layered system with <strong>8 sourcing channels</strong> — every one of them focused on finding <strong>candidate profiles</strong> for requirements that clients give us. The mission is simple: when a JD arrives, the system searches everywhere, enriches every result with direct contact info, and hands the recruiter a ready-to-call shortlist.</p>
 
   <div class="callout">
-    <div class="callout-title">THE INVERSION</div>
-    <p><strong>v1:</strong> Client gives JD → Recruiter searches Foundit manually → Finds candidates</p>
-    <p><strong>v2:</strong> Agents continuously harvest open jobs across India/SG → Match against ExcelTech's candidate pool → Alert recruiters to pitch opportunities to warm candidates → <em>AND</em> Client gives JD → Multi-channel automated sourcing</p>
+    <div class="callout-title">THE THROUGHPUT MULTIPLIER</div>
+    <p><strong>v1:</strong> Client gives JD → Recruiter searches Foundit manually → Finds 5-8 candidates/day → Screens one by one → Submits ~6 profiles</p>
+    <p><strong>v2:</strong> Client gives JD → <strong>8 channels searched in parallel</strong> → AI screens + ranks 100+ candidates in minutes → Enriches with phone/email → Recruiter reviews shortlist → <strong>Submits 12-20 profiles/day</strong></p>
   </div>
 
   <h3>Channel-by-Channel Breakdown</h3>
