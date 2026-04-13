@@ -52,7 +52,7 @@ Active pushes with start, end, and a definition of done. Managed by the **four i
 ## 🔥 Right now
 
 - **Top effort:** [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production, refining weekly
-- **Building now:** [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — architecture decided, InsForge linked. **Next step: build the Managed Agents demo to show Nik.**
+- **Building now:** [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — v2 architecture designed, Foundit EDGE API analyzed. **Next step: Phase 1 — migrate Foundit to official EDGE API** (blocked on API key from Prayag). Build tracker: [[Efforts/Niksho-SaaS-Product/v2-Planning-Log]]
 - **Quarterly theme:** [[Calendar/Quarterly/2026-Q2|2026-Q2 — Prove it at ExcelTech]]
 - **Hot cache (for AI sessions):** [[Wiki/hot|Wiki/hot.md]]
 

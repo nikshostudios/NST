@@ -196,6 +196,22 @@ A non-technical agency owner can paste a JD and in under 5 minutes say "I want t
 - Do we give every tenant their own Niksho vault, or is that a later feature?
 - What's the right way to share `/ai-agents/` code between ExcelTech and SaaS deploys without coupling their release cycles?
 
+## v2 Architecture (2026-04-13)
+
+The v2 architecture redesign restructured sourcing, enrichment, and the agent layer. Build tracker: [[Efforts/Niksho-SaaS-Product/v2-Planning-Log]].
+
+**Key decisions:**
+- [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-foundit-edge-api]] — switch to official API
+- [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-phone-first-enrichment]] — phone-first, email last resort
+- [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-channel-restructure]] — core vs BD add-on
+- [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-screener-salary-logic]] — client budget primary
+- [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-naukri-paused]] — no subscription
+
+**Product knowledge:**
+- [[Atlas/Product/Sourcing-Channels]] — the 6-channel lineup and waterfall
+- [[Atlas/Product/Foundit-EDGE-Integration]] — full API reference
+- [[Atlas/Product/Enrichment-Strategy]] — phone-first enrichment waterfall
+
 ## Related
 - [[Efforts/ExcelTech-Automation/Overview]]
 - [[Efforts/Niksho-SaaS-Product/decisions/2026-04-10-option-a-hybrid-architecture]]

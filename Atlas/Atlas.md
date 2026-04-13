@@ -59,7 +59,9 @@ A FastAPI + Jinja2 webapp on Railway, Supabase Postgres, a thin `/ai-agents/` la
 - [[Atlas/Product/Agents]] — the five agents and what model each one runs
 - [[Atlas/Product/Skills]] — the five end-to-end skills humans can run
 - [[Atlas/Product/Database-Schema]] — Postgres is the source of truth
-- [[Atlas/Product/Sourcing-Channels]] — Foundit, MyCareersFuture, the LinkedIn hard rule
+- [[Atlas/Product/Sourcing-Channels]] — the 6-channel mesh: Internal DB, Foundit EDGE, Apollo, GitHub, Inbound, LinkedIn
+- [[Atlas/Product/Foundit-EDGE-Integration]] — official Foundit API reference (endpoints, auth, filters, market config)
+- [[Atlas/Product/Enrichment-Strategy]] — phone-first enrichment waterfall (Lusha → Apollo → Hunter.io)
 - [[Atlas/Product/Tech-Stack]] — what we picked and what we deliberately didn't
 
 ## 👥 People
