@@ -19,7 +19,7 @@ Full v2 architecture designed on April 13: 8 sourcing channels, 7 agents (5 enha
 **Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
 
 ### Knowledge ingestion — April 14
-6 YouTube transcripts ingested covering: strategic AI coding, senior dev code review patterns, elite website building progression, Claude Code tooling ecosystem, agent/skill architecture (Ross Mike), and context cleanup / token optimization (Bradley Bonanno). Key concepts extracted: [[Wiki/concepts/Progressive-Disclosure]], [[Wiki/concepts/Recursive-Skill-Building]], [[Wiki/concepts/Expert-In-The-Loop]], [[Wiki/concepts/Five-Filter-Rule-Audit]].
+7 YouTube transcripts ingested covering: strategic AI coding, senior dev code review patterns, elite website building progression, Claude Code tooling ecosystem, agent/skill architecture (Ross Mike), and context cleanup / token optimization (Bradley Bonanno). Key concepts extracted: [[Wiki/concepts/Progressive-Disclosure]], [[Wiki/concepts/Recursive-Skill-Building]], [[Wiki/concepts/Expert-In-The-Loop]], [[Wiki/concepts/Five-Filter-Rule-Audit]].
 
 **Actionable insight — context hygiene:** Our MCP setup (Notion, Gmail, Canva, Figma, Apollo, Google Drive, etc.) loads ~18K tokens per server every turn. Disconnecting unused servers per session is the biggest quick win. Additionally: `mi.md` should be audited with the five-filter methodology, and settings.json needs autocompact override (75%), BASH_MAX_OUTPUT_LENGTH (150000), and deny rules. See [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]].
 
@@ -39,6 +39,10 @@ Full v2 architecture designed on April 13: 8 sourcing channels, 7 agents (5 enha
 - [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]] — Ross Mike on context, skills, scaling for productivity
 - [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]] — Bradley Bonanno: MCP costs, five-filter audit, settings.json, daily habits
 - [[Wiki/concepts/Five-Filter-Rule-Audit]] — the 5-question test for every CLAUDE.md rule
+- [[Wiki/digests/YT-AI-GTM-Stack-2026-04-14]] — Amir: Idea Browser → Paper → Humbalytics, autonomous CRO agent, agent traffic arbitrage
+- [[Wiki/concepts/Agent-Traffic-Arbitrage]] — agents will outnumber humans on websites; early-mover opportunity RIGHT NOW
+- [[Wiki/concepts/AI-GTM-Stack]] — the full AI-native GTM pipeline
+- [[Wiki/tools/Humbalytics]], [[Wiki/tools/Idea-Browser]], [[Wiki/tools/Paper-Design]] — the three tools in the stack
 
 ### Open decisions affecting the next session
 - **Foundit EDGE API key** — blocked on Prayag providing the API key. Once received, Phase 1 can start.

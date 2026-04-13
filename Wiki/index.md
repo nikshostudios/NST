@@ -29,6 +29,8 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/File-Over-AI-Portable-Identity]] — mi.md pattern: portable identity file any AI tool can read
 - [[Wiki/concepts/Seven-Levels-of-Web-Design]] — progression from generic prompt output to custom 3D/WebGL
 - [[Wiki/concepts/Five-Filter-Rule-Audit]] — systematic methodology for pruning CLAUDE.md rules (Default, Contradiction, Redundancy, Bandaid, Vague)
+- [[Wiki/concepts/Agent-Traffic-Arbitrage]] — agents will outnumber humans on websites; early-mover opportunity in AI-native GTM
+- [[Wiki/concepts/AI-GTM-Stack]] — Idea Browser → Paper → Humbalytics pipeline for AI-native go-to-market
 
 ## Techniques
 
@@ -48,6 +50,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — top 10 Claude Code skills, plugins & CLIs (April 2026)
 - [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]] — Ross Mike on context management, progressive disclosure, recursive skill building
 - [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]] — Bradley Bonanno: context hygiene, MCP token cost, five-filter rule audit, settings optimization
+- [[Wiki/digests/YT-AI-GTM-Stack-2026-04-14]] — Amir (Humbalytics): Idea Browser + Paper + Humbalytics pipeline, autonomous CRO agent, agent traffic arbitrage
 
 ## Tools
 
@@ -57,6 +60,9 @@ Software and systems we reference.
 - [[Wiki/tools/Marp]] — markdown → slide deck rendering inside Obsidian
 - [[Wiki/tools/Claude-Memory-Compiler]] — Cole Medin's self-evolving Claude Code memory system
 - [[Wiki/tools/Firecrawl]] — web scraping API, strong for content scraping, weak against bot-protected portals
+- [[Wiki/tools/Idea-Browser]] — MCP-connected business context management; ICP, offer definition, built-in GTM skills
+- [[Wiki/tools/Paper-Design]] — design-to-code intermediary connected to Claude Code; visual iteration → working code
+- [[Wiki/tools/Humbalytics]] — analytics + AB testing operated by Claude via API; autonomous CRO agent capability
 
 ## People
 
@@ -75,7 +81,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 
 ### Transcripts
 - [[Raw/transcripts/YT-Transcripts-2026-04-10]] — Nick Milo AI OS, Cole Medin self-evolving memory, Claude inside Obsidian
-- [[Raw/transcripts/YT-Transcripts-2026-04-14]] — strategic AI coding, senior dev review, elite websites, top 10 skills/plugins, agents & skills (Ross Mike), context cleanup (Bradley Bonanno)
+- [[Raw/transcripts/YT-Transcripts-2026-04-14]] — strategic AI coding, senior dev review, elite websites, top 10 skills/plugins, agents & skills (Ross Mike), context cleanup (Bradley Bonanno), AI GTM stack (Amir/Humbalytics)
 - [[Raw/transcripts/YT-Transcripts-Batch-1]] — Obsidian + Claude Code workflows, Karpathy wiki, Vin on Obsidian slash-commands
 
 ### Internal docs
