@@ -3,7 +3,7 @@ type: effort-log
 effort: Niksho-SaaS-Product
 status: active
 created: 2026-04-13
-updated: 2026-04-14
+updated: 2026-04-15
 generated-by: claude-opus-4-6
 owner: Nikhil & Shoham
 related:
@@ -42,6 +42,26 @@ Double or triple recruiter throughput — from ~6 submissions/day to 12-20.
 
 ---
 
+## Beroz Frontend — Current Phase (2026-04-15)
+
+Beroz frontend build is complete. Juicebox clone integrated with ExcelTech backend. Now in **testing + design iteration**. See [[Raw/docs/Beroz-Build-Session-2026-04-15]] for full session log.
+
+### ExcelTech Instance — Next Steps
+- [ ] Deploy Beroz to Railway with all env vars
+- [ ] Test end-to-end with live Supabase + Outlook (all 10 pages)
+- [ ] Add GeBIZ tender workflow (Singapore)
+- [ ] Add notification bell with real-time polling
+- [ ] Add WhatsApp Business API integration
+
+### SaaS Product — Next Steps
+- [ ] Wire SaaS frontend to generic multi-tenant backend
+- [ ] Add user registration / onboarding flow
+- [ ] Build out chart visualizations in Analytics
+- [ ] Add real-time notifications via WebSocket
+- [ ] Make responsive for mobile
+
+---
+
 ## Open Items
 
 - [ ] Obtain Foundit EDGE API key from Prayag Sanghvi (required for Phase 1)
@@ -63,6 +83,7 @@ All decision records with full context, options, and reasoning:
 | Screener salary logic (client budget primary) | [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-screener-salary-logic]] |
 | Pause Naukri (no subscription) | [[Efforts/Niksho-SaaS-Product/decisions/2026-04-13-naukri-paused]] |
 | Hybrid architecture (Option A) | [[Efforts/Niksho-SaaS-Product/decisions/2026-04-10-option-a-hybrid-architecture]] |
+| Frontend pivot — Juicebox clone replaces Jinja2 → Next.js plan | [[Raw/docs/Beroz-Build-Session-2026-04-15]] |
 
 ---
 
@@ -86,6 +107,8 @@ Brief notes — full analysis lives in the HTML spec doc.
 | Agent layer design | [[Atlas/Product/Agent-Layer-v2]] |
 | Database schema | [[Atlas/Product/Database-Schema]] |
 | Full HTML spec | `ExcelTech-Recruitment-Agent-Architecture.html` |
+| Beroz build session log | [[Raw/docs/Beroz-Build-Session-2026-04-15]] |
+| Beroz repo | [github.com/nikshostudios/beroz](https://github.com/nikshostudios/beroz) |
 
 ---
 *Home: [[Home]]*

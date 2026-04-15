@@ -16,7 +16,7 @@ Take the working ExcelTech codebase and wrap it into a multi-tenant SaaS product
 This is **Task 2** from the original user brief. Vault (Task 1) is shipped.
 
 ## Status
-**Planning.** Architecture decided (Option A — see decision note). Ready to begin Phase A.
+**Building.** Frontend pivot complete — Juicebox clone replaces the Jinja2 → Next.js plan. Beroz repo live on GitHub. ExcelTech instance fully backend-integrated. SaaS instance static, ready for multi-tenant wiring. Current phase: testing + design tinkering.
 
 ## Architecture decision (2026-04-10)
 
@@ -177,6 +177,40 @@ They see the before (manual, hours of recruiter time) and the after (3 minutes, 
 
 ### Success criteria for the demo
 A non-technical agency owner can paste a JD and in under 5 minutes say "I want this for my team." If that happens once, Phase A–E of the full SaaS build has a real customer waiting.
+
+---
+
+## Beroz — Frontend Rebuild (2026-04-15)
+
+> **Design philosophy:** inspired by [[Wiki/concepts/Seven-Levels-of-Web-Design]] — don't start from a blank prompt, start from a real product that works and make it yours.
+
+The old frontend (Jinja2 templates from the Railway deploy) was scrapped. We hated it. Instead of the planned Jinja2 → Next.js progression, we went straight to cloning Juicebox AI's dashboard — a pixel-accurate reproduction of their production UI (52 pages scraped, 10-page single-file HTML clone). Then we integrated our existing ExcelTech backend into it.
+
+**Project name:** Beroz
+**Repo:** [github.com/nikshostudios/beroz](https://github.com/nikshostudios/beroz)
+**Source doc:** [[Raw/docs/Beroz-Build-Session-2026-04-15]]
+**Competitive reference:** [[Atlas/Product/Technical-Architecture-Stolen]]
+
+### What shipped
+- **Phase 1:** Scraped Juicebox, built pixel-accurate HTML clone (Inter font, Material Icons, CSS variables)
+- **Phase 2:** Copied ExcelTech backend from `el-paso`, rewrote frontend to connect to all APIs. 10+ new Flask proxy routes. Every page wired to live data. Role-based UI (TL vs recruiter). Session-based auth.
+- **Phase 3:** Split into `frontend-saas/` (static, generic) and `frontend-exceltech/` (backend-integrated). Landing page links to both.
+
+### Two-product architecture
+The repo now serves two distinct products from one codebase:
+
+| Product | Path | State | Backend |
+|---|---|---|---|
+| **ExcelTech Instance** | `/app` | Fully integrated | Flask + FastAPI + Supabase |
+| **SaaS Product** | `/frontend-saas` | Static shell | Ready for multi-tenant wiring |
+
+### Frontend strategy change
+The original plan (Jinja2 now → Next.js later) created known tech debt. The Beroz approach eliminates that: the frontend is already a clean, modern single-file HTML app with CSS variables and a proper design system. The "rebuild later" step is gone. What remains is wiring the SaaS version to a multi-tenant backend and iterating on the design.
+
+### Current phase: Testing + Design Iteration
+- Test all 10 ExcelTech pages end-to-end against live Supabase + Outlook
+- Tinkering with the design — the clone is the starting point, not the finish line
+- Verify role-based UI works (TL vs recruiter permissions)
 
 ---
 

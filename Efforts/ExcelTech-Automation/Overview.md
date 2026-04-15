@@ -4,7 +4,7 @@ effort: ExcelTech-Automation
 status: in-production
 intensity: active
 started: 2025-11-01
-updated: 2026-04-10
+updated: 2026-04-15
 owner: Shoham & Nikhil
 ---
 
@@ -25,6 +25,7 @@ Make every mechanical step of the ExcelTech recruiter workflow run through agent
 | 3 | All 5 agents wired up (Screener, Outreach, Follow-up, Formatter, Sourcing) | Mar 2026 | ✅ Done |
 | 4 | All 5 skills in production (source-and-screen, prepare-outreach, process-inbox, submit-to-tl, tl-send-to-client) | Mar 2026 | ✅ Done |
 | 5 | APScheduler inbox scan running every 15 min for all 10 inboxes | Apr 2026 | ✅ Done |
+| 5b | Beroz frontend — Juicebox clone integrated with backend (10 pages, all API-connected) | Apr 2026 | ✅ Done |
 | 6 | Clean baseline metrics captured (before/after) | May 2026 | 🚧 In progress |
 | 7 | Per-recruiter voice tuning for Outreach agent | May 2026 | 🚧 In progress |
 | 8 | First 3 case studies drafted (recruiters who felt the biggest lift) | Jun 2026 | ⏳ Not started |
@@ -51,6 +52,9 @@ See [[Calendar/Quarterly/2026-Q2]] for Q2 outcomes.
 
 ## Recent decisions
 _(log in reverse chronological order)_
+
+### 2026-04-15 — Beroz frontend replaces old Jinja2 templates
+Decision: Scrap the old frontend entirely. Clone Juicebox AI's production dashboard (52 pages scraped, pixel-accurate HTML clone), then wire it to the existing ExcelTech backend. Approach based on [[Wiki/concepts/Seven-Levels-of-Web-Design]] — start from a proven design rather than building from scratch. Repo: `github.com/nikshostudios/beroz`. Next: end-to-end testing, then design iteration. See [[Raw/docs/Beroz-Build-Session-2026-04-15]].
 
 ### 2026-04-10 — Hybrid vault architecture for the second brain
 Decision: Set up the second brain as a hybrid of Nick Milo's ACE and Karpathy's raw/wiki compiler pattern, rooted at `/Users/shohamshree/niksho/NST`. Not strictly a decision about this effort but it affects how we'll document future decisions — from now on, they live in files, not in Slack.
