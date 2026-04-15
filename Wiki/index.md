@@ -1,7 +1,7 @@
 ---
 type: wiki-index
 generated-by: claude
-updated: 2026-04-14
+updated: 2026-04-15
 ---
 
 # Wiki — Index
@@ -90,6 +90,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/sourcing-architecture]] — sourcing architecture doc
 - [[Raw/docs/sourcing-troubleshooting-2026-04-11]] — production test post-mortem, 10 issues, sourcing channel validation failure
 - [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]] — v2 system architecture: 8 sourcing channels, 7 agents, 4 implementation phases
+- [[Raw/docs/Beroz-Build-Session-2026-04-15]] — Beroz build session: Juicebox clone, two-product frontend, full API map, project structure
 
 ## How to add to this index
 1. Ingest new sources via [[AIOS/skills/ingest-source]].

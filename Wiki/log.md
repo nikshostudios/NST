@@ -10,6 +10,22 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-15 — Beroz build session ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/Beroz-Build-Session-2026-04-15]] (internal build session log — Juicebox clone, two-product architecture, full API map)
+
+**Vault files updated:**
+- [[Efforts/Niksho-SaaS-Product/Overview]] — added Beroz section, status changed from "planning" to "building", frontend strategy pivot documented
+- [[Efforts/ExcelTech-Automation/Overview]] — added milestone 5b (Beroz frontend), new decision entry
+- [[Efforts/Niksho-SaaS-Product/v2-Planning-Log]] — merged next steps from session (ExcelTech deploy + testing, SaaS multi-tenant wiring), added decision record and key references
+- [[Wiki/hot]] — rewritten to reflect Beroz as the current priority
+
+**Notes:** This was an internal build session log, not an external source. Processed as an Efforts update rather than Wiki extraction — the knowledge here is authored (architecture decisions, project structure) not compiled. No new Wiki concepts created. Connected to existing [[Wiki/concepts/Seven-Levels-of-Web-Design]] concept (user confirmed the design approach was inspired by it).
+
+---
+
 ## 2026-04-14 — YouTube transcript batch ingestion (7th video: AI GTM Stack)
 
 **Skill:** [[AIOS/skills/ingest-source]]

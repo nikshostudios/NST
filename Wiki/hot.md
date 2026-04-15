@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-14
+updated: 2026-04-15
 max-words: 1000
 ---
 
@@ -11,44 +11,44 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-14
+## Right now — 2026-04-15
 
-### v2 System Architecture designed
-Full v2 architecture designed on April 13: 8 sourcing channels, 7 agents (5 enhanced + 2 new: JD Parser, Reactivation), 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment strategy. BD add-on as separate optional module. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
+### Beroz frontend shipped — major milestone
+The old frontend is dead. Beroz is a Juicebox AI clone — 52 pages scraped, pixel-accurate 10-page HTML dashboard, clean modern design (Inter, Material Icons, CSS variables). The ExcelTech instance is fully integrated with the backend (all 10 pages wired to live APIs). The SaaS instance is a static shell ready for multi-tenant wiring. Repo: [github.com/nikshostudios/beroz](https://github.com/nikshostudios/beroz). Design approach based on [[Wiki/concepts/Seven-Levels-of-Web-Design]].
+
+**Current phase: testing + design iteration.** Test all ExcelTech pages end-to-end against live Supabase + Outlook. Tinkering with the design — the clone is the starting point, not the finish line. See [[Raw/docs/Beroz-Build-Session-2026-04-15]].
+
+**Frontend strategy changed:** The Jinja2 → Next.js plan is replaced. The Beroz frontend is already a clean, modern single-file HTML app. The "rebuild later" step is gone.
+
+### v2 System Architecture (still in progress)
+Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
 
 **Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
 
-### Knowledge ingestion — April 14
-7 YouTube transcripts ingested covering: strategic AI coding, senior dev code review patterns, elite website building progression, Claude Code tooling ecosystem, agent/skill architecture (Ross Mike), and context cleanup / token optimization (Bradley Bonanno). Key concepts extracted: [[Wiki/concepts/Progressive-Disclosure]], [[Wiki/concepts/Recursive-Skill-Building]], [[Wiki/concepts/Expert-In-The-Loop]], [[Wiki/concepts/Five-Filter-Rule-Audit]].
-
-**Actionable insight — context hygiene:** Our MCP setup (Notion, Gmail, Canva, Figma, Apollo, Google Drive, etc.) loads ~18K tokens per server every turn. Disconnecting unused servers per session is the biggest quick win. Additionally: `mi.md` should be audited with the five-filter methodology, and settings.json needs autocompact override (75%), BASH_MAX_OUTPUT_LENGTH (150000), and deny rules. See [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]].
-
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, v2 architecture designed. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — v2 architecture + Foundit EDGE API integration spec complete.
-- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode. Obsidian-ingest skill being built.
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, Beroz frontend integrated. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — Beroz frontend shipped, status upgraded from "planning" to "building".
+- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode.
 - 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
-### Freshly added to Wiki (April 14)
-- [[Wiki/concepts/Progressive-Disclosure]] — skills load context on demand vs agent.md every turn
-- [[Wiki/concepts/Recursive-Skill-Building]] — the walk-through → codify → fail → fix → update methodology
-- [[Wiki/concepts/Expert-In-The-Loop]] — expert validation vs rubber-stamp human approval
-- [[Wiki/digests/YT-Strategic-AI-Coding-2026-04-14]] — coding with AI, not vibe coding
-- [[Wiki/digests/YT-Senior-Dev-Reviews-AI-App-2026-04-14]] — production readiness gaps in AI-built apps
-- [[Wiki/digests/YT-Elite-Websites-Claude-Code-2026-04-14]] — 7-level progression for web design quality
-- [[Wiki/digests/YT-Top-10-Claude-Skills-Plugins-2026-04-14]] — tooling: Codeex, AutoResearch, Playwright CLI, Skill Creator, LightRAG, GWS
-- [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]] — Ross Mike on context, skills, scaling for productivity
-- [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]] — Bradley Bonanno: MCP costs, five-filter audit, settings.json, daily habits
-- [[Wiki/concepts/Five-Filter-Rule-Audit]] — the 5-question test for every CLAUDE.md rule
-- [[Wiki/digests/YT-AI-GTM-Stack-2026-04-14]] — Amir: Idea Browser → Paper → Humbalytics, autonomous CRO agent, agent traffic arbitrage
-- [[Wiki/concepts/Agent-Traffic-Arbitrage]] — agents will outnumber humans on websites; early-mover opportunity RIGHT NOW
-- [[Wiki/concepts/AI-GTM-Stack]] — the full AI-native GTM pipeline
-- [[Wiki/tools/Humbalytics]], [[Wiki/tools/Idea-Browser]], [[Wiki/tools/Paper-Design]] — the three tools in the stack
+### ExcelTech next steps (from Beroz session)
+- Deploy Beroz to Railway with all env vars
+- Test end-to-end with live Supabase + Outlook
+- Add GeBIZ tender workflow (Singapore)
+- Add notification bell with real-time polling
+- Add WhatsApp Business API integration
+
+### SaaS next steps (from Beroz session)
+- Wire SaaS frontend to generic multi-tenant backend
+- Add user registration / onboarding flow
+- Build out chart visualizations in Analytics
+- Add real-time notifications via WebSocket
+- Make responsive for mobile
 
 ### Open decisions affecting the next session
 - **Foundit EDGE API key** — blocked on Prayag providing the API key. Once received, Phase 1 can start.
 - Apollo.io: Basic ($49/mo) vs Professional ($79/mo) — depends on monthly credit needs
 - Naukri RMS: does ExcelTech already have a subscription? (Ask Nik's dad)
-- **CLAUDE.md / mi.md audit** — run the five-filter rule audit on mi.md, strip it down, convert sections to skills. Also audit MCP server overhead and add settings.json tweaks. (Planned for follow-up session — see [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]])
+- **CLAUDE.md / mi.md audit** — run the five-filter rule audit on mi.md, strip it down, convert sections to skills. See [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]]
 
 ### Open blockers
 - **Foundit EDGE API key** — need from Prayag to start Phase 1.
@@ -65,4 +65,4 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-14 — 7th video transcript (AI GTM Stack) ingested. Added: Agent-Traffic-Arbitrage + AI-GTM-Stack concepts, Idea Browser + Paper + Humbalytics tool entries, new digest. Total: 7 transcripts processed, 10 concepts + 7 digests + 7 tools in Wiki. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
+_Updated on 2026-04-15 — Beroz build session ingested. Frontend pivot from Jinja2 → Juicebox clone. ExcelTech effort updated with new milestone. SaaS effort status upgraded to "building". Next steps merged into v2 Planning Log. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
