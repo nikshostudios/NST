@@ -32,19 +32,19 @@ related:
 
 - [x] **Login** — Go to `/`, enter `raju` / `raju18`, verify redirect to Agent Home
 - [x] **Session** — Open browser console, run `fetch('/api/session', {credentials:'include'}).then(r=>r.json()).then(console.log)` — should show `{logged_in: true, name: "Raju Akula", role: "tl"}`
-- [ ] **All 10 pages load** — Click each sidebar nav item, verify no JS errors in console
-- [ ] **TL-only features visible** — Verify "Submissions" nav item and "New Requirement" button are visible
-- [ ] **Logout** — Click Logout, verify redirect to login page
-- [ ] **Recruiter restrictions** — Login as `devesh` / `devesh27`, verify Submissions nav is hidden and no "New Requirement" button
-- [ ] **Landing page** — Visit `/home`, verify both SaaS and ExcelTech product cards display
+- [x] **All 10 pages load** — Click each sidebar nav item, verify no JS errors in console
+- [x] **TL-only features visible** — Verify "Submissions" nav item and "New Requirement" button are visible
+- [x] **Logout** — Click Logout, verify redirect to login page
+- [x] **Recruiter restrictions** — Login as `devesh` / `devesh27`, verify Submissions nav is hidden and no "New Requirement" button
+- [x] **Landing page** — Visit `/home`, verify both SaaS and ExcelTech product cards display
 
 ### Phase 2: Backend API Health (tests Supabase + AI Agent Layer)
 
 These tests verify the FastAPI backend is reachable. If these fail, the `ai-agents` service may not be deployed yet on Railway.
 
-- [ ] **Requirements API** — After login, go to Requirements page. If requirements load (cards appear), the Flask→FastAPI→Supabase chain works.
-- [ ] **Pipeline API** — Go to Shortlist or Analytics page. If data loads, pipeline API works.
-- [ ] **Session API** — Settings page shows your name/email/role = Flask session works.
+- [x] **Requirements API** — After login, go to Requirements page. If requirements load (cards appear), the Flask→FastAPI→Supabase chain works.
+- [x] **Pipeline API** — Go to Shortlist or Analytics page. If data loads, pipeline API works.
+- [x] **Session API** — Settings page shows your name/email/role = Flask session works.
 
 **If pages show empty/errors:**
 The FastAPI `ai-agents` service needs to be deployed as a separate Railway service. Currently only the `web` (Flask) service is live. The Flask API proxy routes forward to `AI_AGENT_URL` which points to the ai-agents internal service.
