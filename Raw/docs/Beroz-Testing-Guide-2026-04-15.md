@@ -30,7 +30,7 @@ related:
 
 ### Phase 1: Auth & Navigation (no external services needed)
 
-- [ ] **Login** — Go to `/`, enter `raju` / `raju18`, verify redirect to Agent Home
+- [x] **Login** — Go to `/`, enter `raju` / `raju18`, verify redirect to Agent Home
 - [ ] **Session** — Open browser console, run `fetch('/api/session', {credentials:'include'}).then(r=>r.json()).then(console.log)` — should show `{logged_in: true, name: "Raju Akula", role: "tl"}`
 - [ ] **All 10 pages load** — Click each sidebar nav item, verify no JS errors in console
 - [ ] **TL-only features visible** — Verify "Submissions" nav item and "New Requirement" button are visible
