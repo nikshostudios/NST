@@ -1,6 +1,6 @@
 ---
 name: ingest-source
-description: "Ingest raw material (YouTube transcripts, articles, PDFs, architecture docs) into the Obsidian vault. Files to Raw, compiles digests + concept breakouts into Wiki, updates indexes. Triggers: ingest this, log this into obsidian, add to wiki, add to vault, process raw."
+description: "Ingest raw material (YouTube transcripts, articles, PDFs, architecture docs, build session logs) into the Obsidian vault. Routes external knowledge to Wiki (digests + concepts) and internal work product to Efforts. Triggers: ingest this, log this into obsidian, add to wiki, add to vault, process raw."
 ---
 
 # Skill: Ingest Source
@@ -26,6 +26,7 @@ Before any file writes, establish:
 **Naming conventions (established):**
 - Transcripts: `YT-Transcripts-YYYY-MM-DD.md` (date-based, in `Raw/transcripts/`)
 - Architecture/design docs: `Name-vN.html` or `Name-vN.md` (versioned, in `Raw/docs/`)
+- Build session logs: `ProjectName-Build-Session-YYYY-MM-DD.md` (in `Raw/docs/`)
 - Clippings: descriptive slug (in `Raw/clippings/`)
 
 ## Phase 1 — File the raw source

@@ -2,9 +2,9 @@
 skill: ingest-source
 triggers: ["ingest this", "process raw", "add to wiki", "new source in raw", "log this into obsidian", "add to vault"]
 reads: [Raw/, Wiki/index.md, Wiki/log.md, Wiki/hot.md, mi.md, Home.md, AIOS/vault-map.md]
-writes: [Raw/transcripts/, Raw/docs/, Raw/clippings/, Wiki/concepts/, Wiki/tools/, Wiki/people/, Wiki/techniques/, Wiki/digests/, Wiki/sources/, Wiki/index.md, Wiki/log.md, Wiki/hot.md]
-updated: 2026-04-14
-built-from: "Successful ingestion run on 2026-04-14 — 6 YouTube transcripts + 1 HTML architecture doc + 1 skill + 1 PDF. Corrections applied after first-pass review. Workflow visualisation pattern added after Tab 6 ingestion."
+writes: [Raw/transcripts/, Raw/docs/, Raw/clippings/, Wiki/concepts/, Wiki/tools/, Wiki/people/, Wiki/techniques/, Wiki/digests/, Wiki/sources/, Wiki/index.md, Wiki/log.md, Wiki/hot.md, Efforts/*/Overview.md, Efforts/*/v2-Planning-Log.md]
+updated: 2026-04-15
+built-from: "Successful ingestion run on 2026-04-14 — 6 YouTube transcripts + 1 HTML architecture doc + 1 skill + 1 PDF. Corrections applied after first-pass review. Workflow visualisation pattern added after Tab 6 ingestion. 2026-04-15: added internal session log routing (Beroz build session — routed to Efforts, not Wiki)."
 ---
 
 # Skill: Ingest Source
@@ -30,6 +30,7 @@ Before any file writes, establish:
 **Naming conventions (established):**
 - Transcripts: `YT-Transcripts-YYYY-MM-DD.md` (date-based, in `Raw/transcripts/`)
 - Architecture/design docs: `Name-vN.html` or `Name-vN.md` (versioned, in `Raw/docs/`)
+- Build session logs: `ProjectName-Build-Session-YYYY-MM-DD.md` (in `Raw/docs/`)
 - Clippings: descriptive slug (in `Raw/clippings/`)
 
 ## Phase 1 — File the raw source
@@ -51,7 +52,28 @@ Before any file writes, establish:
 4. **File in the correct Raw subfolder.** Copy (not move) if the original is elsewhere in the vault.
 5. **Version control:** If a document already exists (e.g. architecture doc), check existing versions and increment (v2 → v3). Rename old and new files consistently. Update any backlinks in the vault that point to the old filename.
 
-## Phase 2 — Extract and compile into Wiki
+## Phase 2 — Route: Wiki extraction OR Efforts update?
+
+Before extracting anything, answer one question: **is this external knowledge or internal work product?**
+
+| Signal | Route |
+|--------|-------|
+| YouTube transcript, article, tutorial, external research, someone else's framework | **Wiki extraction** — compile into digests, concepts, tools, etc. |
+| Build session log, architecture decision, deployment record, meeting notes about OUR product, sprint output | **Efforts update** — route to the relevant `Efforts/` and `Atlas/` files. Skip Wiki extraction entirely. |
+| Internal troubleshooting post-mortem with reusable lessons (e.g. scraping failures, bot detection) | **Both** — file in Raw, extract reusable lessons into Wiki, update Efforts with status changes. |
+
+**The test:** Would this knowledge be useful to someone who has nothing to do with Niksho? If yes → Wiki (compiled, universal). If no, it's only meaningful in the context of our product → Efforts (authored, project-specific).
+
+### For internal build sessions / work product (→ Efforts route):
+
+1. **File the raw source** in `Raw/docs/` with frontmatter linking to relevant Efforts and Atlas files.
+2. **Update the relevant Efforts Overview** — status changes, new milestones, new decisions, architecture shifts.
+3. **Merge next steps** into the existing planning/tracking files. Deduplicate against what's already there.
+4. **Add decision entries** to the effort's decision log (reverse chronological).
+5. **Connect to existing Wiki concepts** where relevant (backlink, don't create new ones unless the session introduced a genuinely new reusable idea).
+6. **Update navigation only** — `Wiki/hot.md` (rewrite), `Wiki/log.md` (append), `Wiki/index.md` (add raw source reference). No new Wiki concept/digest/tool notes.
+
+Then skip to Phase 3 (indexes) and Phase 4 (review).
 
 ### For multi-video transcripts: use the hybrid approach
 
@@ -161,10 +183,15 @@ A good ingest leaves the vault in a state where:
 
 ## Outputs
 
+### Wiki route (external knowledge):
 - New files in `Raw/` (source material)
 - New files in `Wiki/digests/` (one per video/major section)
 - New or updated files in `Wiki/concepts/`, `Wiki/tools/`, `Wiki/people/`, `Wiki/techniques/`
-- Updated `Wiki/index.md`
-- Updated `Wiki/hot.md`
-- Updated `Wiki/log.md`
+- Updated `Wiki/index.md`, `Wiki/hot.md`, `Wiki/log.md`
 - Possibly updated `Efforts/` or `Atlas/` files (backlinks to new Raw sources)
+
+### Efforts route (internal work product):
+- New file in `Raw/docs/` (session log preserved with frontmatter)
+- Updated `Efforts/` Overview and planning files (status, milestones, decisions, next steps)
+- Updated `Wiki/index.md` (raw source reference only), `Wiki/hot.md` (rewritten), `Wiki/log.md` (appended)
+- No new Wiki concept/digest/tool notes (unless the session introduced a genuinely new reusable idea)
