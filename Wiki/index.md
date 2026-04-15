@@ -31,6 +31,8 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Five-Filter-Rule-Audit]] — systematic methodology for pruning CLAUDE.md rules (Default, Contradiction, Redundancy, Bandaid, Vague)
 - [[Wiki/concepts/Agent-Traffic-Arbitrage]] — agents will outnumber humans on websites; early-mover opportunity in AI-native GTM
 - [[Wiki/concepts/AI-GTM-Stack]] — Idea Browser → Paper → Humbalytics pipeline for AI-native go-to-market
+- [[Wiki/concepts/Authenticated-SPA-Capture]] — extracting live DOM from OAuth-protected SPAs via DevTools or Playwright
+- [[Wiki/concepts/Search-First-SaaS-UI]] — natural-language search as the primary interface pattern (vs dashboard-first)
 
 ## Techniques
 
@@ -39,6 +41,7 @@ Specific methods we've learned.
 - [[Wiki/techniques/Hot-Cache]] — small recency buffer for fresh session context
 - [[Wiki/techniques/Linting-Wiki]] — LLM health-checks to keep the wiki clean
 - [[Wiki/techniques/Direct-API-Interception]] — bypass headless browsers by calling SPA backend endpoints directly
+- [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page DOM capture with session persistence for authenticated apps
 
 ## Digests
 
@@ -51,6 +54,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14]] — Ross Mike on context management, progressive disclosure, recursive skill building
 - [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]] — Bradley Bonanno: context hygiene, MCP token cost, five-filter rule audit, settings optimization
 - [[Wiki/digests/YT-AI-GTM-Stack-2026-04-14]] — Amir (Humbalytics): Idea Browser + Paper + Humbalytics pipeline, autonomous CRO agent, agent traffic arbitrage
+- [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]] — Juicebox AI reverse-engineering: site teardown, Playwright crawler (43+ pages), hybrid UI strategy decision
 
 ## Tools
 
