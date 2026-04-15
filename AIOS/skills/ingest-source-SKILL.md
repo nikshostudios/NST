@@ -48,7 +48,28 @@ Before any file writes, establish:
 4. **File in the correct Raw subfolder.** Copy (not move) if the original is elsewhere in the vault.
 5. **Version control:** If a document already exists (e.g. architecture doc), check existing versions and increment (v2 → v3). Rename old and new files consistently. Update any backlinks in the vault that point to the old filename.
 
-## Phase 2 — Extract and compile into Wiki
+## Phase 2 — Route: Wiki extraction OR Efforts update?
+
+Before extracting anything, answer one question: **is this external knowledge or internal work product?**
+
+| Signal | Route |
+|--------|-------|
+| YouTube transcript, article, tutorial, external research, someone else's framework | **Wiki extraction** — compile into digests, concepts, tools, etc. |
+| Build session log, architecture decision, deployment record, meeting notes about OUR product, sprint output | **Efforts update** — route to the relevant `Efforts/` and `Atlas/` files. Skip Wiki extraction entirely. |
+| Internal troubleshooting post-mortem with reusable lessons (e.g. scraping failures, bot detection) | **Both** — file in Raw, extract reusable lessons into Wiki, update Efforts with status changes. |
+
+**The test:** Would this knowledge be useful to someone who has nothing to do with Niksho? If yes → Wiki (compiled, universal). If no, it's only meaningful in the context of our product → Efforts (authored, project-specific).
+
+### For internal build sessions / work product (→ Efforts route):
+
+1. **File the raw source** in `Raw/docs/` with frontmatter linking to relevant Efforts and Atlas files.
+2. **Update the relevant Efforts Overview** — status changes, new milestones, new decisions, architecture shifts.
+3. **Merge next steps** into the existing planning/tracking files. Deduplicate against what's already there.
+4. **Add decision entries** to the effort's decision log (reverse chronological).
+5. **Connect to existing Wiki concepts** where relevant (backlink, don't create new ones unless the session introduced a genuinely new reusable idea).
+6. **Update navigation only** — `Wiki/hot.md` (rewrite), `Wiki/log.md` (append), `Wiki/index.md` (add raw source reference). No new Wiki concept/digest/tool notes.
+
+Then skip to Phase 3 (indexes) and Phase 4 (review).
 
 ### For multi-video transcripts: use the hybrid approach
 
