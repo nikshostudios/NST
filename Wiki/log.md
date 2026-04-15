@@ -10,6 +10,32 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-15b — Juicebox teardown session ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/Juicebox-Teardown-Session-2026-04-15]] (Cowork session log — Juicebox reverse-engineering, Playwright crawler, hybrid UI strategy)
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]]
+- [[Wiki/concepts/Authenticated-SPA-Capture]]
+- [[Wiki/concepts/Search-First-SaaS-UI]]
+- [[Wiki/techniques/Playwright-DOM-Crawling]]
+
+**Wiki notes updated:**
+- [[Wiki/index]] — added 2 concepts, 1 technique, 1 digest, 1 raw source
+- [[Wiki/hot]] — rewritten to reflect Juicebox teardown as current priority, hybrid UI strategy, search-first insight
+- [[Wiki/log]] — this entry
+
+**Also produced (not wiki, but reference):**
+- `NST/research/2026-04-14-juicebox-agent-teardown.md` — 700-line teardown document (design system, tech stack, components, build plan)
+- `NST/research/juicebox-clone-prompt.md` — Claude Code prompt for building the UI
+- `recruitment-agents/juicebox-crawler/` — Playwright crawler scripts + 43 HTML captures
+
+**Notes:** This session's primary output is tooling and reference material, not wiki knowledge. The Playwright crawler and HTML captures are the high-value artifacts — they feed the next Claude Code build session. The wiki notes capture the reusable techniques (Authenticated-SPA-Capture, Playwright-DOM-Crawling) and the strategic insight (Search-First-SaaS-UI pattern) that apply beyond this specific project.
+
+---
+
 ## 2026-04-15 — Beroz build session ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]

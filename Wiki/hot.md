@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-15
+updated: 2026-04-15b
 max-words: 1000
 ---
 
@@ -11,14 +11,22 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-15
+## Right now — 2026-04-15 (evening)
 
-### Beroz frontend shipped — major milestone
-The old frontend is dead. Beroz is a Juicebox AI clone — 52 pages scraped, pixel-accurate 10-page HTML dashboard, clean modern design (Inter, Material Icons, CSS variables). The ExcelTech instance is fully integrated with the backend (all 10 pages wired to live APIs). The SaaS instance is a static shell ready for multi-tenant wiring. Repo: [github.com/nikshostudios/beroz](https://github.com/nikshostudios/beroz). Design approach based on [[Wiki/concepts/Seven-Levels-of-Web-Design]].
+### Juicebox teardown complete — UI reference captured
+Full reverse-engineering of Juicebox AI (app.juicebox.ai) completed. 700-line teardown document produced at `NST/research/2026-04-14-juicebox-agent-teardown.md` covering complete tech stack, design system (colors, typography, spacing, transitions), component hierarchy, and build plan. See [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]].
 
-**Current phase: testing + design iteration.** Test all ExcelTech pages end-to-end against live Supabase + Outlook. Tinkering with the design — the clone is the starting point, not the finish line. See [[Raw/docs/Beroz-Build-Session-2026-04-15]].
+**Playwright DOM crawler built and run.** Automated crawler at `recruitment-agents/juicebox-crawler/` captured 43 HTML files covering every sidebar page, modals, settings, integrations. Second pass script (`crawl-missing.js`) ready to capture missing pages: search results (the #1 priority), candidate details, agent chat conversation, analytics sub-tabs, sequence details.
 
-**Frontend strategy changed:** The Jinja2 → Next.js plan is replaced. The Beroz frontend is already a clean, modern single-file HTML app. The "rebuild later" step is gone.
+**Key insight: search-first, not dashboard-first.** The first Claude Code build attempt produced a generic dashboard (metric cards, pipeline tables). Juicebox's actual UI is a [[Wiki/concepts/Search-First-SaaS-UI|search-first interface]] — natural language search bar → AI-ranked candidate cards with match explanations. The Niksho UI must follow this pattern. See [[Wiki/concepts/Search-First-SaaS-UI]].
+
+### Frontend strategy: hybrid Juicebox + Niksho
+NOT a pure clone. Take Juicebox's UI patterns (search-first, candidate cards, sidebar navigation, status dropdowns, filter/criteria pills) and combine with Niksho-specific features (multi-agent dashboards, screening pipeline, outreach sequences, submission formatting for client delivery). The captured HTML files are the ground-truth reference for Claude Code.
+
+**Next step:** Run `crawl-missing.js` to capture the search results page and candidate details, then feed the full HTML capture set to Claude Code to build the hybrid UI in `recruitment-agents/niksho-ui/`.
+
+### Beroz frontend — still the deployed version
+Beroz (previous Juicebox clone attempt) remains the current deployed frontend. The new hybrid UI will replace it once built and tested. See [[Raw/docs/Beroz-Build-Session-2026-04-15]].
 
 ### v2 System Architecture (still in progress)
 Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
@@ -26,32 +34,17 @@ Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementat
 **Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
 
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, Beroz frontend integrated. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — Beroz frontend shipped, status upgraded from "planning" to "building".
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, Beroz frontend live. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — Juicebox teardown done, hybrid UI next.
 - 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode.
 - 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
-### ExcelTech next steps (from Beroz session)
-- Deploy Beroz to Railway with all env vars
-- Test end-to-end with live Supabase + Outlook
-- Add GeBIZ tender workflow (Singapore)
-- Add notification bell with real-time polling
-- Add WhatsApp Business API integration
-
-### SaaS next steps (from Beroz session)
-- Wire SaaS frontend to generic multi-tenant backend
-- Add user registration / onboarding flow
-- Build out chart visualizations in Analytics
-- Add real-time notifications via WebSocket
-- Make responsive for mobile
-
-### Open decisions affecting the next session
-- **Foundit EDGE API key** — blocked on Prayag providing the API key. Once received, Phase 1 can start.
-- Apollo.io: Basic ($49/mo) vs Professional ($79/mo) — depends on monthly credit needs
-- Naukri RMS: does ExcelTech already have a subscription? (Ask Nik's dad)
-- **CLAUDE.md / mi.md audit** — run the five-filter rule audit on mi.md, strip it down, convert sections to skills. See [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]]
+### New techniques added to vault
+- [[Wiki/concepts/Authenticated-SPA-Capture]] — how to extract DOM from OAuth-protected apps
+- [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page capture with session persistence
 
 ### Open blockers
 - **Foundit EDGE API key** — need from Prayag to start Phase 1.
+- **Playwright round 2** — `crawl-missing.js` needs to run to capture search page + candidate details before hybrid UI build.
 - **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
 
 ### Guardrails for the AI reading this
@@ -65,4 +58,4 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-15 — Beroz build session ingested. Frontend pivot from Jinja2 → Juicebox clone. ExcelTech effort updated with new milestone. SaaS effort status upgraded to "building". Next steps merged into v2 Planning Log. Next rewrite: next time [[AIOS/skills/lint-wiki]] runs._
+_Updated on 2026-04-15 evening — Juicebox teardown session ingested. Playwright crawler output logged. Hybrid UI strategy documented. New concepts: Authenticated-SPA-Capture, Search-First-SaaS-UI. New technique: Playwright-DOM-Crawling._
