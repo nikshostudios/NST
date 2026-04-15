@@ -95,6 +95,9 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/sourcing-troubleshooting-2026-04-11]] — production test post-mortem, 10 issues, sourcing channel validation failure
 - [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]] — v2 system architecture: 8 sourcing channels, 7 agents, 4 implementation phases
 - [[Raw/docs/Beroz-Build-Session-2026-04-15]] — Beroz build session: Juicebox clone, two-product frontend, full API map, project structure
+- [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — Beroz feature & workflow reference: all 10 pages, 8 agents, 5 skills, DB schema, env vars
+- [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — Beroz testing guide: test checklist, credentials, debugging, Railway deploy notes
+- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Beroz Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
 - [[Raw/docs/Juicebox-Teardown-Session-2026-04-15]] — Juicebox teardown session: authenticated DOM capture, 700-line teardown doc, Playwright crawler, hybrid UI strategy
 
 ## How to add to this index

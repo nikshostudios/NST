@@ -10,6 +10,24 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-15c — Beroz companion docs ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/Beroz-Features-Guide-2026-04-15]] (feature & workflow guide — 10 pages, 8 agents, 5 skills, DB schema, env vars)
+- [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] (testing guide — test checklist, credentials, Railway debug tips)
+- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] (Mermaid diagrams — master pipeline, outreach/inbox, submission/approval, role-based access, agent routing)
+
+**Vault files updated:**
+- [[Efforts/ExcelTech-Automation/Overview]] — 2026-04-15 decision entry expanded with links to all 4 Beroz source docs
+- [[Wiki/index]] — 3 new raw source entries added under Internal docs
+- [[Wiki/hot]] — Beroz section updated with full source doc references
+- [[Wiki/log]] — this entry
+
+**Notes:** Three companion documents to the existing Beroz-Build-Session-2026-04-15 log. All internal work product — processed as Efforts update (no new Wiki concepts created). The features guide is the canonical reference for what each page does and which API it calls. The testing guide is the primary reference for the current deploy phase (testing + env var validation). The workflow diagrams are the clearest visual representation of the full recruitment pipeline and can be shared with stakeholders or used as onboarding material.
+
+---
+
 ## 2026-04-15b — Juicebox teardown session ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]

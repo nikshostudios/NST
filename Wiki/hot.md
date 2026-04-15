@@ -26,7 +26,13 @@ NOT a pure clone. Take Juicebox's UI patterns (search-first, candidate cards, si
 **Next step:** Run `crawl-missing.js` to capture the search results page and candidate details, then feed the full HTML capture set to Claude Code to build the hybrid UI in `recruitment-agents/niksho-ui/`.
 
 ### Beroz frontend — still the deployed version
-Beroz (previous Juicebox clone attempt) remains the current deployed frontend. The new hybrid UI will replace it once built and tested. See [[Raw/docs/Beroz-Build-Session-2026-04-15]].
+Beroz (previous Juicebox clone attempt) remains the current deployed frontend. The new hybrid UI will replace it once built and tested.
+
+**Full Beroz reference docs now in vault:**
+- [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log
+- [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — feature & workflow reference (all 10 pages, 8 agents, 5 skills, DB schema, env vars)
+- [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist + Railway debugging guide
+- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows
 
 ### v2 System Architecture (still in progress)
 Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].

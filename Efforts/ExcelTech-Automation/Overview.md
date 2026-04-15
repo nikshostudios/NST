@@ -54,7 +54,13 @@ See [[Calendar/Quarterly/2026-Q2]] for Q2 outcomes.
 _(log in reverse chronological order)_
 
 ### 2026-04-15 — Beroz frontend replaces old Jinja2 templates
-Decision: Scrap the old frontend entirely. Clone Juicebox AI's production dashboard (52 pages scraped, pixel-accurate HTML clone), then wire it to the existing ExcelTech backend. Approach based on [[Wiki/concepts/Seven-Levels-of-Web-Design]] — start from a proven design rather than building from scratch. Repo: `github.com/nikshostudios/beroz`. Next: end-to-end testing, then design iteration. See [[Raw/docs/Beroz-Build-Session-2026-04-15]].
+Decision: Scrap the old frontend entirely. Clone Juicebox AI's production dashboard (52 pages scraped, pixel-accurate HTML clone), then wire it to the existing ExcelTech backend. Approach based on [[Wiki/concepts/Seven-Levels-of-Web-Design]] — start from a proven design rather than building from scratch. Repo: `github.com/nikshostudios/beroz`. Next: end-to-end testing, then design iteration.
+
+**Source docs:**
+- [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log (architecture, project structure, phases)
+- [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — full feature & workflow reference (10 pages, 8 agents, 5 skills, DB schema, env vars)
+- [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist, credentials, debugging tips, Railway deploy notes
+- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
 
 ### 2026-04-10 — Hybrid vault architecture for the second brain
 Decision: Set up the second brain as a hybrid of Nick Milo's ACE and Karpathy's raw/wiki compiler pattern, rooted at `/Users/shohamshree/niksho/NST`. Not strictly a decision about this effort but it affects how we'll document future decisions — from now on, they live in files, not in Slack.
