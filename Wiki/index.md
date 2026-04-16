@@ -55,6 +55,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/YT-Context-Cleanup-Claude-Code-2026-04-14]] — Bradley Bonanno: context hygiene, MCP token cost, five-filter rule audit, settings optimization
 - [[Wiki/digests/YT-AI-GTM-Stack-2026-04-14]] — Amir (Humbalytics): Idea Browser + Paper + Humbalytics pipeline, autonomous CRO agent, agent traffic arbitrage
 - [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]] — Juicebox AI reverse-engineering: site teardown, Playwright crawler (43+ pages), hybrid UI strategy decision
+- [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] — Beroz Playwright E2E run: 30/31 passed, full stack confirmed healthy, 1 bug (Create Requirement silent failure)
 
 ## Tools
 
@@ -97,6 +98,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-Build-Session-2026-04-15]] — Beroz build session: Juicebox clone, two-product frontend, full API map, project structure
 - [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — Beroz feature & workflow reference: all 10 pages, 8 agents, 5 skills, DB schema, env vars
 - [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — Beroz testing guide: test checklist, credentials, debugging, Railway deploy notes
+- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — Beroz Playwright E2E results: 30/31 passed, Create Requirement bug documented with reproduction steps
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Beroz Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
 - [[Raw/docs/Juicebox-Teardown-Session-2026-04-15]] — Juicebox teardown session: authenticated DOM capture, 700-line teardown doc, Playwright crawler, hybrid UI strategy
 

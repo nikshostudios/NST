@@ -25,14 +25,17 @@ NOT a pure clone. Take Juicebox's UI patterns (search-first, candidate cards, si
 
 **Next step:** Run `crawl-missing.js` to capture the search results page and candidate details, then feed the full HTML capture set to Claude Code to build the hybrid UI in `recruitment-agents/niksho-ui/`.
 
-### Beroz frontend — still the deployed version
-Beroz (previous Juicebox clone attempt) remains the current deployed frontend. The new hybrid UI will replace it once built and tested.
+### Beroz frontend — deployed and now E2E tested
+Beroz remains the current deployed frontend. Playwright E2E suite run 2026-04-15: **30/31 tests passed**. Full Flask → FastAPI → Supabase chain confirmed healthy. Role-based access control (TL vs Recruiter) verified. All 10 pages load cleanly.
 
-**Full Beroz reference docs now in vault:**
+**One open bug — Create Requirement fails silently.** The New Requirement modal submits but no row is written to Supabase. No error surfaces to the user. "Source Now" shows the same silent-failure pattern. Suspected cause: missing `.catch()` on the frontend `fetch()` or Flask → FastAPI proxy rejecting the POST. Debug path: DevTools → Network tab → inspect the POST response on `/api/requirements`. See [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] for full reproduction steps and fix checklist.
+
+**Full Beroz reference docs in vault:**
 - [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log
 - [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — feature & workflow reference (all 10 pages, 8 agents, 5 skills, DB schema, env vars)
 - [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist + Railway debugging guide
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows
+- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — E2E test results (30/31 pass, bug report)
 
 ### v2 System Architecture (still in progress)
 Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
@@ -49,6 +52,7 @@ Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementat
 - [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page capture with session persistence
 
 ### Open blockers
+- **Create Requirement bug** — POST to `/api/requirements` fails silently. Blocks core TL workflow. Fix before or alongside hybrid UI build.
 - **Foundit EDGE API key** — need from Prayag to start Phase 1.
 - **Playwright round 2** — `crawl-missing.js` needs to run to capture search page + candidate details before hybrid UI build.
 - **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
@@ -64,5 +68,5 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-15 evening — Juicebox teardown session ingested. Playwright crawler output logged. Hybrid UI strategy documented. New concepts: Authenticated-SPA-Capture, Search-First-SaaS-UI. New technique: Playwright-DOM-Crawling._
+_Updated on 2026-04-16 — Beroz Playwright E2E test report ingested. 30/31 pass. Create Requirement silent failure bug added as active blocker. Full stack confirmed healthy._
 

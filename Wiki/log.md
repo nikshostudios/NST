@@ -10,6 +10,24 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-16 — Beroz Playwright E2E test report ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] (Playwright E2E results — 30/31 passed, 1 reproducible bug)
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]]
+
+**Vault files updated:**
+- [[Wiki/index]] — new digest entry + new raw source entry added
+- [[Wiki/hot]] — Beroz section updated with test results; Create Requirement silent failure added as active blocker
+- [[Wiki/log]] — this entry
+
+**Notes:** Internal test report. No new concept notes warranted — the test findings are project-specific, not reusable frameworks. The one bug (Create Requirement fails silently, no Supabase write, no user feedback) is the key actionable output. Full reproduction steps and four root-cause hypotheses documented in the digest and the raw report. Bug should be resolved before or alongside the hybrid Juicebox UI build.
+
+---
+
 ## 2026-04-15c — Beroz companion docs ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]
