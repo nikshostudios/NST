@@ -219,14 +219,14 @@ related:
 
 ## Summary: Feature Count by Category
 
-| Category | Features |
-|---|---|
+| Category                    | Features                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | Job creation & distribution | JD Generator, Bias Checker, Skill Taxonomy, Job Approvals, Job Distribution, Job Persona, Soft Skills Mapping |
-| Screening & scoring | Pre-Screening Questions, AI Scoring (Suitability, BRIQ, Persona Fit, Configurability), Candidate Re-targeting |
-| Sourcing | Candidate Sourcing (250M+ passive), CV Parser (Lotus) |
-| Workflow automation | Recruitment Process Automation, Auto Interview Scheduling, Data Collection Slots, Offer Letter + E-Sign |
-| Assessment & personality | Persona Matching (DISC), Work Style Fit, Hybrid Assessments, Video Assessment Evaluation |
-| Intelligence agents | Zeus (Interview Intelligence), Ruby (Candidate Engagement) |
-| Platform & infrastructure | Analytics, Integrations (35+ ATS, 50+ HRMS), Candidate Portal, White-Label Career Sites, 72+ languages |
+| Screening & scoring         | Pre-Screening Questions, AI Scoring (Suitability, BRIQ, Persona Fit, Configurability), Candidate Re-targeting |
+| Sourcing                    | Candidate Sourcing (250M+ passive), CV Parser (Lotus)                                                         |
+| Workflow automation         | Recruitment Process Automation, Auto Interview Scheduling, Data Collection Slots, Offer Letter + E-Sign       |
+| Assessment & personality    | Persona Matching (DISC), Work Style Fit, Hybrid Assessments, Video Assessment Evaluation                      |
+| Intelligence agents         | Zeus (Interview Intelligence), Ruby (Candidate Engagement)                                                    |
+| Platform & infrastructure   | Analytics, Integrations (35+ ATS, 50+ HRMS), Candidate Portal, White-Label Career Sites, 72+ languages        |
 
 **Total: 29 distinct features across 3 platforms.**
