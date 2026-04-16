@@ -1,7 +1,7 @@
 ---
 type: wiki-digest
 generated-by: claude
-sources: ["[[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]]", "[[Raw/docs/Beroz-Testing-Guide-2026-04-15]]"]
+sources: ["[[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]]", "[[Raw/docs/Beroz-Testing-Guide-2026-04-15]]", "[[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]]"]
 date: 2026-04-15
 updated: 2026-04-16
 tags: [beroz, playwright, testing, exceltech, qa]
@@ -11,7 +11,7 @@ tags: [beroz, playwright, testing, exceltech, qa]
 
 ## Core finding
 
-Playwright E2E suite run against the live production deployment at `https://exceltechcomputers.up.railway.app`. **30 of 31 tests passed.** The entire Flask → FastAPI → Supabase chain is confirmed healthy, role-based access control works correctly for both TL and Recruiter roles, and all 10 pages load cleanly. One reproducible bug found: creating a new requirement fails silently — the modal closes but no row is written to Supabase and no error surfaces to the user.
+Playwright E2E suite run against the live production deployment at `https://exceltechcomputers.up.railway.app`. **31 of 31 tests passed** (initial run on 2026-04-15 was 30/31; the Create Requirement bug was identified, root-caused, fixed, and verified on 2026-04-16 — see [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]]). The entire Flask → Supabase chain is confirmed healthy (FastAPI AI layer merged into Flask as part of the fix), role-based access control works correctly for both TL and Recruiter roles, and all 10 pages load cleanly.
 
 ## What the tests confirmed
 
@@ -23,29 +23,23 @@ Playwright E2E suite run against the live production deployment at `https://exce
 
 **Search and analytics are functional.** Natural-language query parsing works ("Python developers in Singapore with 3+ years" returns structured results). Analytics Pipeline renders stats cards and a funnel chart. Usage tab shows token cost data. These are the most complex frontend components and they passed cleanly.
 
-## The bug — silent failure on Create Requirement
+## The bug — silent failure on Create Requirement (✅ resolved 2026-04-16)
 
 ```
-phase3-requirements.spec.js › Phase 3 › create requirement saves to DB  ❌ FAIL
+phase3-requirements.spec.js › Phase 3 › create requirement saves to DB  ✅ PASS
 ```
 
-**What happens:** Fill the New Requirement modal, click "Create & Source", modal closes (or freezes) — but no new row appears in Supabase. Most recent row in the `requirements` table is still dated 2026-04-12. No toast, no console error, no user feedback of any kind.
+**What was happening:** Fill the New Requirement modal, click "Create & Source", modal closed — but no new row appeared in Supabase, no toast, no error of any kind. Three compounding issues were hiding each other. Full root cause is in [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
 
-**Secondary symptom:** "Source Now" button also produces no feedback and appears to time out — same silent-failure pattern, possibly the same root cause.
+**Fix (commit `f2f0c0d`, deployed 2026-04-16):** FastAPI routes merged into Flask as `backend/ai_agents/core.py`, eliminating the `localhost:8001` dependency that was never running on Railway. Frontend `api()` helper updated to throw on non-2xx responses. `experience_min` type changed from `str | None` to `int | None`. Railway web service reconnected to the correct repo (`nikshostudios/beroz`). Auto-deploy now active on every push to `main`.
 
-**Four suspected causes, in order of likelihood:**
-1. Missing `await` or absent `.catch()` on the `fetch()` call in the Create modal JS — the error is swallowed before it reaches the UI
-2. Flask → FastAPI proxy failing on the POST route (`/api/requirements`) — auth token mismatch, payload shape issue, or CORS
-3. Supabase RLS policy blocking inserts for the `tl` role, but the 403/error not surfaced by the frontend
-4. Backend returning 422 (payload validation failure) with the frontend ignoring non-2xx responses
-
-**How to debug:** DevTools → Network tab → reproduce the flow → inspect the POST response body and status code. If the POST never fires at all, the bug is in the frontend JS before the fetch. If it fires and returns 4xx/5xx, the bug is the backend or the frontend's error handling. Railway logs will confirm which side is failing.
+**Post-fix result:** `npx playwright test phase3-requirements` — 1 passed (12.1s). Full suite: 31/31.
 
 ## Relevance to Niksho
 
-This test run closes the "Beroz is deployed but untested" gap. The production platform is now validated with a repeatable suite. Before the hybrid Juicebox UI described in [[Wiki/hot]] replaces Beroz, the Create Requirement bug needs to be fixed — it blocks the core TL workflow (create req → auto-source candidates). See [[Efforts/ExcelTech-Automation/Overview]] for the active build context.
+This test run validated the production platform end-to-end and surfaced the one remaining blocker (Create Requirement). That blocker is now resolved. The full TL workflow — create req → auto-source → shortlist — is unblocked on the live deployment. See [[Efforts/ExcelTech-Automation/Overview]] for the active build context.
 
-The test structure (7 spec files, one per phase, matching the test checklist in [[Raw/docs/Beroz-Testing-Guide-2026-04-15]]) is a reusable pattern for future platform versions. When the new UI ships, the same suite can be adapted with minimal changes since the API routes won't change.
+The test structure (7 spec files, one per phase, matching the test checklist in [[Raw/docs/Beroz-Testing-Guide-2026-04-15]]) is a reusable pattern for future platform versions. When the hybrid Juicebox UI ships, the same suite can be adapted with minimal changes since the API routes are stable.
 
 ## See also
 - [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — the test checklist this suite was built from

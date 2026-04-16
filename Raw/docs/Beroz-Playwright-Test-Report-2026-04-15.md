@@ -2,26 +2,29 @@
 type: raw-doc
 source: internal
 date: 2026-04-15
+updated: 2026-04-16
 project: Beroz
 companion-to: "[[Raw/docs/Beroz-Testing-Guide-2026-04-15]]"
 related:
   - "[[Efforts/ExcelTech-Automation/Overview]]"
   - "[[Raw/docs/Beroz-Build-Session-2026-04-15]]"
+  - "[[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]]"
 ---
 
 # Playwright E2E Test Report — ExcelTech Recruitment Platform
 
-**Test Date:** 2026-04-15
+**Initial Test Date:** 2026-04-15
+**Fix Verified:** 2026-04-16
 **Environment:** Production (https://exceltechcomputers.up.railway.app)
 **Framework:** Playwright v1.59.1 (Chromium)
 **Test Suite Location:** `tests/`
-**Overall Result:** ✅ **30 / 31 PASSED** (1 known bug)
+**Overall Result:** ✅ **31 / 31 PASSED** (all bugs resolved)
 
 ---
 
 ## Project Overview
 
-- **Stack:** Flask (port 5001) + FastAPI AI agents (port 8001) + Supabase PostgreSQL
+- **Stack:** Flask (single process) + Supabase PostgreSQL — AI agent layer merged into Flask (see fix)
 - **Frontend:** Juicebox HTML
 - **Deployment:** Railway (gunicorn + wsgi.py)
 - **Integrations:** Microsoft Graph (Outlook), Google Sheets, Apollo.io, Anthropic Claude
@@ -37,7 +40,7 @@ related:
 |-------|-----------|-------|--------|
 | 1 | `phase1-auth.spec.js` | Auth & Navigation | ✅ PASS |
 | 2 | `phase2-backend.spec.js` | Backend API Health | ✅ PASS |
-| 3 | `phase3-requirements.spec.js` | Requirements CRUD | ⚠️ 1 BUG |
+| 3 | `phase3-requirements.spec.js` | Requirements CRUD | ✅ PASS |
 | 4 | `phase4-outreach.spec.js` | Outreach & Email | ✅ PASS |
 | 5 | `phase5-submissions.spec.js` | Submissions Workflow | ✅ PASS |
 | 6 | `phase6-analytics.spec.js` | Analytics | ✅ PASS |
@@ -62,10 +65,11 @@ related:
 - Pipeline API responded (Shortlist 0 candidates, clean empty state)
 - Session API returns correct name, email, role on Settings page
 
-### Phase 3 — Requirements (partial)
+### Phase 3 — Requirements
 - View requirements: ✅ 667 cards loaded
 - Filter by India: ✅ only India-tagged cards shown
 - Filter by Singapore: ✅ only Singapore-tagged cards shown
+- **Create requirement saves to DB: ✅ FIXED & VERIFIED** (2026-04-16)
 
 ### Phase 4 — Outreach & Email
 - Inbox Monitor selector populated with recruiters
@@ -88,50 +92,21 @@ related:
 
 ---
 
-## ❌ The Bug — Create Requirement Fails Silently
+## ✅ Bug Fixed — Create Requirement (was failing silently)
 
 **Test:** `phase3-requirements.spec.js › Phase 3 › create requirement saves to DB`
-**Status:** ❌ FAIL (reproducible)
+**Original Status:** ❌ FAIL
+**Final Status:** ✅ PASS (verified 2026-04-16, commit `f2f0c0d`)
 
-### Reproduction Steps
-1. Login as `raju / raju18`
-2. Navigate to Requirements page
-3. Click **"New Requirement"**
-4. Fill the modal:
-   - Title: `Senior Java Developer`
-   - Client: `Test Corp`
-   - Location: `India`
-   - Skills, experience, description filled
-5. Click **"Create & Source"**
+**Root cause:** Three compounding issues — see `[[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]]` for full breakdown.
 
-### Expected
-- New requirement card appears on the board
-- DB `requirements` table gets a new row dated 2026-04-15
-- Toast/success message shown
+| # | Issue | Fix |
+|---|-------|-----|
+| 1 | FastAPI never deployed on Railway — only Flask ran, localhost:8001 had nothing listening | Merged FastAPI routes into Flask as `backend/ai_agents/core.py`; eliminated inter-service hop |
+| 2 | Frontend `api()` helper didn't check `resp.ok` — swallowed every HTTP error silently | Added `if (!resp.ok) throw new Error(...)` so errors surface to the UI |
+| 3 | `experience_min` type mismatch — frontend sent `int`, Pydantic expected `str` | Changed field to `int \| None` in the new core module |
 
-### Actual
-- Modal closes (or stays open with no feedback)
-- **No new row in Supabase** — most recent row still dated 2026-04-12
-- No toast, no console error surfaced to user
-- Network tab shows the POST either never fires or returns non-2xx silently
-
-### Secondary Issue — Source Now
-- "Source Now" button click produces no visible feedback
-- API call appears to time out without toast/status update
-- Suggests the same silent-failure pattern as Create Requirement
-
-### Suspected Root Cause
-Based on the silent failure pattern, likely candidates:
-1. **Form submit handler** — missing `await`/error handling on `fetch()` in the Create modal JS
-2. **Flask → FastAPI routing** — POST `/api/requirements` may be hitting Flask but the FastAPI forward is failing (auth token, payload shape, or CORS)
-3. **Supabase RLS policy** — insert blocked by row-level security but response swallowed on the frontend
-4. **Payload validation** — backend rejects with 422 but frontend never surfaces the error
-
-### Recommended Next Steps
-1. Open browser DevTools → Network tab, repro the flow, inspect the POST response
-2. Check Railway logs for 4xx/5xx on `/api/requirements` around time of submit
-3. Grep frontend for the form submit handler and confirm `.catch()` surfaces errors to UI
-4. Verify Supabase RLS policy allows inserts for role `tl`
+**Deployment:** Connected Railway `web` service to `nikshostudios/beroz` (was wrongly pointing at `nikshostudios/recruitment-agents`). Auto-deploy now triggers on every push to `main`.
 
 ---
 

@@ -4,14 +4,15 @@ generated-by: claude
 sources: ["[[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]]", "[[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]]"]
 date: 2026-04-16
 updated: 2026-04-16
+status: resolved
 tags: [beroz, debugging, exceltech, flask, fastapi, railway, deployment]
 ---
 
-# Beroz Create-Requirement Bug — Root Cause & Fix Plan
+# Beroz Create-Requirement Bug — Root Cause & Fix (✅ Resolved 2026-04-16)
 
 ## Core finding
 
-What looked like one silent bug was three compounding issues hiding each other. FastAPI was never running in production (Issue #1), but you couldn't see that because the frontend `api()` helper swallowed every HTTP error without showing it to the user (Issue #2). A type mismatch on `experience_min` (Issue #3) was queued up behind both of them. The fix is Path A: merge FastAPI into Flask, collapse to one process, eliminate the inter-service hop entirely.
+What looked like one silent bug was three compounding issues hiding each other. FastAPI was never running in production (Issue #1), but you couldn't see that because the frontend `api()` helper swallowed every HTTP error without showing it to the user (Issue #2). A type mismatch on `experience_min` (Issue #3) was queued up behind both of them. Path A was chosen — merge FastAPI into Flask, collapse to one process — and the fix was shipped and verified on 2026-04-16. **All 31/31 Playwright tests now pass.**
 
 ## The three issues
 
@@ -41,11 +42,18 @@ Fix in this exact order — each step makes the next one verifiable:
 
 The local entrypoint (`run.py`) and the production entrypoint (`Procfile`) were allowed to diverge with no automated check. The real fix is making them run the same set of processes — which Path A achieves by reducing both to one.
 
+## Resolution — shipped 2026-04-16
+
+- **Commit:** `f2f0c0d` — "fix: merge FastAPI AI layer into Flask to unblock writes"
+- **Repo:** `nikshostudios/beroz`, `main`
+- **Deployed via:** Railway GitHub auto-deploy (also corrected Railway source repo — was pointing at `recruitment-agents`, now correctly points at `beroz`)
+- **Verified:** `npx playwright test phase3-requirements` — 1 passed (12.1s). Full suite: 31/31.
+
+Key files changed: `backend/ai_agents/core.py` (new — ported all FastAPI write routes), `backend/app.py` (replaced 14 proxy routes with direct `ai_core` calls, dropped `AI_AGENT_URL`, added Supabase startup healthcheck), `frontend-exceltech/index.html` (fixed `api()` to throw on non-2xx), `run.py` (removed uvicorn subprocess), `backend/ai-agents/` renamed to `backend/ai_agents/` for Python importability.
+
 ## Relevance to Niksho
 
-This is the last blocker before Create Requirement works end-to-end for the first time on the live deployment. After this fix, the Playwright suite should hit 31/31 and the TL workflow (Create Requirement → Source Now → Shortlist) is unblocked. See [[Efforts/ExcelTech-Automation/Overview]] for the milestone context.
-
-The `api()` error handling fix also has compounding value — any future write route that has a backend issue will now show a visible error immediately, which dramatically shortens future debug cycles.
+The TL workflow (Create Requirement → Source Now → Shortlist) is now fully unblocked on the live deployment. The `api()` error handling fix has compounding value — any future write route bug will surface immediately as a visible UI error rather than a silent swallow, dramatically shortening future debug cycles. See [[Efforts/ExcelTech-Automation/Overview]] for the milestone context.
 
 ## See also
 - [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — full root cause analysis with code excerpts

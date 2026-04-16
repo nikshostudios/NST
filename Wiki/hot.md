@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-15b
+updated: 2026-04-16b
 max-words: 1000
 ---
 
@@ -11,7 +11,7 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-15 (evening)
+## Right now — 2026-04-16
 
 ### Juicebox teardown complete — UI reference captured
 Full reverse-engineering of Juicebox AI (app.juicebox.ai) completed. 700-line teardown document produced at `NST/research/2026-04-14-juicebox-agent-teardown.md` covering complete tech stack, design system (colors, typography, spacing, transitions), component hierarchy, and build plan. See [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]].
@@ -25,18 +25,18 @@ NOT a pure clone. Take Juicebox's UI patterns (search-first, candidate cards, si
 
 **Next step:** Run `crawl-missing.js` to capture the search results page and candidate details, then feed the full HTML capture set to Claude Code to build the hybrid UI in `recruitment-agents/niksho-ui/`.
 
-### Beroz frontend — deployed and now E2E tested
-Beroz remains the current deployed frontend. Playwright E2E suite run 2026-04-15: **30/31 tests passed**. Full Flask → FastAPI → Supabase chain confirmed healthy. Role-based access control (TL vs Recruiter) verified. All 10 pages load cleanly.
+### Beroz frontend — deployed, tested, and Create Requirement bug resolved ✅
+Beroz is the current deployed frontend. Playwright E2E suite: **31/31 tests passing** (initial run 2026-04-15 was 30/31; bug fixed and verified 2026-04-16, commit `f2f0c0d`). Full Flask → Supabase chain confirmed healthy. Role-based access control (TL vs Recruiter) verified. All 10 pages load cleanly.
 
-**Create Requirement bug — root cause found, fix planned.** Three compounding issues identified: (1) FastAPI was never deployed on Railway — only Flask starts via gunicorn, so all write routes hit `localhost:8001` and 502; (2) frontend `api()` helper has no `resp.ok` check, so every HTTP error is swallowed silently; (3) `experience_min` type mismatch (int sent, str expected → 422). Fix is Path A: merge FastAPI routes into Flask, one process. Fix order: `api()` first → merge routes (bring Pydantic validation logic, don't just copy-paste) → fix types → add startup healthcheck. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
+**Create Requirement bug — resolved.** Three compounding issues were fixed: (1) FastAPI merged into Flask as `backend/ai_agents/core.py` — eliminated the `localhost:8001` dependency that was never running on Railway; (2) frontend `api()` helper updated to throw on non-2xx — errors now surface immediately; (3) `experience_min` type changed from `str | None` to `int | None`. Railway web service also corrected to point at `nikshostudios/beroz` (was wrongly pointing at `recruitment-agents`). Auto-deploy is now live. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
 
 **Full Beroz reference docs in vault:**
 - [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log
 - [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — feature & workflow reference (all 10 pages, 8 agents, 5 skills, DB schema, env vars)
 - [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist + Railway debugging guide
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows
-- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — E2E test results (30/31 pass, bug report)
-- [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis + Path A fix plan
+- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — E2E test results (31/31 pass, fix verified)
+- [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis + resolution (all 4 steps shipped)
 
 ### v2 System Architecture (still in progress)
 Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
@@ -53,10 +53,12 @@ Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementat
 - [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page capture with session persistence
 
 ### Open blockers
-- **Create Requirement bug** — root cause found (FastAPI not deployed + api() swallows errors + type mismatch). Fix is Path A merge. Implementation prompt ready — run in Claude Code.
 - **Foundit EDGE API key** — need from Prayag to start Phase 1.
 - **Playwright round 2** — `crawl-missing.js` needs to run to capture search page + candidate details before hybrid UI build.
 - **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
+
+### Recently resolved
+- ~~**Create Requirement bug**~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`. FastAPI merged into Flask, `api()` fixed, types corrected, Railway source corrected. 31/31 tests passing.
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
@@ -69,5 +71,5 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-16 — Fix analysis ingested. Root cause found: FastAPI not deployed + api() swallows errors + type mismatch. Path A fix plan documented. Claude Code prompt ready._
+_Updated on 2026-04-16b — Fix verified and shipped. 31/31 Playwright tests passing. Create Requirement bug resolved (commit f2f0c0d). Vault docs updated to final state._
 

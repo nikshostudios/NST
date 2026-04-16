@@ -10,6 +10,27 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-16c — Beroz fix verification — vault updated to resolved state
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- `PLAYWRIGHT_TEST_REPORT.md` (uploaded — final state: 31/31, fix verified)
+- `PLAYWRIGHT_TEST_FIX_ANALYSIS.md` (uploaded — includes ✅ Resolution section, commit f2f0c0d)
+
+**Raw docs updated (in place):**
+- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — updated to 31/31, stack updated (Flask single-process), Phase 3 status → PASS, bug section replaced with "Bug Fixed" summary
+- [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — Resolution section added (commit, deployed, file change table), frontmatter updated with `status: resolved`
+
+**Wiki notes updated:**
+- [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] — core finding updated to 31/31, bug section rewritten as "resolved", Relevance updated
+- [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]] — title updated to reflect resolved state, Resolution section added, Relevance rewritten as past tense
+- [[Wiki/hot]] — Beroz section updated (31/31 confirmed), Create Requirement removed from Open blockers, added to "Recently resolved"
+- [[Wiki/log]] — this entry
+
+**Notes:** No new wiki notes created — all updates are to existing files. The fix (Path A: merge FastAPI into Flask) was implemented exactly as planned. Railway source repo was also corrected as part of the fix — auto-deploy is now live on every push to `nikshostudios/beroz` main.
+
+---
+
 ## 2026-04-16b — Beroz Create-Requirement fix analysis ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]

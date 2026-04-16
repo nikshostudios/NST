@@ -2,6 +2,8 @@
 type: raw-doc
 source: internal
 date: 2026-04-16
+updated: 2026-04-16
+status: resolved
 project: Beroz
 companion-to: "[[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]]"
 related:
@@ -201,3 +203,34 @@ After applying the fixes:
 2. Log in, create a requirement manually, confirm DB row in Supabase
 3. Click "Source Now" on an existing req, confirm toast + Shortlist populates
 4. Re-run the full Playwright suite — target 31/31
+
+---
+
+## ✅ Resolution — 2026-04-16
+
+All four fix steps were implemented and deployed:
+
+- **Commit:** `f2f0c0d` — "fix: merge FastAPI AI layer into Flask to unblock writes"
+- **Repo:** `nikshostudios/beroz`, branch `main`
+- **Deployed via:** Railway GitHub auto-deploy (corrected source from `recruitment-agents` → `beroz`)
+
+**Playwright result after fix:**
+```
+npx playwright test phase3-requirements.spec.js --grep "Create requirement saves to DB"
+1 passed (12.1s)
+```
+
+**Final score: 31 / 31 tests passing.**
+
+### What changed in the codebase
+
+| File | Change |
+| --- | --- |
+| `backend/ai_agents/core.py` | New — ports all FastAPI write/agent routes into Flask-callable functions |
+| `backend/ai_agents/__init__.py` | New — Python package marker |
+| `backend/ai_agents/config/__init__.py` | New — sub-package marker |
+| `backend/app.py` | Replaced 14 proxy routes with direct `ai_core` calls; dropped `AI_AGENT_URL`; added startup Supabase healthcheck |
+| `frontend-exceltech/index.html` | Fixed `api()` helper to throw on non-2xx |
+| `run.py` | Removed uvicorn subprocess; single Flask process |
+| `backend/ai-agents/` → `backend/ai_agents/` | Renamed for Python importability (dash → underscore) |
+| `.gitignore` | Updated paths for renamed directory; added test output dirs |
