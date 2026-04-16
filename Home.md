@@ -49,6 +49,12 @@ Active pushes with start, end, and a definition of done. Managed by the **four i
 
 ---
 
+## ✅ Shared To-Do
+
+**[[TODO|TODO.md]]** — the active task board for Nik + Nikhil. Updated by Claude after each session report. Open this if you're not sure what to work on next.
+
+---
+
 ## 🔥 Right now
 
 - **Top effort:** [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production, refining weekly
