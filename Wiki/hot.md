@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-16b
+updated: 2026-04-17
 max-words: 1000
 ---
 
@@ -34,7 +34,8 @@ Beroz is the current deployed frontend. Playwright E2E suite: **31/31 tests pass
 - [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log
 - [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — feature & workflow reference (all 10 pages, 8 agents, 5 skills, DB schema, env vars)
 - [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist + Railway debugging guide
-- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows
+- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows (system/architecture perspective)
+- [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number, TL approval loop
 - [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — E2E test results (31/31 pass, fix verified)
 - [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis + resolution (all 4 steps shipped)
 
@@ -71,5 +72,5 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-16b — Fix verified and shipped. 31/31 Playwright tests passing. Create Requirement bug resolved (commit f2f0c0d). Vault docs updated to final state._
+_Updated on 2026-04-17 — Beroz RCO Workflow doc ingested (recruiter UI perspective). Previous: Fix verified and shipped, 31/31 Playwright tests passing, Create Requirement bug resolved (commit f2f0c0d)._
 

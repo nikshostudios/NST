@@ -102,6 +102,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — Beroz Playwright E2E results: 30/31 passed, Create Requirement bug documented with reproduction steps
 - [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis for Create Requirement silent failure: 3 issues, Path A fix plan with code
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Beroz Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
+- [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — Beroz RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number actions, TL approval loop
 - [[Raw/docs/Juicebox-Teardown-Session-2026-04-15]] — Juicebox teardown session: authenticated DOM capture, 700-line teardown doc, Playwright crawler, hybrid UI strategy
 
 ## How to add to this index

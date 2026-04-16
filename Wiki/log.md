@@ -10,6 +10,21 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-17 — Beroz RCO Workflow ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] (RCO lifecycle from recruiter UI perspective — requirement flow, shortlist vs sequence actions, TL approval loop)
+
+**Vault files updated:**
+- [[Wiki/index]] — new raw source entry added under Internal docs
+- [[Wiki/hot]] — updated with new RCO workflow doc reference
+- [[Wiki/log]] — this entry
+
+**Notes:** Internal workflow document. Complements the existing [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] (system/architecture perspective) with the user-facing recruiter workflow: RCO creation → assignment → search → shortlist/sequence → mass mail/export/get number → submit to TL → approve/send to client. No new wiki concepts warranted — operational detail, not reusable framework.
+
+---
+
 ## 2026-04-16c — Beroz fix verification — vault updated to resolved state
 
 **Skill:** [[AIOS/skills/ingest-source]]
