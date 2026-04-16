@@ -9,7 +9,7 @@ owner: Nik + Nikhil
 
 This is the active task board for Nikhil. It is maintained by Claude after each session report. Tasks carry enough context that you should not need to ask why something is here.
 
-**Tags:** 👤 Sho = Shoham is best placed to handle this (sessions, prompting, testing, decisions) · 👤 Nikhil = Nikhil is best placed to handle this (coding, debugging, deployment) · 👥 Either = can be picked up by whoever is available
+**Tags:** 👤 Nikhil = needs ExcelTech-side context or access (recruiter workflows, credentials, internal comms, understanding what the team actually needs — his dad's company) · 👥 Either = any technical work, can be picked up by whoever is available
 
 ---
 
@@ -32,7 +32,7 @@ This is the active task board for Nikhil. It is maintained by Claude after each 
   > Three changes are live on Railway but NOT pushed to the GitHub repo: `upsert_candidate_by_name`, pipeline count fix, pipeline query limit. If Railway redeploys from GitHub (or Nikhil clones the repo), these changes will be lost. Push them now.
   > Ref: [[Wiki/hot]]
 
-- [ ] **Follow up with Prayag for Foundit EDGE API key** — 👤 Nik
+- [ ] **Follow up with Prayag for Foundit EDGE API key** — 👤 Nikhil
   > Phase 1 of the v2 architecture (replacing cookie-based Foundit scraping with the official EDGE API) is blocked until we have this key. No code work needed — this is a business/relationship task. Chase Prayag directly.
   > Ref: [[Raw/docs/sourcing-architecture]] · [[Wiki/hot]]
 
