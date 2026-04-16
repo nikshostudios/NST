@@ -9,7 +9,7 @@ owner: Nik + Nikhil
 
 This is the active task board for Nikhil. It is maintained by Claude after each session report. Tasks carry enough context that you should not need to ask why something is here.
 
-**Tags:** 👤 Sho = Shoham's task (business, comms, decisions) · 👤 Nikhil = coding/technical task · 👥 Either = can be picked up by whoever is available
+**Tags:** 👤 Sho = Shoham is best placed to handle this (sessions, prompting, testing, decisions) · 👤 Nikhil = Nikhil is best placed to handle this (coding, debugging, deployment) · 👥 Either = can be picked up by whoever is available
 
 ---
 
