@@ -10,6 +10,25 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-16b — Beroz Create-Requirement fix analysis ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] (root cause analysis — 3 compounding issues, Path A fix plan with code)
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]]
+
+**Vault files updated:**
+- [[Wiki/index]] — new digest + raw source entries
+- [[Wiki/hot]] — Beroz bug section updated with confirmed root cause and fix plan; blocker updated to reflect Path A decision
+- [[Wiki/log]] — this entry
+- [[TODO]] — Create Requirement task rewritten with full 4-step fix plan and Claude Code prompt instructions
+
+**Notes:** Root cause is three compounding issues: FastAPI not deployed on Railway, frontend api() swallowing errors silently, and a type mismatch on experience_min. Path A (merge FastAPI into Flask) chosen over Path C (second Railway service) — pre-MVP, no reason for the operational overhead. Claude Code implementation prompt generated and ready to run.
+
+---
+
 ## 2026-04-16 — Beroz Playwright E2E test report ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]

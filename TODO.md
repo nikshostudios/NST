@@ -2,7 +2,7 @@
 type: shared-todo
 generated-by: claude
 updated: 2026-04-16
-owner: Nik + Nikhil
+owner: Shoham + Nikhil
 ---
 
 # Shared To-Do — Niksho
@@ -17,14 +17,15 @@ This is the active task board for Nikhil. It is maintained by Claude after each 
 
 ### 🔥 Immediate 
 
-- [ ] **Debug and fix Create Requirement silent failure** — 👤 Nikhil
-  > The "New Requirement" modal submits, modal closes, but NO row is written to Supabase. Most recent DB row is still dated 2026-04-12. No toast, no error shown to user. This breaks Raju's core workflow.
-  > **Debug path:** Open DevTools → Network tab → reproduce the flow → inspect the POST response to `/api/requirements`. If the POST never fires, the bug is in the frontend JS. If it fires and returns 4xx/5xx, check Railway logs. Four root-cause suspects: (1) missing `.catch()` on the `fetch()` call, (2) Flask→FastAPI proxy rejecting the POST, (3) Supabase RLS blocking inserts for TL role, (4) backend returning 422 with frontend ignoring it.
-  > Ref: [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] · [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]]
-
-- [ ] **Fix Source Now silent failure (same session as above)** — 👤 Nikhil
-  > "Source Now" button click produces no visible feedback. API appears to time out with no toast or status update. Likely the same silent-failure pattern as Create Requirement — fix together. Check if the sourcing POST is also missing error surfacing.
-  > Ref: [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]]
+- [ ] **Fix Create Requirement + Source Now — run the Claude Code prompt (4 steps)** — 👥 Either
+  > Root cause found: FastAPI was never deployed on Railway (only Flask starts), so all write routes hit localhost:8001 which has nothing listening → 502. The frontend `api()` helper has no `resp.ok` check so the 502 was swallowed silently. A type mismatch on `experience_min` (int sent, str expected) is queued behind that. Fix is Path A: merge FastAPI into Flask, one process, no inter-service hop.
+  > **Run the Claude Code prompt** (copied below or in the companion doc). It covers all 4 steps in order.
+  > **Step 1** — Fix `api()` error handling in `frontend-exceltech/index.html:1110` so errors surface to the user.
+  > **Step 2** — Merge all routes from `backend/ai-agents/main.py` into `backend/app.py`. Bring Pydantic validation logic — rewrite as Flask type coercion, don't just copy-paste raw handlers. Update `Procfile`, `nixpacks.toml`, and `run.py` so local and prod run the same entrypoint.
+  > **Step 3** — Fix `experience_min: str | None` → `experience_min: int | None` in the Pydantic model. Audit other numeric-ish fields in the same model.
+  > **Step 4** — Add startup healthcheck: ping `AI_AGENT_URL/health` at Flask startup and log loudly if unreachable.
+  > **Verify:** `cd tests && npx playwright test phase3-requirements` → all green → then full suite → 31/31.
+  > Ref: [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]] · [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]]
 
 ### 🗂 Housekeeping
 
