@@ -15,7 +15,7 @@ This is the active task board for Nikhil. It is maintained by Claude after each 
 
 ## ExcelTech Automation
 
-### 🔥 Immediate — fix before next recruiter use
+### 🔥 Immediate — fix before we can call this stable
 
 - [ ] **Debug and fix Create Requirement silent failure** — 👤 Nikhil
   > The "New Requirement" modal submits, modal closes, but NO row is written to Supabase. Most recent DB row is still dated 2026-04-12. No toast, no error shown to user. This breaks Raju's core workflow.
