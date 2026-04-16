@@ -44,6 +44,9 @@ Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementat
 
 **Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
 
+### Competitor analysis — X0PA AI (first competitor profiled)
+Full feature extraction from X0PA AI sales deck (Singapura Finance presentation). 29 features across 3 platforms. Competitor note: [[Wiki/competitors/X0PA-AI]]. Source doc: [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]]. Key positioning insight: X0PA is assessment/compliance-heavy but doesn't touch the recruiter's daily operational loop (portal sourcing, outreach, follow-up, submission formatting). That's Niksho's lane.
+
 ### In motion (by intensity)
 - 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, Beroz frontend live. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — Juicebox teardown done, hybrid UI next.
 - 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode.
@@ -72,5 +75,5 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-17 — Beroz RCO Workflow doc ingested (recruiter UI perspective). Previous: Fix verified and shipped, 31/31 Playwright tests passing, Create Requirement bug resolved (commit f2f0c0d)._
+_Updated on 2026-04-17b — X0PA AI competitor analysis ingested (29 features, 3 platforms). Beroz RCO Workflow doc also ingested earlier today. Previous: 31/31 Playwright tests passing, Create Requirement bug resolved (commit f2f0c0d)._
 

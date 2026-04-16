@@ -70,6 +70,12 @@ Software and systems we reference.
 - [[Wiki/tools/Paper-Design]] — design-to-code intermediary connected to Claude Code; visual iteration → working code
 - [[Wiki/tools/Humbalytics]] — analytics + AB testing operated by Claude via API; autonomous CRO agent capability
 
+## Competitors
+
+Direct and adjacent competitors analysed against Niksho's positioning.
+
+- [[Wiki/competitors/X0PA-AI]] — Singapore-based AI recruitment platform (est. 2017). Strong on assessment, compliance, enterprise integrations. Weak on end-to-end recruiter workflow automation, job portal sourcing, outreach/follow-up. 29 features across 3 platforms.
+
 ## People
 
 Humans whose work shaped how we think about this stuff.
@@ -103,6 +109,9 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis for Create Requirement silent failure: 3 issues, Path A fix plan with code
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Beroz Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
 - [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — Beroz RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number actions, TL approval loop
+
+### Competitor analysis
+- [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]] — X0PA AI full feature extraction from sales deck (29 features, 3 platforms, Singapura Finance presentation)
 - [[Raw/docs/Juicebox-Teardown-Session-2026-04-15]] — Juicebox teardown session: authenticated DOM capture, 700-line teardown doc, Playwright crawler, hybrid UI strategy
 
 ## How to add to this index

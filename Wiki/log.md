@@ -10,6 +10,27 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-17b — X0PA AI competitor analysis ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- `X0PA-AI-Recruiter-Features-Singapura-Finance.pptx` (uploaded — sales deck for Singapura Finance)
+
+**Raw docs created:**
+- [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]] — full feature extraction (29 features across 3 platforms: AI Recruiter, X0PA ROOM, Agentic AI)
+
+**Wiki notes created:**
+- [[Wiki/competitors/X0PA-AI]] — competitor profile with feature comparison, overlap analysis, strategic positioning vs Niksho
+
+**Vault files updated:**
+- [[Wiki/index]] — new "Competitors" section added, new raw source entry under "Competitor analysis"
+- [[Wiki/hot]] — updated with competitor analysis reference
+- [[Wiki/log]] — this entry
+
+**Notes:** First competitor analysis note in the vault. Created `Wiki/competitors/` as a new category. Key finding: X0PA is wide (29 features, enterprise integrations, assessment depth, 72+ languages) but doesn't solve the recruiter's daily operational grind — no job portal sourcing, no outreach/follow-up automation, no submission formatting. Niksho's positioning: "X0PA helps you evaluate candidates better; Niksho helps you find, contact, and deliver them faster."
+
+---
+
 ## 2026-04-17 — Beroz RCO Workflow ingestion
 
 **Skill:** [[AIOS/skills/ingest-source]]
