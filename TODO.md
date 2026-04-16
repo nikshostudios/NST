@@ -7,9 +7,9 @@ owner: Nik + Nikhil
 
 # Shared To-Do — Niksho
 
-This is the active task board for Nik and Nikhil. It is maintained by Claude after each session report. Tasks carry enough context that you should not need to ask why something is here.
+This is the active task board for Nikhil. It is maintained by Claude after each session report. Tasks carry enough context that you should not need to ask why something is here.
 
-**Tags:** 👤 Nik = Shoham's task (business, comms, decisions) · 👤 Nikhil = coding/technical task · 👥 Either = can be picked up by whoever is available
+**Tags:** 👤 Sho = Shoham's task (business, comms, decisions) · 👤 Nikhil = coding/technical task · 👥 Either = can be picked up by whoever is available
 
 ---
 
