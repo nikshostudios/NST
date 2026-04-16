@@ -28,7 +28,7 @@ NOT a pure clone. Take Juicebox's UI patterns (search-first, candidate cards, si
 ### Beroz frontend — deployed and now E2E tested
 Beroz remains the current deployed frontend. Playwright E2E suite run 2026-04-15: **30/31 tests passed**. Full Flask → FastAPI → Supabase chain confirmed healthy. Role-based access control (TL vs Recruiter) verified. All 10 pages load cleanly.
 
-**One open bug — Create Requirement fails silently.** The New Requirement modal submits but no row is written to Supabase. No error surfaces to the user. "Source Now" shows the same silent-failure pattern. Suspected cause: missing `.catch()` on the frontend `fetch()` or Flask → FastAPI proxy rejecting the POST. Debug path: DevTools → Network tab → inspect the POST response on `/api/requirements`. See [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] for full reproduction steps and fix checklist.
+**Create Requirement bug — root cause found, fix planned.** Three compounding issues identified: (1) FastAPI was never deployed on Railway — only Flask starts via gunicorn, so all write routes hit `localhost:8001` and 502; (2) frontend `api()` helper has no `resp.ok` check, so every HTTP error is swallowed silently; (3) `experience_min` type mismatch (int sent, str expected → 422). Fix is Path A: merge FastAPI routes into Flask, one process. Fix order: `api()` first → merge routes (bring Pydantic validation logic, don't just copy-paste) → fix types → add startup healthcheck. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
 
 **Full Beroz reference docs in vault:**
 - [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log
@@ -36,6 +36,7 @@ Beroz remains the current deployed frontend. Playwright E2E suite run 2026-04-15
 - [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist + Railway debugging guide
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows
 - [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — E2E test results (30/31 pass, bug report)
+- [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis + Path A fix plan
 
 ### v2 System Architecture (still in progress)
 Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
@@ -52,7 +53,7 @@ Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementat
 - [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page capture with session persistence
 
 ### Open blockers
-- **Create Requirement bug** — POST to `/api/requirements` fails silently. Blocks core TL workflow. Fix before or alongside hybrid UI build.
+- **Create Requirement bug** — root cause found (FastAPI not deployed + api() swallows errors + type mismatch). Fix is Path A merge. Implementation prompt ready — run in Claude Code.
 - **Foundit EDGE API key** — need from Prayag to start Phase 1.
 - **Playwright round 2** — `crawl-missing.js` needs to run to capture search page + candidate details before hybrid UI build.
 - **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
@@ -68,5 +69,5 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-16 — Beroz Playwright E2E test report ingested. 30/31 pass. Create Requirement silent failure bug added as active blocker. Full stack confirmed healthy._
+_Updated on 2026-04-16 — Fix analysis ingested. Root cause found: FastAPI not deployed + api() swallows errors + type mismatch. Path A fix plan documented. Claude Code prompt ready._
 
