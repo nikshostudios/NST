@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-17
+updated: 2026-04-17c
 max-words: 1000
 ---
 
@@ -27,6 +27,12 @@ Two commits shipped to `origin/main` and auto-deployed via Railway: **`423a01e`*
 **Access model:** visibility = owner **OR** `access_level='shared'` **OR** listed in collaborators. Edit/archive/delete = owner-only (`created_by == session_email`).
 
 **Full details:** [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] · [[Raw/docs/Beroz-Session-2026-04-17]]
+
+### Planning artifact for the Projects ship — preserved
+The morning planning session that drove the ship is now filed at [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] with a digest at [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]]. Useful for understanding *why* the ship looks the way it does — what was on the table, what the open questions were before implementation collapsed them. The avatar's bottom-left placement (vs the originally-planned top-right header) and the Project Card boundary (vs a flat sidebar) are the main divergences worth knowing.
+
+### Chrome extension for outreach — DEFERRED, novel concept added
+The planning session raised but did not commit to building a Gmail/Outlook extension that mirrors Juicebox's "send from your own inbox, log to platform" pattern. Trade-offs (deliverability vs build cost, store reviews, MS/Google policy risk) and a forward-compat ask (let `outreach_event` accept an event source field) are now captured at [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]].
 
 ### Dev-loop change — auto git-pull hook
 Added a `UserPromptSubmit` hook in `~/.claude/settings.json` that runs `git -C ".../beroz" pull --ff-only origin main` before every prompt. Keeps local in sync with GitHub (defends against the "Claude edits a stale file" class of bug). Git auth side-quest also resolved: `gh auth setup-git` switched git from cached `thenikhil05` to active `nikshostudios`. See [[Wiki/techniques/Auto-Git-Pull-Hook]].
@@ -65,9 +71,12 @@ Juicebox reverse-engineering produced a 700-line teardown + 43 HTML captures. Es
 ### New to the vault today
 - [[Wiki/concepts/Projects-as-Scoping-Primitive]]
 - [[Wiki/concepts/Search-First-Hero-Mode-Chips]]
+- [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]]
 - [[Wiki/techniques/Auto-Git-Pull-Hook]]
 - [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]]
+- [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]]
 - [[Raw/docs/Beroz-Session-2026-04-17]]
+- [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]]
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
@@ -81,4 +90,4 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-17 — ingested Beroz-Session-2026-04-17 (Projects layer + sidebar + Search hero shipped to production). Created 1 digest, 2 concept notes, 1 technique note. Previous: X0PA AI competitor analysis ingested; Create Requirement bug resolved (commit f2f0c0d)._
+_Updated on 2026-04-17c — ingested Beroz-Frontend-Planning-2026-04-17 (the planning artifact that drove today's Projects ship); added Personal-Inbox-Outreach-Tracking concept (deferred Chrome extension decision). Previous (2026-04-17): Beroz Projects layer + Search hero shipped to production. Earlier: X0PA AI competitor analysis; Create Requirement bug resolved (commit f2f0c0d)._

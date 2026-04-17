@@ -1,12 +1,34 @@
 ---
 type: wiki-log
 generated-by: claude
-updated: 2026-04-17
+updated: 2026-04-17d
 ---
 
 # Wiki — Log
 
 Append-only timeline of ingestion and wiki edits. New entries at the top.
+
+---
+
+## 2026-04-17d — Beroz Frontend Planning artifact ingestion (planning → ship loop closed)
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- Beroz Frontend Planning Session 2026-04-17 (provided inline via `/ingest-source` — TODO list of 4 frontend changes + Chrome extension question + Claude Code prompt + open questions)
+
+**Raw docs created:**
+- [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — full planning session with TODOs, Claude Code prompt, open questions
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]] — planning artifact digest with `status: planning-shipped` callout linking to the same-day ship
+- [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — reusable concept for the deferred Chrome extension question (deliverability vs build cost trade-offs, when to build, forward-compat schema ask)
+
+**Navigation files updated:**
+- [[Wiki/index]] — added 1 concept, 1 digest, 1 raw doc; `updated:` bumped to 2026-04-17c
+- [[Wiki/hot]] — added "planning artifact preserved" section + "Chrome extension deferred" callout; new files added to "New to the vault today"; footer timestamp bumped
+- [[Efforts/Niksho-SaaS-Product/v2-Planning-Log]] — new "Beroz Frontend Polish — Planning → Ship" section with all 4 implementation TODOs marked ✅ shipped, gating decision marked settled, Chrome extension kept as open deferred item; bonus shipped items + carried-forward follow-ups also captured
+
+**Notes:** This ingestion was unusual — the planning artifact was uploaded for filing **after** the implementation work it described had already been shipped and ingested earlier today (entry 2026-04-17c above). Rather than treating that as wasted, the planning doc is preserved as the historical decision-moment artifact, with a "superseded by ship" callout in the digest pointing forward to [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]]. The main divergences between plan and ship are documented for future readers: avatar shipped at bottom-left of sidebar (not top-right header as planned), and the gating Project ↔ Agent question was resolved as a pragmatic blend (Projects as real Supabase primitive, Requirements stays global, scoping per-surface). The Chrome extension question is the only TODO that remained open after the ship — it now has its own concept page so the trade-off doesn't have to be re-derived next time it comes up.
 
 ---
 
