@@ -62,22 +62,34 @@ Beroz frontend build is complete. Juicebox clone integrated with ExcelTech backe
 
 ---
 
-## Beroz Frontend Polish — Planning (2026-04-17)
+## Beroz Frontend Polish — Planning → Ship (2026-04-17)
 
-Next code pass on the SaaS shell (`frontend-saas/index.html`). Full session: [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] · digest: [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]]. Four scoped changes, one deferred decision.
+Planning session: [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] · planning digest: [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]].
+**Shipped same day:** commits `423a01e` + `56ba201`. Ship digest: [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] · ship raw: [[Raw/docs/Beroz-Session-2026-04-17]].
 
-### SaaS shell — Ready to implement
-- [ ] **Profile avatar dropdown** — make `.avatar` (top-right header, ~line 902) clickable. Menu items: Invite members · Help center · Knowledge base · Contact support · Sign out. Visual ref: Juicebox settings dropdown.
-- [ ] **Sidebar: rename "recruitment agent" → "Projects"** (~lines 816–887). Make clickable. Dropdown: search field ("Find projects") + project list + "View all projects →" footer link.
-- [ ] **Sidebar: add persistent "All Projects" entry** at the very top of the sidebar (above the Projects dropdown). Routes to `page-all-projects`.
-- [ ] **Build out `page-all-projects`** — table with columns: Title · Progress · Created on · Collaborators · Status. Top-right "Create new project +" button → modal: Project Title (required) · Access Level (Shared/Private) · Collaborators (optional) · "Create Project →".
-- [ ] **Remove `#page-agent-home` entirely** (~lines 910–929). Set default landing route to `page-all-projects`.
+### SaaS shell — ✅ Shipped 2026-04-17
+- [x] **Profile avatar dropdown** — wired to real modals (Invite members, Help center, Knowledge base, Contact support, Sign out). Implementation note: avatar **moved to bottom-left of sidebar** (opens upward) instead of top-right header. Header is now minimal (notifications + page title only).
+- [x] **Sidebar: rename "recruitment agent" → "Projects"** with clickable dropdown, search field, project list, footer link. Lives inside the new boxed Project Card.
+- [x] **Sidebar: persistent "All Projects" entry** at the top of the sidebar (global-top zone, above the Project Card).
+- [x] **`page-all-projects` list + Create Project flow** with Title, Progress, Created on, Collaborators, Status; modal has Project Title (required), Access Level (Shared/Private), Collaborators (optional). Backed by real Supabase tables (`projects`, `project_collaborators`).
+- [x] **Removed `#page-agent-home`.** Default landing is now `page-all-projects`. Dynamic greeting code also removed.
 
-### Gating decision (must settle BEFORE the All Projects schema is built)
-- [ ] **Project ↔ Agent relationship.** Reading A: Project = client engagement, contains many requirements/agents (3-level hierarchy). Reading B: Project = renamed agent (presentational rename only). Recommendation in digest: Reading A. Needs Shoham + Nikhil sign-off.
+### Gating decision — settled
+- [x] **Project ↔ Agent relationship.** Resolved as a pragmatic blend: Projects are a real Supabase primitive (Reading A's data model) but **Requirements stays global** (TL-owned pool). `requirements.project_id` is a nullable FK — surfaces opt into project scoping. See [[Wiki/concepts/Projects-as-Scoping-Primitive]].
 
-### Deferred — explicit non-goal for this code pass
+### Deferred — explicit non-goal (still open)
 - [ ] **Chrome extension for outreach tracking (Gmail/Outlook).** Mirrors Juicebox's [[Wiki/concepts/Personal-Inbox-Outreach-Tracking|personal-inbox tracking]] pattern. Decision pending — full trade-off analysis in the concept note. Forward-compat ask: ensure `outreach_event` schema accepts an event source field (`platform | extension | imap_scan`) so this can be added later without a rewrite.
+
+### Bonus shipped (not in the planning doc)
+- [x] Search page rebuilt as intent-capture hero with 4 mode chips. See [[Wiki/concepts/Search-First-Hero-Mode-Chips]].
+- [x] `UserPromptSubmit` git-pull hook installed. See [[Wiki/techniques/Auto-Git-Pull-Hook]].
+
+### Carried forward (from the ship digest)
+- [ ] Full Searches page redesign (post-query layout) — second competitor screenshot pending from Nikhil.
+- [ ] `/api/search` project scoping (currently ignores `state.activeProject`).
+- [ ] `/dashboard` legacy route — redirect / delete / leave.
+- [ ] `POST /api/team/invite` — Invite Members modal is placeholder.
+- [ ] Requirement ↔ Project backfill (old requirements have `project_id = NULL`).
 
 - [ ] Obtain Foundit EDGE API key from Prayag Sanghvi (required for Phase 1)
 - [ ] Nikhil to upload ExcelTech tracking sheet (required for Phase 3)

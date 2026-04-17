@@ -35,6 +35,7 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Search-First-SaaS-UI]] — natural-language search as the primary interface pattern (vs dashboard-first)
 - [[Wiki/concepts/Search-First-Hero-Mode-Chips]] — search-first homepage pattern with intent-capture mode chips + example queries + collapse-on-submit
 - [[Wiki/concepts/Projects-as-Scoping-Primitive]] — Projects as the top-level scoping unit; access model + sidebar 3-zone encoding
+- [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — browser-extension pattern (Juicebox) for logging outreach from a recruiter's personal Gmail/Outlook back to the platform; the deliverability-vs-build-cost trade
 
 ## Techniques
 
@@ -61,6 +62,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] — Beroz Playwright E2E run: 30/31 passed, full stack confirmed healthy, 1 bug (Create Requirement silent failure)
 - [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]] — root cause analysis: 3 compounding issues (FastAPI not deployed, api() swallows errors, type mismatch), fix plan = Path A merge + api() fix + type fix + healthcheck
 - [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — Projects layer + sidebar 3-zone restructure + Search hero shipped to production (commits 423a01e, 56ba201)
+- [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]] — planning artifact for the Projects layer ship: 4 TODOs (avatar dropdown, Projects nav, All Projects page, kill Agent Home), gating decision on Project ↔ Agent, deferred Chrome extension question
 
 ## Tools
 
@@ -114,6 +116,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Beroz Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
 - [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — Beroz RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number actions, TL approval loop
 - [[Raw/docs/Beroz-Session-2026-04-17]] — Beroz session log: Projects layer, sidebar 3-zone refactor, Search hero, avatar dropdown (commits 423a01e + 56ba201)
+- [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — planning session that preceded the Projects layer ship: 4 TODOs, Claude Code prompt, open Project ↔ Agent question, Chrome extension deferred
 
 ### Competitor analysis
 - [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]] — X0PA AI full feature extraction from sales deck (29 features, 3 platforms, Singapura Finance presentation)

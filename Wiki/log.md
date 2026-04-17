@@ -1,12 +1,50 @@
 ---
 type: wiki-log
 generated-by: claude
-updated: 2026-04-10
+updated: 2026-04-17
 ---
 
 # Wiki — Log
 
 Append-only timeline of ingestion and wiki edits. New entries at the top.
+
+---
+
+## 2026-04-17c — Beroz Projects Layer session ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- `SESSION-2026-04-17.md` (uploaded — Beroz session log for Projects layer + sidebar refactor + Search hero)
+
+**Raw docs created:**
+- [[Raw/docs/Beroz-Session-2026-04-17]] — full session log (SQL schema, API surface, sidebar structure, key decisions, follow-ups, smoke-test checklist)
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — production ship digest with Niksho relevance
+- [[Wiki/concepts/Projects-as-Scoping-Primitive]] — Projects as top-level scoping unit; access model + sidebar 3-zone encoding
+- [[Wiki/concepts/Search-First-Hero-Mode-Chips]] — intent-capture homepage pattern (chips, example queries, collapse-on-submit)
+- [[Wiki/techniques/Auto-Git-Pull-Hook]] — Claude Code `UserPromptSubmit` hook for keeping local in sync with GitHub
+
+**Navigation files updated:**
+- [[Wiki/index]] — added 2 concepts, 1 technique, 1 digest, 1 raw doc; bumped `updated:` to 2026-04-17
+- [[Wiki/hot]] — rewritten to lead with Projects layer ship; carried over open blockers and guardrails
+- [[Efforts/ExcelTech-Automation/Overview]] — added 2026-04-17 decision entry
+
+**Decisions captured:**
+- Requirements stays global (TL-owned pool); `project_id` column kept nullable on `requirements` for future opt-in scoping
+- Any logged-in user can create a Project; edit/archive/delete = owner-only
+- Project-scoped surfaces: Searches, Shortlist. Global: Requirements, Contacts, Sequences, Submissions, Analytics, Integrations
+- Default landing is now All Projects (Agent Home deleted)
+- Avatar moved to bottom-left sidebar; header minimised to notifications + title
+- Search page rebuilt as mode-chip hero; chips toggle placeholder only (single backend call)
+- Auto git-pull hook added to `~/.claude/settings.json` for the Beroz repo
+
+**Known gaps / followups:**
+- `/api/search` ignores `state.activeProject` — cosmetic scoping only for now; do not wire without Nikhil's sign-off
+- Full post-query Searches layout pending — second competitor screenshot expected from Nikhil
+- Legacy `/dashboard` route still exists — decision pending (redirect / delete / leave)
+- Invite members is a placeholder — no `POST /api/team/invite` endpoint yet
+- `supabase-py` has no DDL support — schema changes remain manual via Supabase Console
 
 ---
 

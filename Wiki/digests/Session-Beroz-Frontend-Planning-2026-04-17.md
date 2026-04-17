@@ -4,11 +4,13 @@ generated-by: claude
 sources: ["[[Raw/docs/Beroz-Frontend-Planning-2026-04-17]]"]
 date: 2026-04-17
 updated: 2026-04-17
-status: planning
+status: planning-shipped
 tags: [beroz, frontend, ui, saas, juicebox, projects, navigation, planning]
 ---
 
 # Beroz Frontend Polish — SaaS Shell Navigation & Profile Menu (Planning, 2026-04-17)
+
+> **Status update — superseded by ship.** The four implementation TODOs in this planning session were executed and shipped to production the same day in commits `423a01e` + `56ba201`. See [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] for the shipped state, the architectural decisions that were settled during implementation (Requirements-as-global, avatar moved to bottom-left, Project Card boundary), and follow-ups carried forward. This digest is preserved as the **planning artifact** that captures the decision moment — useful for understanding *why* the ship looks the way it does and what was on the table beforehand.
 
 ## Core argument
 
@@ -69,16 +71,15 @@ This pulls the sidebar's information architecture in line with how the work is a
 └─────────────────────────────────┘
 ```
 
-## Open question that gates everything else
+## Open question that gates everything else (settled at ship time)
 
-**What is the relationship between a Project and an Agent?** Two readings are still on the table:
+The planning session left this question on the table:
 
-- **Reading A — Project = client engagement, contains many agents/requirements.** "Acme Corp – Backend Engineer role" is a project; the Screener, Outreach, Follow-up agents all run *inside* it; a single Acme project can also house 3 different requirements with their own pipelines.
-- **Reading B — Project = renamed agent.** Backwards-compatible with the existing data model where each "agent" is essentially a requirement-scoped pipeline; the rename is presentational, not structural.
+**What is the relationship between a Project and an Agent?** Two readings:
+- **Reading A — Project = client engagement, contains many agents/requirements** (3-level hierarchy: Project → Requirements → Candidates).
+- **Reading B — Project = renamed agent** (presentational rename only).
 
-This needs to be settled **before** the All Projects page schema is built. Reading A implies Project → Requirements → Candidates as a 3-level hierarchy and changes the sidebar dropdown semantics (Acme has multiple roles inside it). Reading B is shipping today's data model with new labels.
-
-**Recommendation (Shoham/Nikhil to confirm):** Reading A. The recruiter's mental model is the *client engagement*, not the individual requirement. Multi-requirement-per-client is real (one Acme client can have 3 open roles at once) and the existing flat agent-per-requirement model already creates UX friction. Doing the rename without the re-grouping just renames the friction.
+**What actually shipped (see [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]]):** A pragmatic blend, leaning A but not committing fully. `requirements.project_id` was added as a **nullable FK** — the Projects layer exists as a real Postgres primitive, but Requirements stays a global TL-owned pool. Surfaces opt into project scoping (Searches, Shortlist) while the TL Submission Queue stays untouched. This sidesteps the gating question by making it deferrable per-surface instead of all-at-once. See [[Wiki/concepts/Projects-as-Scoping-Primitive]] for the full pattern.
 
 ## Relevance to Niksho
 
@@ -90,7 +91,10 @@ The Chrome-extension question, even though deferred, ties directly to one of the
 
 ## See also
 - [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — full source planning doc with TODO list and Claude Code prompt
-- [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — the browser-extension outreach pattern (Juicebox)
+- [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — what actually shipped (commits 423a01e + 56ba201)
+- [[Wiki/concepts/Projects-as-Scoping-Primitive]] — the architectural pattern that resolved the planning's gating question
+- [[Wiki/concepts/Search-First-Hero-Mode-Chips]] — the Search hero pattern that landed alongside (not in this planning doc)
+- [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — the browser-extension outreach pattern (Juicebox) — still deferred
 - [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]] — the Create Requirement fix that unblocked this work
 - [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]] — the source UI patterns being adapted
 - [[Wiki/concepts/Search-First-SaaS-UI]] — the Juicebox-derived design pattern Beroz already inherits

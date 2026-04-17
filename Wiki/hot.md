@@ -11,69 +11,74 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-16
+## Right now — 2026-04-17
 
-### Juicebox teardown complete — UI reference captured
-Full reverse-engineering of Juicebox AI (app.juicebox.ai) completed. 700-line teardown document produced at `NST/research/2026-04-14-juicebox-agent-teardown.md` covering complete tech stack, design system (colors, typography, spacing, transitions), component hierarchy, and build plan. See [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]].
+### Projects layer + sidebar refactor + Search hero → LIVE in ExcelTech production ✅
+Two commits shipped to `origin/main` and auto-deployed via Railway: **`423a01e`** (Projects layer, sidebar refinement, Search hero) and **`56ba201`** (frontend-saas mockup mirror). Supabase schema was applied manually in the Dashboard SQL Editor before the push (`supabase-py` has no DDL support — an open constraint on future schema changes).
 
-**Playwright DOM crawler built and run.** Automated crawler at `recruitment-agents/juicebox-crawler/` captured 43 HTML files covering every sidebar page, modals, settings, integrations. Second pass script (`crawl-missing.js`) ready to capture missing pages: search results (the #1 priority), candidate details, agent chat conversation, analytics sub-tabs, sequence details.
+**What's new on `/app`:**
+- **Projects are real.** New Supabase tables `projects` (id, title, access_level shared|private, status, created_by, created_at) + `project_collaborators` (many-to-many). `requirements.project_id` column exists but is **unused on purpose** — Requirements stays global.
+- **Sidebar is now a 3-zone layout.** Global-top (All Projects) → **Project Card** (Projects dropdown / Searches / Shortlist, scoped by `state.activeProject`) → Global-middle (Requirements / Contacts / Sequences / Submissions TL-only / Analytics / Integrations). The box around the Project Card is the visual encoding of the scoping boundary. See [[Wiki/concepts/Projects-as-Scoping-Primitive]].
+- **Agent Home is gone.** Default landing is now All Projects. Greeting + chat input + quick-action chips all deleted. The "chat is the home" instinct is reversed.
+- **Search page rebuilt as a competitor-inspired hero.** "Hey \<firstName\>, who are you looking for?" + 4 mode chips (Find Similar / JD / Boolean / Manual — chips only toggle placeholder, backend identical) + purple-glow textarea + 5 clickable example queries + collapse-on-submit. Pattern extracted as [[Wiki/concepts/Search-First-Hero-Mode-Chips]].
+- **Avatar moved to bottom-left sidebar, opens upward, 5 items all wired** (Invite members, Help center, Knowledge base, Contact support, Sign out). No more console.log stubs. Header is now minimal (notifications + title).
+- **Sibling mockup** at `frontend-saas/index.html` mirrors the UI in pure in-memory state for reference.
 
-**Key insight: search-first, not dashboard-first.** The first Claude Code build attempt produced a generic dashboard (metric cards, pipeline tables). Juicebox's actual UI is a [[Wiki/concepts/Search-First-SaaS-UI|search-first interface]] — natural language search bar → AI-ranked candidate cards with match explanations. The Niksho UI must follow this pattern. See [[Wiki/concepts/Search-First-SaaS-UI]].
+**Access model:** visibility = owner **OR** `access_level='shared'` **OR** listed in collaborators. Edit/archive/delete = owner-only (`created_by == session_email`).
 
-### Frontend strategy: hybrid Juicebox + Niksho
-NOT a pure clone. Take Juicebox's UI patterns (search-first, candidate cards, sidebar navigation, status dropdowns, filter/criteria pills) and combine with Niksho-specific features (multi-agent dashboards, screening pipeline, outreach sequences, submission formatting for client delivery). The captured HTML files are the ground-truth reference for Claude Code.
+**Full details:** [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] · [[Raw/docs/Beroz-Session-2026-04-17]]
 
-**Next step:** Run `crawl-missing.js` to capture the search results page and candidate details, then feed the full HTML capture set to Claude Code to build the hybrid UI in `recruitment-agents/niksho-ui/`.
+### Dev-loop change — auto git-pull hook
+Added a `UserPromptSubmit` hook in `~/.claude/settings.json` that runs `git -C ".../beroz" pull --ff-only origin main` before every prompt. Keeps local in sync with GitHub (defends against the "Claude edits a stale file" class of bug). Git auth side-quest also resolved: `gh auth setup-git` switched git from cached `thenikhil05` to active `nikshostudios`. See [[Wiki/techniques/Auto-Git-Pull-Hook]].
 
-### Beroz frontend — deployed, tested, and Create Requirement bug resolved ✅
-Beroz is the current deployed frontend. Playwright E2E suite: **31/31 tests passing** (initial run 2026-04-15 was 30/31; bug fixed and verified 2026-04-16, commit `f2f0c0d`). Full Flask → Supabase chain confirmed healthy. Role-based access control (TL vs Recruiter) verified. All 10 pages load cleanly.
+### Beroz — 31/31 Playwright passing, Create Requirement fix shipped (carried from 2026-04-16)
+Commit `f2f0c0d` merged FastAPI into Flask, fixed the silent `api()` helper, corrected `experience_min` type, and added a Supabase healthcheck. Full chain is healthy. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
 
-**Create Requirement bug — resolved.** Three compounding issues were fixed: (1) FastAPI merged into Flask as `backend/ai_agents/core.py` — eliminated the `localhost:8001` dependency that was never running on Railway; (2) frontend `api()` helper updated to throw on non-2xx — errors now surface immediately; (3) `experience_min` type changed from `str | None` to `int | None`. Railway web service also corrected to point at `nikshostudios/beroz` (was wrongly pointing at `recruitment-agents`). Auto-deploy is now live. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
+### Juicebox teardown → Search-First UI direction (carried)
+Juicebox reverse-engineering produced a 700-line teardown + 43 HTML captures. Established that the UI pattern is [[Wiki/concepts/Search-First-SaaS-UI]], not dashboard-first. Today's Search hero is the first production application of this. Still pending: `crawl-missing.js` to capture search-results page + candidate details for the full post-query layout design.
 
-**Full Beroz reference docs in vault:**
-- [[Raw/docs/Beroz-Build-Session-2026-04-15]] — build session log
-- [[Raw/docs/Beroz-Features-Guide-2026-04-15]] — feature & workflow reference (all 10 pages, 8 agents, 5 skills, DB schema, env vars)
-- [[Raw/docs/Beroz-Testing-Guide-2026-04-15]] — test checklist + Railway debugging guide
-- [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Mermaid diagrams for all workflows (system/architecture perspective)
-- [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number, TL approval loop
-- [[Raw/docs/Beroz-Playwright-Test-Report-2026-04-15]] — E2E test results (31/31 pass, fix verified)
-- [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis + resolution (all 4 steps shipped)
+### v2 Recruitment architecture (carried, still in flight)
+8 sourcing channels, 7 agents, 4 implementation phases. Phase 1: Foundit EDGE API migration (**blocked on API key from Prayag**), JD Parser agent, Screener salary logic, Excel CRM export. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
 
-### v2 System Architecture (still in progress)
-Full v2 architecture from April 13: 8 sourcing channels, 7 agents, 4 implementation phases. Foundit EDGE API replaces cookie scraping. Phone-first enrichment. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
-
-**Phase 1 priority (weeks 1-4):** Migrate to Foundit EDGE API (blocked on API key from Prayag), ship JD Parser agent, fix Screener salary logic, Excel CRM export.
-
-### Competitor analysis — X0PA AI (first competitor profiled)
-Full feature extraction from X0PA AI sales deck (Singapura Finance presentation). 29 features across 3 platforms. Competitor note: [[Wiki/competitors/X0PA-AI]]. Source doc: [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]]. Key positioning insight: X0PA is assessment/compliance-heavy but doesn't touch the recruiter's daily operational loop (portal sourcing, outreach, follow-up, submission formatting). That's Niksho's lane.
+### Competitor analysis — X0PA AI (carried)
+29 features across 3 platforms. Positioning insight: X0PA is assessment/compliance-heavy but doesn't touch the recruiter's daily operational loop. That's Niksho's lane. See [[Wiki/competitors/X0PA-AI]].
 
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — production deployed, Beroz frontend live. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — Juicebox teardown done, hybrid UI next.
-- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] shipped v1, maintenance mode.
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — Projects layer + Search hero live in production. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — same UI patterns now reusable; Juicebox post-query layout next.
+- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] v1 shipped, maintenance mode.
 - 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
-### New techniques added to vault
-- [[Wiki/concepts/Authenticated-SPA-Capture]] — how to extract DOM from OAuth-protected apps
-- [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page capture with session persistence
-
-### Open blockers
-- **Foundit EDGE API key** — need from Prayag to start Phase 1.
-- **Playwright round 2** — `crawl-missing.js` needs to run to capture search page + candidate details before hybrid UI build.
-- **Pending commits** — `upsert_candidate_by_name`, pipeline count fix, pipeline query limit are deployed but NOT pushed to GitHub.
+### Open blockers / follow-ups
+- **Full Searches post-query layout** — second competitor screenshot pending from Nikhil.
+- **`/api/search` project scoping** — endpoint currently ignores `state.activeProject`; the "In: \<project\>" strip is cosmetic. Do NOT wire without Nikhil's sign-off.
+- **Foundit EDGE API key** — still pending from Prayag.
+- **Playwright `crawl-missing.js`** — still needed for Juicebox search-results + candidate-details capture.
+- **Legacy `/dashboard` route** — decide: redirect to `/app`, delete, or leave.
+- **Invite members** — placeholder; no `POST /api/team/invite` yet. `RECRUITER_LOGINS` dict still owns team membership.
+- **Requirement ↔ Project backfill** — old requirements have `project_id = NULL` (fine for now; "Assign to project" action is a future follow-up).
+- **`supabase-py` has no DDL** — future schema changes still need Supabase Console runs (Alembic not in the stack).
 
 ### Recently resolved
-- ~~**Create Requirement bug**~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`. FastAPI merged into Flask, `api()` fixed, types corrected, Railway source corrected. 31/31 tests passing.
+- ~~Projects layer / sidebar refactor / Search hero~~ — ✅ Shipped 2026-04-17, commits `423a01e` + `56ba201`.
+- ~~Create Requirement bug~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`. 31/31 tests passing.
+
+### New to the vault today
+- [[Wiki/concepts/Projects-as-Scoping-Primitive]]
+- [[Wiki/concepts/Search-First-Hero-Mode-Chips]]
+- [[Wiki/techniques/Auto-Git-Pull-Hook]]
+- [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]]
+- [[Raw/docs/Beroz-Session-2026-04-17]]
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
 - Do not auto-send any email from any code path.
 - Do not build or suggest LinkedIn scraping. Ever.
-- Do not rewrite the Railway codebase for architectural purity. Extend in `/ai-agents/` or as new FastAPI routes.
+- Do not rewrite the Railway codebase for architectural purity. Extend in `/ai_agents/` or as new Flask routes.
+- Do not wire `/api/search` to `state.activeProject` without Nikhil's sign-off — cosmetic scoping is intentional for now.
 - Always add `generated-by: <tool>` frontmatter to AI-authored files.
 
 See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-17b — X0PA AI competitor analysis ingested (29 features, 3 platforms). Beroz RCO Workflow doc also ingested earlier today. Previous: 31/31 Playwright tests passing, Create Requirement bug resolved (commit f2f0c0d)._
-
+_Updated on 2026-04-17 — ingested Beroz-Session-2026-04-17 (Projects layer + sidebar + Search hero shipped to production). Created 1 digest, 2 concept notes, 1 technique note. Previous: X0PA AI competitor analysis ingested; Create Requirement bug resolved (commit f2f0c0d)._

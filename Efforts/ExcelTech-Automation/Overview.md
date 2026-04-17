@@ -4,7 +4,7 @@ effort: ExcelTech-Automation
 status: in-production
 intensity: active
 started: 2025-11-01
-updated: 2026-04-15
+updated: 2026-04-17
 owner: Shoham & Nikhil
 ---
 
@@ -52,6 +52,26 @@ See [[Calendar/Quarterly/2026-Q2]] for Q2 outcomes.
 
 ## Recent decisions
 _(log in reverse chronological order)_
+
+### 2026-04-17 — Projects layer + sidebar refactor + Search hero shipped to production
+Decision: Introduce Projects as the top-level scoping primitive in Beroz, restructure the sidebar into 3 zones (global-top / Project Card / global-middle) to encode the scoping boundary visually, and rebuild the Search page as a competitor-inspired hero with mode chips. Two commits shipped to `origin/main` and auto-deployed via Railway: `423a01e` (Projects layer, sidebar refinement, Search hero) and `56ba201` (frontend-saas mockup mirror). Supabase schema applied manually via Dashboard (`supabase-py` has no DDL).
+
+**Sub-decisions:**
+- **Requirements stays global.** `project_id` column added to `requirements` but nullable and currently unused — we can opt back in later without a migration. TL-owned pool is unchanged.
+- **Agent Home is dead.** Default `/app` landing is now All Projects. Greeting + chat input + quick-action chips deleted.
+- **Access model:** visibility = owner OR `access_level='shared'` OR collaborator; edit/archive/delete = owner-only.
+- **Avatar moved to bottom-left sidebar** (opens upward), 5 items all wired to real modals (no console.log stubs). Header is now minimal.
+- **Search hero mode chips toggle placeholder text only.** Single backend call across all 4 modes — keeps backend simple, preserves option to route later.
+- **Dev-loop change:** `UserPromptSubmit` hook added to `~/.claude/settings.json` that runs `git pull --ff-only origin main` on the Beroz repo before every prompt.
+
+**Source docs:**
+- [[Raw/docs/Beroz-Session-2026-04-17]] — full session log (SQL, API, sidebar, decisions, follow-ups, smoke-test)
+- [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — compiled digest with Niksho relevance
+- [[Wiki/concepts/Projects-as-Scoping-Primitive]] — the reusable scoping pattern
+- [[Wiki/concepts/Search-First-Hero-Mode-Chips]] — the intent-capture hero pattern
+- [[Wiki/techniques/Auto-Git-Pull-Hook]] — the git-pull hook
+
+**Guardrail for next session:** `/api/search` currently ignores `state.activeProject` — the "In: \<project\>" strip is cosmetic. Do not wire search scoping without explicit sign-off; the Contacts / Sequences / Submissions surfaces are deliberately global right now.
 
 ### 2026-04-15 — Beroz frontend replaces old Jinja2 templates
 Decision: Scrap the old frontend entirely. Clone Juicebox AI's production dashboard (52 pages scraped, pixel-accurate HTML clone), then wire it to the existing ExcelTech backend. Approach based on [[Wiki/concepts/Seven-Levels-of-Web-Design]] — start from a proven design rather than building from scratch. Repo: `github.com/nikshostudios/beroz`. Next: end-to-end testing, then design iteration.
