@@ -8,7 +8,7 @@ related:
   - "[[Efforts/Niksho-SaaS-Product/Overview]]"
   - "[[Atlas/Product/Agents]]"
 ---
-# clBeroz — RCO Lifecycle & Recruiter Workflow
+# Beroz — RCO Lifecycle & Recruiter Workflow
 
 ## Full RCO Flow
 
