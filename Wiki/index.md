@@ -1,7 +1,7 @@
 ---
 type: wiki-index
 generated-by: claude
-updated: 2026-04-15b
+updated: 2026-04-17
 ---
 
 # Wiki — Index
@@ -33,6 +33,8 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/AI-GTM-Stack]] — Idea Browser → Paper → Humbalytics pipeline for AI-native go-to-market
 - [[Wiki/concepts/Authenticated-SPA-Capture]] — extracting live DOM from OAuth-protected SPAs via DevTools or Playwright
 - [[Wiki/concepts/Search-First-SaaS-UI]] — natural-language search as the primary interface pattern (vs dashboard-first)
+- [[Wiki/concepts/Search-First-Hero-Mode-Chips]] — search-first homepage pattern with intent-capture mode chips + example queries + collapse-on-submit
+- [[Wiki/concepts/Projects-as-Scoping-Primitive]] — Projects as the top-level scoping unit; access model + sidebar 3-zone encoding
 
 ## Techniques
 
@@ -42,6 +44,7 @@ Specific methods we've learned.
 - [[Wiki/techniques/Linting-Wiki]] — LLM health-checks to keep the wiki clean
 - [[Wiki/techniques/Direct-API-Interception]] — bypass headless browsers by calling SPA backend endpoints directly
 - [[Wiki/techniques/Playwright-DOM-Crawling]] — automated multi-page DOM capture with session persistence for authenticated apps
+- [[Wiki/techniques/Auto-Git-Pull-Hook]] — Claude Code `UserPromptSubmit` hook that runs `git pull --ff-only` to keep local in sync with GitHub
 
 ## Digests
 
@@ -57,6 +60,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]] — Juicebox AI reverse-engineering: site teardown, Playwright crawler (43+ pages), hybrid UI strategy decision
 - [[Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15]] — Beroz Playwright E2E run: 30/31 passed, full stack confirmed healthy, 1 bug (Create Requirement silent failure)
 - [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]] — root cause analysis: 3 compounding issues (FastAPI not deployed, api() swallows errors, type mismatch), fix plan = Path A merge + api() fix + type fix + healthcheck
+- [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — Projects layer + sidebar 3-zone restructure + Search hero shipped to production (commits 423a01e, 56ba201)
 
 ## Tools
 
@@ -109,6 +113,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16]] — root cause analysis for Create Requirement silent failure: 3 issues, Path A fix plan with code
 - [[Raw/docs/Beroz-Workflow-Diagrams-2026-04-15]] — Beroz Mermaid diagrams: master pipeline, outreach/inbox, submission/approval, role-based access, agent routing
 - [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — Beroz RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number actions, TL approval loop
+- [[Raw/docs/Beroz-Session-2026-04-17]] — Beroz session log: Projects layer, sidebar 3-zone refactor, Search hero, avatar dropdown (commits 423a01e + 56ba201)
 
 ### Competitor analysis
 - [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]] — X0PA AI full feature extraction from sales deck (29 features, 3 platforms, Singapura Finance presentation)

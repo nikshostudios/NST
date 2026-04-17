@@ -3,7 +3,7 @@ type: effort-log
 effort: Niksho-SaaS-Product
 status: active
 created: 2026-04-13
-updated: 2026-04-15
+updated: 2026-04-17
 generated-by: claude-opus-4-6
 owner: Nikhil & Shoham
 related:
@@ -62,7 +62,22 @@ Beroz frontend build is complete. Juicebox clone integrated with ExcelTech backe
 
 ---
 
-## Open Items
+## Beroz Frontend Polish — Planning (2026-04-17)
+
+Next code pass on the SaaS shell (`frontend-saas/index.html`). Full session: [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] · digest: [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]]. Four scoped changes, one deferred decision.
+
+### SaaS shell — Ready to implement
+- [ ] **Profile avatar dropdown** — make `.avatar` (top-right header, ~line 902) clickable. Menu items: Invite members · Help center · Knowledge base · Contact support · Sign out. Visual ref: Juicebox settings dropdown.
+- [ ] **Sidebar: rename "recruitment agent" → "Projects"** (~lines 816–887). Make clickable. Dropdown: search field ("Find projects") + project list + "View all projects →" footer link.
+- [ ] **Sidebar: add persistent "All Projects" entry** at the very top of the sidebar (above the Projects dropdown). Routes to `page-all-projects`.
+- [ ] **Build out `page-all-projects`** — table with columns: Title · Progress · Created on · Collaborators · Status. Top-right "Create new project +" button → modal: Project Title (required) · Access Level (Shared/Private) · Collaborators (optional) · "Create Project →".
+- [ ] **Remove `#page-agent-home` entirely** (~lines 910–929). Set default landing route to `page-all-projects`.
+
+### Gating decision (must settle BEFORE the All Projects schema is built)
+- [ ] **Project ↔ Agent relationship.** Reading A: Project = client engagement, contains many requirements/agents (3-level hierarchy). Reading B: Project = renamed agent (presentational rename only). Recommendation in digest: Reading A. Needs Shoham + Nikhil sign-off.
+
+### Deferred — explicit non-goal for this code pass
+- [ ] **Chrome extension for outreach tracking (Gmail/Outlook).** Mirrors Juicebox's [[Wiki/concepts/Personal-Inbox-Outreach-Tracking|personal-inbox tracking]] pattern. Decision pending — full trade-off analysis in the concept note. Forward-compat ask: ensure `outreach_event` schema accepts an event source field (`platform | extension | imap_scan`) so this can be added later without a rewrite.
 
 - [ ] Obtain Foundit EDGE API key from Prayag Sanghvi (required for Phase 1)
 - [ ] Nikhil to upload ExcelTech tracking sheet (required for Phase 3)

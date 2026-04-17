@@ -29,7 +29,7 @@ This is the active task board for Nikhil. It is maintained by Claude after each 
 
 ### 🗂 Housekeeping
 
-- [ ] **Push 3 pending commits to GitHub** — 👥 Either
+- [x] **Push 3 pending commits to GitHub** — 👥 Either
   > Three changes are live on Railway but NOT pushed to the GitHub repo: `upsert_candidate_by_name`, pipeline count fix, pipeline query limit. If Railway redeploys from GitHub (or Nikhil clones the repo), these changes will be lost. Push them now.
   > Ref: [[Wiki/hot]]
 
@@ -43,11 +43,11 @@ This is the active task board for Nikhil. It is maintained by Claude after each 
 
 ### 🔥 Immediate — unblocks hybrid UI build
 
-- [ ] **Run `crawl-missing.js` to capture Juicebox search page + candidate details** — 👤 Nikhil
+- [x] **Run `crawl-missing.js` to capture Juicebox search page + candidate details** — 👤 Nikhil
   > The first Playwright crawl captured 43 Juicebox pages. The #1 missing page is the search results view — this is the core UI pattern (search-first, not dashboard-first) that the hybrid Niksho UI must replicate. Script is already written at `recruitment-agents/juicebox-crawler/crawl-missing.js`. Just run it while logged into Juicebox. Also need: candidate details modal, agent chat conversation view.
   > Ref: [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]] · [[Wiki/concepts/Search-First-SaaS-UI]]
 
-- [ ] **Build hybrid Juicebox + Niksho UI** — 👤 Nikhil
+- [x] **Build hybrid Juicebox + Niksho UI** — 👤 Nikhil
   > Once crawl-missing.js runs and the search page HTML is captured, feed the full HTML capture set to Claude Code and build the hybrid UI in `recruitment-agents/niksho-ui/`. Strategy: take Juicebox's UI patterns (search-first, candidate cards, sidebar nav, filter pills) and combine with Niksho-specific features (multi-agent dashboard, screening pipeline, outreach sequences, submission formatting). Do NOT do a pure clone.
   > **Depends on:** crawl-missing.js task above being done first.
   > Ref: [[Wiki/hot]] · [[Wiki/concepts/Search-First-SaaS-UI]] · [[Wiki/digests/Session-Juicebox-Teardown-2026-04-15]]
