@@ -1,12 +1,53 @@
 ---
 type: wiki-log
 generated-by: claude
-updated: 2026-04-17d
+updated: 2026-04-18
 ---
 
 # Wiki — Log
 
 Append-only timeline of ingestion and wiki edits. New entries at the top.
+
+---
+
+## 2026-04-18 — Beroz Phase 4 + 5 session ingestion (full RCO lifecycle live)
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- `SESSION-2026-04-18.md` (uploaded — Phase 5 Submit-to-TL + Phase 4 Sequences wiring; full RCO lifecycle live in production)
+- `SESSION-2026-04-17.md` — **skipped, already ingested** (log entry 2026-04-17c; `Raw/docs/Beroz-Session-2026-04-17.md` confirmed present)
+
+**Raw docs created:**
+- [[Raw/docs/Beroz-Session-2026-04-18]] — full session log (Submit-to-TL handler, Sequences wiring, Activity timeline, key decisions, smoke-test checklist, commits ed63940 + 717e523)
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] — production ship digest with full RCO lifecycle diagram and Niksho relevance
+- [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — backend 409 dedup + frontend pre-check + status propagation chain; reusable pattern for any multi-role approval flow
+
+**Navigation files updated:**
+- [[Wiki/index]] — added 1 concept, 1 digest, 1 raw doc; `updated:` bumped to 2026-04-18
+- [[Wiki/hot]] — rewritten to lead with Phase 4+5 ship; full lifecycle diagram; open blockers carried forward
+- [[Wiki/log]] — this entry
+
+**Efforts files updated:**
+- [[Efforts/ExcelTech-Automation/Overview]] — 2026-04-18 decision entry added (Phase 5 Submit-to-TL + Phase 4 Sequences wiring; milestone 5b fully live)
+
+**Decisions captured:**
+- Submit-to-TL requires requirement context (button only appears with `data-requirement-id` in scope)
+- Backend 409 + frontend pre-check = idempotent handoff; no misleading UI state
+- Activity timeline is client-side merge — no new endpoint (notes + outreach + submissions already returned by detail endpoint)
+- `scope=mine|all` on `GET /api/sequences`; TL only sees `scope=all`
+- Legacy Outreach & Inbox preserved at `/page-outreach`, unlinked, not deleted
+- Zero schema changes in this session (both commits ran on existing tables)
+
+**Known follow-ups (carried from this and prior sessions):**
+- Full Searches post-query layout — competitor screenshot pending
+- `/api/search` project scoping — cosmetic only; do not wire without sign-off
+- Apollo plan upgrade — code ready, needs paid plan
+- Invite members endpoint — still placeholder
+- Legacy `/dashboard` route — retirement decision pending
+- Requirement ↔ Project backfill — deferred
+- `match_scores` caching and `1M+ matches` counter — deferred
 
 ---
 

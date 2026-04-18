@@ -4,7 +4,7 @@ effort: ExcelTech-Automation
 status: in-production
 intensity: active
 started: 2025-11-01
-updated: 2026-04-17
+updated: 2026-04-18
 owner: Shoham & Nikhil
 ---
 
@@ -52,6 +52,24 @@ See [[Calendar/Quarterly/2026-Q2]] for Q2 outcomes.
 
 ## Recent decisions
 _(log in reverse chronological order)_
+
+### 2026-04-18 — Full RCO lifecycle live end-to-end (Phase 5 Submit-to-TL + Phase 4 Sequences wiring)
+
+Decision: Ship the Submit-to-TL UI and finish wiring Phase 4 surfaces (Sequences slide-over tab, Activity timeline, Sequences page redesign). The complete recruiter→TL→client pipeline is now operational with no gaps. Two commits to `origin/main`, auto-deployed via Railway: `ed63940` (Submit-to-TL) and `717e523` (Sequences wiring). No schema changes required — both commits run on existing `submissions` and `outreach_log` tables.
+
+**Sub-decisions:**
+- **Submit-to-TL requires requirement context.** Button only appears when slide-over knows which requirement it was opened from. Source cards now stamp `data-requirement-id`.
+- **Idempotent handoff.** Backend rejects duplicate (candidate, requirement) submissions with 409. Frontend pre-checks `data.submissions` — button never misleads. Pattern: [[Wiki/concepts/Idempotent-Multi-Role-Handoff]].
+- **Activity tab is client-side merge.** Notes, outreach, and submissions were already returned by the detail endpoint — no new route needed.
+- **Legacy Outreach & Inbox preserved at `/page-outreach`.** Unlinked from sidebar, not deleted.
+- **Sequences scope:** `scope=mine|all` on `GET /api/sequences`; `scope=all` is TL-only.
+
+**Source docs:**
+- [[Raw/docs/Beroz-Session-2026-04-18]] — full session log (handler code, smoke-test checklist, file Δ table)
+- [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] — compiled digest with full lifecycle diagram and Niksho relevance
+- [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — submit-gate pattern extracted from this session
+
+**Guardrail:** The full pipeline is live but several surfaces (Searches post-query layout, `/api/search` project scoping, Apollo upgrade, Invite members) remain deferred. Do not wire these without explicit sign-off from Nikhil.
 
 ### 2026-04-17 — Projects layer + sidebar refactor + Search hero shipped to production
 Decision: Introduce Projects as the top-level scoping primitive in Beroz, restructure the sidebar into 3 zones (global-top / Project Card / global-middle) to encode the scoping boundary visually, and rebuild the Search page as a competitor-inspired hero with mode chips. Two commits shipped to `origin/main` and auto-deployed via Railway: `423a01e` (Projects layer, sidebar refinement, Search hero) and `56ba201` (frontend-saas mockup mirror). Supabase schema applied manually via Dashboard (`supabase-py` has no DDL).

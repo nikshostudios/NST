@@ -1,7 +1,7 @@
 ---
 type: wiki-index
 generated-by: claude
-updated: 2026-04-17
+updated: 2026-04-18
 ---
 
 # Wiki — Index
@@ -36,6 +36,7 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Search-First-Hero-Mode-Chips]] — search-first homepage pattern with intent-capture mode chips + example queries + collapse-on-submit
 - [[Wiki/concepts/Projects-as-Scoping-Primitive]] — Projects as the top-level scoping unit; access model + sidebar 3-zone encoding
 - [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — browser-extension pattern (Juicebox) for logging outreach from a recruiter's personal Gmail/Outlook back to the platform; the deliverability-vs-build-cost trade
+- [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — backend 409 dedup + frontend pre-check + status propagation chain for multi-role approval workflows (submit-gate pattern)
 
 ## Techniques
 
@@ -63,6 +64,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]] — root cause analysis: 3 compounding issues (FastAPI not deployed, api() swallows errors, type mismatch), fix plan = Path A merge + api() fix + type fix + healthcheck
 - [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — Projects layer + sidebar 3-zone restructure + Search hero shipped to production (commits 423a01e, 56ba201)
 - [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]] — planning artifact for the Projects layer ship: 4 TODOs (avatar dropdown, Projects nav, All Projects page, kill Agent Home), gating decision on Project ↔ Agent, deferred Chrome extension question
+- [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] — Phase 5 Submit-to-TL gate + Phase 4 Sequences wiring; full RCO lifecycle (Requirement → Source → Shortlist → Sequence → Submit to TL → TL approve + send) live end-to-end (commits ed63940, 717e523)
 
 ## Tools
 
@@ -117,6 +119,7 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-RCO-Workflow-2026-04-17]] — Beroz RCO lifecycle from recruiter UI perspective: requirement flow, shortlist vs sequence, mass mail/export/get number actions, TL approval loop
 - [[Raw/docs/Beroz-Session-2026-04-17]] — Beroz session log: Projects layer, sidebar 3-zone refactor, Search hero, avatar dropdown (commits 423a01e + 56ba201)
 - [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — planning session that preceded the Projects layer ship: 4 TODOs, Claude Code prompt, open Project ↔ Agent question, Chrome extension deferred
+- [[Raw/docs/Beroz-Session-2026-04-18]] — Phase 5 Submit-to-TL + Phase 4 Sequences wiring session: full RCO lifecycle live, smoke-test checklist, file Δ table (commits ed63940, 717e523)
 
 ### Competitor analysis
 - [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]] — X0PA AI full feature extraction from sales deck (29 features, 3 platforms, Singapura Finance presentation)

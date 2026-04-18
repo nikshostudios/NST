@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-17c
+updated: 2026-04-18
 max-words: 1000
 ---
 
@@ -11,72 +11,75 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-17
+## Right now — 2026-04-18
 
-### Projects layer + sidebar refactor + Search hero → LIVE in ExcelTech production ✅
-Two commits shipped to `origin/main` and auto-deployed via Railway: **`423a01e`** (Projects layer, sidebar refinement, Search hero) and **`56ba201`** (frontend-saas mockup mirror). Supabase schema was applied manually in the Dashboard SQL Editor before the push (`supabase-py` has no DDL support — an open constraint on future schema changes).
+### Full RCO lifecycle → LIVE end-to-end in ExcelTech production ✅
+Two commits shipped to `origin/main` and auto-deployed via Railway: **`ed63940`** (Phase 5 — Submit-to-TL) and **`717e523`** (Phase 4 — Sequences wiring complete). No schema changes — both commits run on existing `submissions` and `outreach_log` tables.
 
-**What's new on `/app`:**
-- **Projects are real.** New Supabase tables `projects` (id, title, access_level shared|private, status, created_by, created_at) + `project_collaborators` (many-to-many). `requirements.project_id` column exists but is **unused on purpose** — Requirements stays global.
-- **Sidebar is now a 3-zone layout.** Global-top (All Projects) → **Project Card** (Projects dropdown / Searches / Shortlist, scoped by `state.activeProject`) → Global-middle (Requirements / Contacts / Sequences / Submissions TL-only / Analytics / Integrations). The box around the Project Card is the visual encoding of the scoping boundary. See [[Wiki/concepts/Projects-as-Scoping-Primitive]].
-- **Agent Home is gone.** Default landing is now All Projects. Greeting + chat input + quick-action chips all deleted. The "chat is the home" instinct is reversed.
-- **Search page rebuilt as a competitor-inspired hero.** "Hey \<firstName\>, who are you looking for?" + 4 mode chips (Find Similar / JD / Boolean / Manual — chips only toggle placeholder, backend identical) + purple-glow textarea + 5 clickable example queries + collapse-on-submit. Pattern extracted as [[Wiki/concepts/Search-First-Hero-Mode-Chips]].
-- **Avatar moved to bottom-left sidebar, opens upward, 5 items all wired** (Invite members, Help center, Knowledge base, Contact support, Sign out). No more console.log stubs. Header is now minimal (notifications + title).
-- **Sibling mockup** at `frontend-saas/index.html` mirrors the UI in pure in-memory state for reference.
+**The complete pipeline is now operational:**
+```
+Requirement → Source → Shortlist → Sequence → Submit to TL → TL approves + sends to client
+```
+Every step has a UI surface, persistent state in Supabase, and a status that propagates back to every card/chip/button referencing that candidate.
 
-**Access model:** visibility = owner **OR** `access_level='shared'` **OR** listed in collaborators. Edit/archive/delete = owner-only (`created_by == session_email`).
+**Phase 5 — Submit-to-TL:**
+- New Submit to TL button in candidate slide-over; gated on recruiter role + requirement context + no existing submission.
+- Backend rejects duplicate (candidate, requirement) submissions with 409. Frontend pre-checks `data.submissions` — button never misleads.
+- Status propagation: shortlist cards show `With TL / TL approved / Sent to client / TL rejected` tag. Slide-over chip updates across all states.
+- `data-requirement-id` stamped on source cards to carry requirement context through to the slide-over.
 
-**Full details:** [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] · [[Raw/docs/Beroz-Session-2026-04-17]]
+**Phase 4 — Sequences wiring:**
+- Slide-over Sequences tab: real list of every outreach email with subject, "For \<role\> · \<client\>", timestamp, Replied/Awaiting chip.
+- Slide-over Activity tab: unified timeline (notes + emails + submissions + approvals) — client-side merge, no new endpoint.
+- Sidebar Sequences page redesigned: grouped by requirement, filter tabs (All / Awaiting / Replied), scope switch My/All (TL-only), 3 stat tiles, click → opens candidate.
+- Legacy Outreach & Inbox preserved at `/page-outreach`, unlinked from sidebar.
 
-### Planning artifact for the Projects ship — preserved
-The morning planning session that drove the ship is now filed at [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] with a digest at [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]]. Useful for understanding *why* the ship looks the way it does — what was on the table, what the open questions were before implementation collapsed them. The avatar's bottom-left placement (vs the originally-planned top-right header) and the Project Card boundary (vs a flat sidebar) are the main divergences worth knowing.
+Pattern extracted as [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — reusable for any future multi-role approval flow in the SaaS product.
 
-### Chrome extension for outreach — DEFERRED, novel concept added
-The planning session raised but did not commit to building a Gmail/Outlook extension that mirrors Juicebox's "send from your own inbox, log to platform" pattern. Trade-offs (deliverability vs build cost, store reviews, MS/Google policy risk) and a forward-compat ask (let `outreach_event` accept an event source field) are now captured at [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]].
+**Full details:** [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] · [[Raw/docs/Beroz-Session-2026-04-18]]
 
-### Dev-loop change — auto git-pull hook
-Added a `UserPromptSubmit` hook in `~/.claude/settings.json` that runs `git -C ".../beroz" pull --ff-only origin main` before every prompt. Keeps local in sync with GitHub (defends against the "Claude edits a stale file" class of bug). Git auth side-quest also resolved: `gh auth setup-git` switched git from cached `thenikhil05` to active `nikshostudios`. See [[Wiki/techniques/Auto-Git-Pull-Hook]].
+---
 
-### Beroz — 31/31 Playwright passing, Create Requirement fix shipped (carried from 2026-04-16)
-Commit `f2f0c0d` merged FastAPI into Flask, fixed the silent `api()` helper, corrected `experience_min` type, and added a Supabase healthcheck. Full chain is healthy. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
+### Projects layer + sidebar refactor + Search hero → LIVE ✅ (2026-04-17, carried)
+Two commits: `423a01e` (Projects layer, sidebar, Search hero) + `56ba201` (frontend-saas mockup). Projects are real Supabase tables. Sidebar is 3-zone. Agent Home deleted. Search rebuilt as competitor-inspired hero with mode chips. Avatar at bottom-left sidebar, 5 items all wired. See [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]].
 
-### Juicebox teardown → Search-First UI direction (carried)
-Juicebox reverse-engineering produced a 700-line teardown + 43 HTML captures. Established that the UI pattern is [[Wiki/concepts/Search-First-SaaS-UI]], not dashboard-first. Today's Search hero is the first production application of this. Still pending: `crawl-missing.js` to capture search-results page + candidate details for the full post-query layout design.
+### Planning artifact for Projects ship — preserved (2026-04-17)
+[[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — the morning planning session that drove the ship. Useful for understanding *why* the ship looks the way it does. [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]].
+
+### Beroz — 31/31 Playwright passing (carried)
+Commit `f2f0c0d` merged FastAPI into Flask, fixed the silent `api()` helper, corrected `experience_min` type, added Supabase healthcheck. Full chain healthy. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
 
 ### v2 Recruitment architecture (carried, still in flight)
-8 sourcing channels, 7 agents, 4 implementation phases. Phase 1: Foundit EDGE API migration (**blocked on API key from Prayag**), JD Parser agent, Screener salary logic, Excel CRM export. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
+8 sourcing channels, 7 agents, 4 implementation phases. Phase 1: Foundit EDGE API migration (**blocked on API key from Prayag**). See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
 
 ### Competitor analysis — X0PA AI (carried)
-29 features across 3 platforms. Positioning insight: X0PA is assessment/compliance-heavy but doesn't touch the recruiter's daily operational loop. That's Niksho's lane. See [[Wiki/competitors/X0PA-AI]].
+29 features across 3 platforms. Niksho's lane: end-to-end recruiter workflow automation. See [[Wiki/competitors/X0PA-AI]].
 
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — Projects layer + Search hero live in production. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — same UI patterns now reusable; Juicebox post-query layout next.
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — Full RCO lifecycle live in production. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — UI patterns reusable; Juicebox post-query layout next.
 - 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] v1 shipped, maintenance mode.
 - 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
 ### Open blockers / follow-ups
 - **Full Searches post-query layout** — second competitor screenshot pending from Nikhil.
-- **`/api/search` project scoping** — endpoint currently ignores `state.activeProject`; the "In: \<project\>" strip is cosmetic. Do NOT wire without Nikhil's sign-off.
+- **`/api/search` project scoping** — endpoint ignores `state.activeProject`; cosmetic for now. Do NOT wire without sign-off.
 - **Foundit EDGE API key** — still pending from Prayag.
-- **Playwright `crawl-missing.js`** — still needed for Juicebox search-results + candidate-details capture.
-- **Legacy `/dashboard` route** — decide: redirect to `/app`, delete, or leave.
-- **Invite members** — placeholder; no `POST /api/team/invite` yet. `RECRUITER_LOGINS` dict still owns team membership.
-- **Requirement ↔ Project backfill** — old requirements have `project_id = NULL` (fine for now; "Assign to project" action is a future follow-up).
-- **`supabase-py` has no DDL** — future schema changes still need Supabase Console runs (Alembic not in the stack).
+- **Apollo plan upgrade** — code ready; needs paid plan ($49 Basic).
+- **Legacy `/dashboard` route** — redirect / delete / leave pending.
+- **Invite members** — placeholder; no `POST /api/team/invite` yet.
+- **Requirement ↔ Project backfill** — old requirements have `project_id = NULL`; "Assign to project" deferred.
+- **Legacy `/page-outreach`** — preserved but unlinked; retirement decision pending.
+- **`supabase-py` has no DDL** — schema changes still need Supabase Console.
 
 ### Recently resolved
+- ~~Submit-to-TL UI~~ — ✅ Shipped 2026-04-18, commits `ed63940` + `717e523`. Full RCO lifecycle live.
 - ~~Projects layer / sidebar refactor / Search hero~~ — ✅ Shipped 2026-04-17, commits `423a01e` + `56ba201`.
 - ~~Create Requirement bug~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`. 31/31 tests passing.
 
 ### New to the vault today
-- [[Wiki/concepts/Projects-as-Scoping-Primitive]]
-- [[Wiki/concepts/Search-First-Hero-Mode-Chips]]
-- [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]]
-- [[Wiki/techniques/Auto-Git-Pull-Hook]]
-- [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]]
-- [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]]
-- [[Raw/docs/Beroz-Session-2026-04-17]]
-- [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]]
+- [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]]
+- [[Wiki/concepts/Idempotent-Multi-Role-Handoff]]
+- [[Raw/docs/Beroz-Session-2026-04-18]]
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
@@ -90,4 +93,4 @@ See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-17c — ingested Beroz-Frontend-Planning-2026-04-17 (the planning artifact that drove today's Projects ship); added Personal-Inbox-Outreach-Tracking concept (deferred Chrome extension decision). Previous (2026-04-17): Beroz Projects layer + Search hero shipped to production. Earlier: X0PA AI competitor analysis; Create Requirement bug resolved (commit f2f0c0d)._
+_Updated on 2026-04-18 — ingested Beroz-Session-2026-04-18 (Phase 5 Submit-to-TL + Phase 4 Sequences wiring; full RCO lifecycle live end-to-end). Created Idempotent-Multi-Role-Handoff concept. SESSION-2026-04-17 was already ingested (2026-04-17c); skipped re-processing. Previous (2026-04-17c): Beroz-Frontend-Planning-2026-04-17 ingested. Earlier: Projects layer + Search hero shipped; X0PA competitor analysis; Create Requirement bug resolved._
