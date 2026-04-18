@@ -164,9 +164,38 @@ Long-term (Phase 2 SaaS): this becomes a billing view for external customers.
 These are open questions from the call. Nothing in sections 2 and 6 should be built until the relevant gaps below are closed.
 
 ### Gap 1 — Exact submission table columns
-**What we know:** The table the recruiter submits includes candidate name, current salary, expected salary, notice period.
-**What we don't know:** The full column list. Some columns in the existing email template (SAP ID, rehire flag) are client-specific (HCL). We need to know which columns are universal vs client-specific.
-**How to close it:** Nikhil to forward the actual submission email template used by recruiters. Also: schedule a 30-minute call with an actual recruiter to walk through their current email process.
+**Status: CLOSED** — source: HCL outreach email forwarded by Nikhil (2026-04-19).
+
+The email Devesh sends to candidates contains a mandatory fill-in table. When the candidate returns it, Devesh compiles those responses and submits to the TL. That table defines the webapp's submission form fields.
+
+**Full field list from the email template:**
+
+| Field | Universal? | Notes |
+|---|---|---|
+| First Name (as per 10th Marksheet) | ✅ Universal | |
+| Last Name (as per 10th Marksheet) | ✅ Universal | |
+| DOB (YYYY/MM/DD) | ✅ Universal | Not in Supabase `candidates` yet — needs new column |
+| Contact Number | ✅ Universal | Maps to `candidates.phone` |
+| Email ID | ✅ Universal | Maps to `candidates.email` |
+| Total Experience (in months) | ✅ Universal | Maps to `candidates.total_experience_years` (convert) |
+| Relevant Experience (in months) | ✅ Universal | Maps to `candidates.relevant_experience_years` (convert) |
+| Complete Address (City, State, Pin) | ✅ Universal | Not in Supabase yet — needs new column `address_full` |
+| Current CTC | ✅ Universal | Maps to `candidates.current_ctc` |
+| Expected CTC | ✅ Universal | Maps to `candidates.expected_ctc` |
+| Current Location | ✅ Universal | Maps to `candidates.current_location` |
+| Preferred Location | ✅ Universal | Maps to `candidates.preferred_location` |
+| Notice Period or LWD | ✅ Universal | Maps to `candidates.notice_period_days` |
+| Current Company | ✅ Universal | Not in Supabase yet — needs new column `current_company` |
+| Hire Block | ❌ HCL-specific | Internal HCL hiring approval flag — exclude from generic template |
+| Passport Number / SSC Marksheet Number | ❌ HCL-specific | Identity verification for HCL — exclude |
+| Rehire + old SAP ID | ❌ HCL-specific | SAP = HCL internal system — exclude |
+
+**Schema delta required** — 3 new columns needed on `candidates`:
+- `date_of_birth` (date)
+- `address_full` (text — City, State, Pin)
+- `current_company` (text)
+
+The HCL-specific fields (Hire Block, Passport/SSC, SAP ID) should not appear in the generic submission form. They could be surfaced as optional custom fields on a per-client basis in a future version.
 
 ---
 
