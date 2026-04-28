@@ -1,9 +1,11 @@
 ---
 type: wiki-concept
 generated-by: claude
-sources: ["[[Raw/docs/Juicebox-Teardown-Session-2026-04-15]]"]
-updated: 2026-04-15
-tags: [frontend, scraping, devtools, technique]
+sources:
+  - "[[Raw/docs/Juicebox-Teardown-Session-2026-04-15]]"
+  - "[[Raw/docs/Beroz-Clone-Capture-Session-2026-04-28]]"
+updated: 2026-04-28
+tags: [frontend, scraping, devtools, playwright, technique]
 ---
 
 # Authenticated SPA Capture
