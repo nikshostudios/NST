@@ -1,0 +1,65 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:Atlas",
+      "color": {
+        "a": 1,
+        "rgb": 5431518
+      }
+    },
+    {
+      "query": "path:Wiki",
+      "color": {
+        "a": 1,
+        "rgb": 14741334
+      }
+    },
+    {
+      "query": "path:Efforts",
+      "color": {
+        "a": 1,
+        "rgb": 11908533
+      }
+    },
+    {
+      "query": "path:Calendar",
+      "color": {
+        "a": 1,
+        "rgb": 8431445
+      }
+    },
+    {
+      "query": "path:Raw",
+      "color": {
+        "a": 1,
+        "rgb": 8421504
+      }
+    },
+    {
+      "query": "path:AIOS",
+      "color": {
+        "a": 1,
+        "rgb": 6271961
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1.1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": false,
+  "centerStrength": 0.5,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 0.2319037679341303,
+  "close": true
+}
