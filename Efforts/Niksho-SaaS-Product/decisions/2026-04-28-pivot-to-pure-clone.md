@@ -33,13 +33,35 @@ Each of these is a workflow-comprehension failure, not a design failure. The hyb
 
 ## Decision
 
-**Rebuild the Beroz frontend as a 1:1 Juicebox clone first. Layer Niksho-proprietary features on top only after the clone is verified end-to-end.**
+**Rebuild the Beroz frontend as a 1:1 Juicebox clone first — both visual surface AND information architecture. Layer Niksho-proprietary features on top only after the clone is verified end-to-end.**
 
 This reverses the 2026-04-15 hybrid call. The reversal is justified because:
 
 1. The hybrid produced a punch list of 15 items, three of them demo-blockers, all rooted in workflow misunderstanding.
 2. A pure clone forces us to understand every Juicebox screen and *why* before we customise. That comprehension is the bottleneck on every clone attempt to date.
 3. Once the clone is verified, the Niksho moat (multi-client / TL-recruiter dual-role / branded client submissions / India-SG sources / WhatsApp outreach / per-requirement pricing) layers on top of a foundation that actually works, instead of being mixed in halfway.
+
+### IA decision (confirmed 2026-04-28 with Nikhil)
+
+We clone Juicebox's information architecture wholesale, not just its visual surface. Concretely:
+
+- **Project is the top-level routing primitive** at `/project/<id>` — matches Juicebox and matches Beroz's existing 2026-04-17 Projects layer ship (commit `423a01e`).
+- **Project owns**: Candidates (with statuses), Sequences, Shortlist, Notes, Members. Project-scoped routes are `/project/<id>/<sub>`.
+- **Workspace owns**: Contacts, Integrations, Members, Billing, Settings. Top-level routes with no project ID.
+- **Client as a first-class entity is deferred.** Niksho's earlier Submissions-Page-Spec assumed a `Workspace → Client → Requirement → Candidate` model. That model is shelved for now. Each Requirement is treated as a Project in the clone.
+- **Requirement-as-Project** mapping: the existing `requirements` table is not renamed (DB rename has migration risk). The UI surface treats Requirement as Project everywhere, which is already the direction Beroz was heading after the Projects layer ship (Requirements stays as the underlying record; Project is the surface concept).
+
+**Phase 4 path to multi-client (when we need it):**
+
+- Add `projects.client_id` as a nullable column. Same pattern Beroz used to introduce the Projects layer over Requirements — additive, no breaking change.
+- Client becomes a filter/group/tag on Projects, not a parent in routing. URLs stay Juicebox-compatible.
+- The Submissions-Page-Spec's TL/Recruiter dual-role workflow still works — substitute Project for Requirement throughout.
+
+**What we're explicitly accepting by this IA decision:**
+
+- The clone's URL structure constrains future routing. We can't add `/client/<id>/project/<id>` without breaking the clone. Multi-client navigation has to be filter-based, not hierarchy-based.
+- The Submissions-Page-Spec needs a small revision (substitute Project for Requirement, drop the Client-cards landing) before it gets built in Phase 4.
+- Beroz's `requirements` table semantics drift toward "Project record." The two will eventually diverge or merge; for now they're parallel.
 
 ## Scope of "dismantle"
 
