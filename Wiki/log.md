@@ -10,6 +10,22 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-28 (late) — Beroz Clone Capture Session ingest
+
+Multi-hour Cowork session with Nikhil. Strategy pivot + Playwright capture toolkit + successful capture run against Juicebox + walkthrough kickoff.
+
+- [[Raw/docs/Beroz-Clone-Capture-Session-2026-04-28]] — full session log (toolkit build, 6 bug/fix pairs, capture findings, walkthrough kickoff)
+- [[Wiki/digests/Session-Beroz-Clone-Capture-2026-04-28]] — synthesized digest with bug/fix table + IA + design system + Niksho relevance
+- [[Wiki/concepts/Self-Diagnosing-Crawler]] — NEW: doctor() + manual route override pattern
+- [[Wiki/concepts/Crawl-Walkthrough-Capture-Pipeline]] — NEW: 3-layer cloning methodology
+- [[Wiki/concepts/Authenticated-SPA-Capture]] — UPDATED with Playwright auth findings (channel:'chrome', persistent profile reuse, networkidle pitfall, lock cleanup, doctor reference)
+- [[Wiki/index]] — added Self-Diagnosing-Crawler + Crawl-Walkthrough-Capture-Pipeline + Session-Beroz-Clone-Capture-2026-04-28
+- [[Wiki/hot]] — full rewrite reflecting pivot + capture state + walkthrough pickup
+
+Status: pivot ADR signed by Nikhil pending Shoham confirmation; capture pipeline complete; walkthrough ~85% remaining (deferred next session for two-screen setup).
+
+---
+
 ## 2026-04-28 — Merged ingest: Sequences redesign + Apollo audit + feature test
 
 Two parallel ingests from different sessions — merged on conflict resolution.

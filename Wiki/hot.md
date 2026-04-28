@@ -11,118 +11,121 @@ Small recency buffer. Rewritten by [[AIOS/skills/ingest-source]] whenever it run
 
 ---
 
-## Right now — 2026-04-28
+## Right now — 2026-04-28 (late evening)
 
-### Feature test complete: 15-item punch list 🔴 action needed before demo
-Full walkthrough ran against post-21-commit main (2026-04-27). Three items are blockers for any external demo:
+### Strategic pivot logged: pure clone, IA included 🔴 supersedes 04-15 hybrid plan
 
-- **[Bug #5] Source Now passes a 5-word summary, not the full requirement** — fix: pass `requirement.job_description` + structured intake fields directly to the search.
-- **[Bug #6] Find Similar / Job Description / Select Manually are the same component** — needs to be three distinct components with different behaviour.
-- **[Bug #8] Apollo page-size too small** — 30 results for "Software Engineer + Bangalore" with no filters. Raise to 100–200, show full raw pool with match % column.
+Nikhil overrode the 2026-04-15 hybrid-clone decision in favour of **pure 1:1 clone (visual + IA) → differentiate in Phase 4**. The 04-27 punch list (15 bugs, 3 demo-blockers) showed the cost of hybrid: mixing Juicebox patterns with Niksho behaviour before either was understood. Pure clone forces understanding first. ADR signed by Nikhil this session, **pending Shoham confirmation**.
 
-Full punch list: [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]] · [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]]. Tier 3 email loop (features 19–24) still deferred.
+ADR: [[Efforts/Niksho-SaaS-Product/decisions/2026-04-28-pivot-to-pure-clone]]
 
----
+**Frontend rebuild only** — backend/agents/data layer all stay (mi.md hard rule). The clone goes in `/Brand New Website/beroz/Clone/` alongside existing Beroz; no production risk.
 
-### Sequences redesign + row 3-dot menu → SHIPPED to repo ⚠️ verification pending
-Two pushes on 2026-04-26 (Session A). Sequences moves from "list of emails sent" to a real engagement-tracking surface. **Code is in the repo. End-to-end verification (section 5 of the handoff doc) has not yet been run against a running stack.**
-
-**The engagement trifecta (all four needed for honest metrics):**
-1. **Pixel** — `tracking_token` on `outreach_log`; 1×1 GIF at `/track/open/<token>.gif`.
-2. **Click rewrite** — every `<a href>` rewritten to `/track/click/<token>?u=<orig>`, skips mailto/tel/unsub.
-3. **Bounce parse** — `_run_process_inbox` checks bounce patterns *before* the reply branch (order matters).
-4. **AI intent (Haiku)** — non-bounce replies → `interested|not_interested|out_of_office|other` + confidence on `sequence_runs.intent`.
-
-Pattern extracted as [[Wiki/concepts/Email-Tracking-Trifecta]].
-
-**Adjacent shipped:** Signatures library, unsubscribe flow (HMAC-signed footer, global suppression list), test-send (no tracking), UI rebuild (overview/detail/editor), row 3-dot menu (Pin/Star/Clone/Archive). **Full details:** [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] · [[Raw/docs/Beroz-Session-2026-04-26]]
-
-**Before relying on this in production:** apply migration (`apply_schema.py sequence_tracking.sql`), set `PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` env vars on Railway, then walk section 5 of the handoff doc.
+**IA decision (load-bearing):** Project is the routing primitive at `/project/<id>`. No Client primitive. Phase 4 multi-client extension path = `projects.client_id` nullable column, Client as tag/filter not routing parent. Same pattern Beroz already used for Projects layer.
 
 ---
 
-### 7-channel sourcing live on main (2026-04-25) ✅ — awaiting Railway deploy
-```
-Internal DB · Apollo · GitHub · Hugging Face · LinkedIn/Apify · YC/Apify · Web Agent
-```
+### Capture pipeline complete ✅
 
-**⚠️ Pre-deploy blockers:**
-1. **Supabase schema migration** — 6 new columns + 2 indexes (commit `2a9bf84`) must be applied in SQL Editor before Railway redeploy
-2. **`APIFY_TOKEN`** not set in Railway env vars — Apify channel never fires on Railway
-3. **Anthropic balance** — top up to ≥ $20 for tier-2 headroom
+Playwright capture toolkit built and run against Juicebox in this session. Toolkit at `/Brand New Website/beroz/Clone/`:
 
-Harvestapi normalizer fixed 2026-04-26 (commit `dd0e4f1`) — confirmed via $0.16 smoke test: 9/10 bullseye ServiceNow devs for Bangalore query.
+- `auth.ts` (real Chrome + persistent profile)
+- `crawl.ts` (with self-diagnostic `doctor()` + manual route override — see [[Wiki/concepts/Self-Diagnosing-Crawler]])
+- `interact.ts` (90% scripted flows with click/fill/wait actions)
+- `analyze.ts` (REPORT.md + per-page autofill)
 
----
+Captured: **11 pages × 428 interactives × 102 API endpoints × 7 flow traces.**
 
-### Haiku 4.5 for all candidate scoring (commit `5b6916b`) ✅
-~12× cheaper, 2–3× faster. JD parsing and web extraction stay on Sonnet. **Still open:** add 60s timeout + 30s heartbeat to `_call_claude` (~10-line patch).
+**Design system corrections to 04-15 teardown** (load-bearing — would have built wrong):
 
----
+| Property | Was | Real |
+|---|---|---|
+| Font stack | Inter | Helvetica/Arial system stack |
+| Brand purple | `#7600bc` | `#6B2F8D` (`rgb(107, 47, 141)`) |
+| Base font size | 14px implied | 16px |
+| Border radius default | 4px | 0px dominant |
 
-### Apollo India data confirmed good (2026-04-25) ✅
-~95.5% email coverage, ~70% direct-phone. Pipeline was fabricating location + discarding quality flags. Fixed in commit `2a9bf84`. See [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]].
-
----
-
-### Full RCO lifecycle → LIVE (2026-04-18, carried) ✅
-```
-Requirement → Source → Shortlist → Sequence → Submit to TL → TL approves + sends to client
-```
-Commits `ed63940` + `717e523`. Fully operational.
+**API manifest:** 102 unique endpoints, ~25 are real product routes (`/api/user`, `/api/search`, `/api/sequence/list`, `/api/contact`, `/api/integration`, etc.). This is the spec for backend extensions.
 
 ---
 
-### Open blockers / follow-ups
+### Walkthrough ~85% remaining — pickup point for next session 🟡
+
+Walkthrough kicked off at end of session. Took one screenshot — Nikhil was on the candidate detail drawer for Dan Kaplun, showing one of the most important uncaptured surfaces (we missed it in the crawl). Nikhil deferred to next session for two-screen setup.
+
+**Pickup signal:** Nikhil says "let's do the walkthrough" → I re-request Chrome access → screenshot → start at top, work top-down through sidebar.
+
+**Pre-walkthrough checklist for Nikhil:** Juicebox open in real Chrome (logged in, mailbox connected), populated sequence running, shortlist with 2-3 candidates, executed search visible, Typewhisper ready, two screens.
+
+**~50-60 missing surfaces** the walkthrough has to capture: modals (Create Sequence, Filter editor, Criteria editor, Share, Status dropdown), drawers (Candidate Detail with 4 profile tabs + 5-tab right panel), populated states (Search Results, populated sequence list, populated shortlist), sub-tabs within Settings, 3-dot row menus.
+
+---
+
+### New concept notes from this session
+
+- [[Wiki/concepts/Self-Diagnosing-Crawler]] — doctor() + manual routes.json: structurally prevents DOM-heuristic-failure loops
+- [[Wiki/concepts/Crawl-Walkthrough-Capture-Pipeline]] — 3-layer methodology for cloning authenticated SaaS
+- [[Wiki/concepts/Authenticated-SPA-Capture]] — UPDATED with Playwright auth findings (channel:'chrome' + persistent profile + networkidle pitfall + lock-cleanup)
+
+---
+
+### Workflow gate discovered ⚠ Niksho-relevant
+
+**Juicebox gates sequencing behind mailbox connection.** Add to Sequence / New Sequence with no connected mailbox → modal: Connect Gmail / Outlook / IMAP / Do this later. The full sequence editor is unreachable without connection.
+
+For Niksho: Beroz already has Microsoft Graph connections for ExcelTech's 10 inboxes — gate is reversed. SaaS multi-tenant Phase 4 needs equivalent gate. Add to backlog.
+
+---
+
+### Carried from previous hot.md (still active)
+
+**04-27 feature test punch list** — 3 demo-blockers (Bug #5 Source Now passes 5-word summary; Bug #6 three Searches tabs are same component; Bug #8 Apollo page-size too small). The pure-clone rebuild supersedes these: when the new clone is built it replaces the surfaces these bugs lived in. Don't fix in old Beroz.
+
+**Sequences engagement trifecta** (pixel + click + bounce + AI intent) — code shipped to repo on 04-26, end-to-end verification still pending. See [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]].
+
+**7-channel sourcing** live on main as of 04-25 — awaiting Railway deploy with schema migration (commit `2a9bf84`), `APIFY_TOKEN`, Anthropic top-up.
+
+**Haiku 4.5 for candidate scoring** ✅ shipped — ~12× cheaper, 2-3× faster.
+
+---
+
+### Open follow-ups (priority ordered)
 
 | Priority | Item |
 |---|---|
-| 🔴 | Fix punch list items 5, 6, 8 before demo |
-| 🔴 | Run Supabase schema migration for commit `2a9bf84` (6 columns + 2 indexes) |
-| 🔴 | Sequences end-to-end verification — walk section 5 of the 04-26 handoff doc |
-| 🟠 | Set `PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` on Railway (needed for tracking) |
-| 🟠 | Add `APIFY_TOKEN` to Railway Variables |
-| 🟠 | Top up Anthropic to ≥ $20 |
-| 🟠 | Add 60s timeout + 30s heartbeat to `_call_claude` |
-| 🟡 | Tier 3 email loop test (features 19–24) |
-| 🟡 | Apollo paid plan upgrade ($49 Basic — code ready) |
-| 🟡 | Foundit EDGE API key — pending from Prayag |
-| 🟡 | Detail-page 3-dot menu (overview only in this round) |
-| ⬜ | `is_starred` filter / Starred scope chip — backend not wired |
-| ⬜ | Full Searches post-query layout (waiting on second competitor screenshot from Nikhil) |
-| ⬜ | `/api/search` project scoping — do NOT wire without Nikhil's sign-off |
-| ⬜ | Legacy `/page-outreach` — preserved unlinked; retirement decision pending |
+| 🔴 | **Walkthrough — resume next session.** ~85% remaining. Two-screen setup. |
+| 🔴 | Shoham confirms pivot ADR before any further build |
+| 🟠 | After walkthrough: targeted capture flow for ~10-15 high-value missing surfaces |
+| 🟠 | Build tokens.css + ~10 primitive components before any page-build PR (drift prevention) |
+| 🟠 | Per-page visual diff gate before merge |
+| 🟡 | Cross-link pivot ADR from Niksho-SaaS Overview + reading copy of hot.md tomorrow |
+| 🟡 | Diff 102-endpoint API manifest against Beroz's existing FastAPI routes → backend extension list |
+| 🟡 | Run Supabase schema migration `2a9bf84`, set Railway env vars |
+| 🟡 | Foundit EDGE API key (chase Prayag) |
 
-### Recently resolved
-- ~~Apollo pipeline fabricating location data~~ — ✅ Fixed 2026-04-25, commit `2a9bf84`
-- ~~Screener hanging on Sonnet at tier-1~~ — ✅ Fixed 2026-04-26, commit `5b6916b`
-- ~~Harvestapi normalizer broken~~ — ✅ Fixed 2026-04-26, commit `dd0e4f1`
-- ~~Submit-to-TL UI~~ — ✅ Shipped 2026-04-18, commits `ed63940` + `717e523`
+### Recently resolved this session
 
-### New to the vault today (2026-04-28)
-- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]]
-- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]]
-- [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]]
-- [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]]
-- [[Wiki/concepts/Email-Tracking-Trifecta]]
-- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]]
-- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]]
-- [[Raw/docs/Beroz-Session-2026-04-25]]
-- [[Raw/docs/Beroz-Session-2026-04-26]] (two sessions merged)
-- [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]]
-- [[Wiki/concepts/Candidate-Sourcing-Channels]] — updated to 7-channel table
+- ✅ Strategy hybrid-vs-clone re-decided (pure clone, IA included)
+- ✅ Playwright capture toolkit built end-to-end
+- ✅ 11 pages captured with full DOM/styles/interactives/network/hover
+- ✅ 7 flow traces with 90%-scripted automation
+- ✅ Design system extracted from real computed styles (corrects 04-15 guesses)
+- ✅ IA confirmed: Project primitive + 8 sub-routes + 1 workspace-scoped
+- ✅ 102-endpoint API manifest produced
+- ✅ Self-diagnosing crawler pattern with doctor() + manual route override
 
 ### Guardrails for the AI reading this
+
 - Do not edit anything in `Raw/`. It is sacred.
-- Do not auto-send any email from any code path.
-- Do not build or suggest LinkedIn *direct* scraping. Apify/harvestapi is the approved path — see [[Wiki/concepts/Candidate-Sourcing-Channels]] for the ToS risk note.
-- Do not rewrite the Railway codebase for architectural purity. Extend in `/ai_agents/` or as new Flask routes.
-- Do not wire `/api/search` to `state.activeProject` without Nikhil's sign-off — cosmetic scoping is intentional for now.
-- Do not assume the 04-26 Sequences feature is verified — section 5 of the handoff doc has not been run end-to-end. Treat as wired-up only.
-- Always add `generated-by: <tool>` frontmatter to AI-authored files.
+- The pivot to pure clone is the active strategy as of 2026-04-28. Do NOT extend the 04-15 hybrid plan — it has been superseded. Read the ADR before suggesting changes.
+- The clone code lives at `/Users/nikhilkumar/Claude Workspace/exceltech-ai/Brand New Website/beroz/Clone/` (outside vault).
+- `auth-session/chrome-profile/` keeps Nikhil's Juicebox session — re-auth only if Firebase Auth expires (typically ~24h).
+- Frontend rebuild only; backend stays. mi.md hard rule. Don't propose backend rewrites.
+- The walkthrough is the primary mechanism for filling sub-surface gaps. Don't propose alternative discovery methods that bypass it.
+- Always `generated-by:` frontmatter on AI-authored files.
 
 See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated 2026-04-28 — merged two parallel ingests: (1) Sequences redesign + Email-Tracking-Trifecta concept; (2) Apollo audit + 7-channel expansion + harvestapi fix + Haiku swap + feature test + punch list. Both sets of notes and concepts now in vault._
+_Updated 2026-04-28 (late) — full ingest of the Beroz Clone Capture Session: pivot ADR, capture pipeline complete, 2 new concept notes, 1 concept note updated, walkthrough deferred._

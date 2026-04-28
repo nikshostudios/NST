@@ -40,6 +40,8 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]] — has_email / has_direct_phone flags available at search tier (free); use them to gate paid /people/match reveal calls
 - [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]] — auto-broadening query strategy that walks ranked loosenings until result pool reaches minimum size; transparent iteration log
 - [[Wiki/concepts/Email-Tracking-Trifecta]] — pixel + click rewrite + bounce parse + AI intent classification: the four-part pattern for honest outreach engagement metrics
+- [[Wiki/concepts/Self-Diagnosing-Crawler]] — `doctor()` function + manual route override: permanent escape from DOM-heuristic-failure loops in Playwright crawlers
+- [[Wiki/concepts/Crawl-Walkthrough-Capture-Pipeline]] — 3-layer pattern (crawl → walkthrough → targeted captures) for cloning authenticated SaaS apps; the methodology behind Beroz pure-clone
 
 ## Techniques
 
@@ -73,6 +75,7 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]] — Apollo India audit (pipeline was fabricating data, Apollo is fine); 5 pipeline gates shipped; sourcing expanded from 4 to 7 channels (HF, Apify/LinkedIn, Apify/YC, Web Agent)
 - [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]] — harvestapi normalizer fixed against live actor schema; Sonnet 4 → Haiku 4.5 swap for scoring (~12× cheaper, 2–3× faster)
 - [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]] — full feature test walkthrough (18 features, Tier 3 deferred); 15-item punch list; key finding: all 3 Searches tabs are the same component
+- [[Wiki/digests/Session-Beroz-Clone-Capture-2026-04-28]] — strategy pivot to pure 1:1 clone (visual + IA), Playwright capture toolkit built and run against Juicebox, 11 pages + 7 flows captured, 102 API endpoints catalogued, IA confirmed (Project as primitive). Walkthrough kicked off, deferred for two-screen setup.
 
 ## Tools
 
