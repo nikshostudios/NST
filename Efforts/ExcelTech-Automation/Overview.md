@@ -4,7 +4,7 @@ effort: ExcelTech-Automation
 status: in-production
 intensity: active
 started: 2025-11-01
-updated: 2026-04-18
+updated: 2026-04-28
 owner: Shoham & Nikhil
 ---
 
@@ -52,6 +52,28 @@ See [[Calendar/Quarterly/2026-Q2]] for Q2 outcomes.
 
 ## Recent decisions
 _(log in reverse chronological order)_
+
+### 2026-04-26 — Sequences redesign + row 3-dot menu (shipped to repo, **unverified — pending end-to-end test**)
+
+Decision: Rebuild Sequences end-to-end so it can answer "is this campaign working?" — not just "what did we send?". Add a tracking schema (pixel + click rewrite + bounce parse + AI-classified reply intent), a per-user signature library, a token-signed unsubscribe flow, a Preview-and-test path that bypasses logging, and a redesigned overview / detail / editor surface. Add a row 3-dot menu (Pin / Star / Edit / Clone / Archive, Archive in red). Code is in the repo; **the verification plan in section 5 of the handoff doc has not yet been executed against a running stack** — treat as wired-up only until the migration is applied (`apply_schema.py sequence_tracking.sql`), `PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` env vars are set on Railway, and the 8-step walk-through passes.
+
+**Sub-decisions:**
+- **Bounce branch runs before reply branch** in `_run_process_inbox`. Mailer-Daemon emails would otherwise be misclassified as "no" replies.
+- **Unsubscribe footer is appended before link rewriting.** Otherwise the unsub URL gets wrapped in `/track/click/...` and the recipient's "remove me" click is recorded as engagement before suppression.
+- **Test-send is a separate path (`test_send_step`).** No log row, no run row, no tracking — `[TEST]` subject prefix only. Keeps test traffic out of engagement metrics.
+- **Pre-send unsubscribe guard at top of `sequence_tick`.** Skipped runs marked `skipped` for auditability; not silently dropped.
+- **Pin/star are first-class columns + a partial index** (`sequences.is_pinned`, `is_starred`, `pinned_at`). Cheap reads, rare writes.
+- **Clone is a deep copy** with `status='draft'`, `source='clone'`, name `"<original> (copy)"` — carries `signature_id` + `include_unsubscribe` per step.
+- **3-dot menu is overview-only this round.** Detail-page menu deferred — avoids fanning out a half-finished pattern.
+
+**Files touched:** `backend/ai_agents/data/sequence_tracking.sql`, `backend/ai_agents/config/db.py`, `backend/ai_agents/core.py`, `backend/app.py`, `frontend-exceltech/index.html`. Python files compile cleanly; no commit hashes captured in the handoff doc.
+
+**Source docs:**
+- [[Raw/docs/Beroz-Session-2026-04-26]] — full handoff doc with section 5 verification plan and exact helper names (grep targets)
+- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] — compiled digest with full tracking pipeline diagram and Niksho relevance
+- [[Wiki/concepts/Email-Tracking-Trifecta]] — the deliverability/engagement pattern extracted from this session, load-bearing for the SaaS port
+
+**Guardrail:** Do not assume engagement metrics are accurate until verification passes — opens/clicks/bounces/intent could all be silently broken until the env vars are set and a real send-and-track is observed. Run section 5 of the handoff doc before any data from the new metrics surfaces influences a decision.
 
 ### 2026-04-18 — Full RCO lifecycle live end-to-end (Phase 5 Submit-to-TL + Phase 4 Sequences wiring)
 
