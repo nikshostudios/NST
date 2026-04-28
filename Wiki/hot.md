@@ -1,96 +1,110 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-18
+updated: 2026-04-28
 max-words: 1000
 ---
 
 # Wiki — Hot Cache
 
-Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. If you're an AI reading this first, this is the current state of what matters most.
+Small recency buffer. Rewritten by [[AIOS/skills/ingest-source]] whenever it runs. If you're an AI reading this first, this is the current state of what matters most.
 
 ---
 
-## Right now — 2026-04-18
+## Right now — 2026-04-28
 
-### Full RCO lifecycle → LIVE end-to-end in ExcelTech production ✅
-Two commits shipped to `origin/main` and auto-deployed via Railway: **`ed63940`** (Phase 5 — Submit-to-TL) and **`717e523`** (Phase 4 — Sequences wiring complete). No schema changes — both commits run on existing `submissions` and `outreach_log` tables.
+### Feature test complete: 15-item punch list for ExcelTech 🔴 action needed
+Full feature walkthrough ran against the post-21-commit main branch (2026-04-27). Most features work. **Three items require immediate attention before any external demo:**
 
-**The complete pipeline is now operational:**
+- **[Bug #5] Source Now passes a 5-word summary, not the full requirement** — discards JD + all intake fields, producing a JD score of 2/10 on a rich requirement. Fix: pass `requirement.job_description` + structured intake fields directly to the search.
+- **[Bug #6] Find Similar / Job Description / Select Manually are the same component** — same input, same filters, same results, shared state across tab switches. Needs to be three distinct components.
+- **[Bug #8] Apollo page-size too small** — 30 results for "Software Engineer + Bangalore" with no other filters. Raise to 100–200 and show full raw pool with match % column.
+
+Full punch list: [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]]. Raw log: [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]].
+
+**Tier 3 email loop (features 19–24) still deferred** — requires enrolling `nikshostudios@gmail.com` in a live sequence and waiting for `sequence_tick`.
+
+---
+
+### 7-channel sourcing live on main (2026-04-25) ✅ — awaiting Railway deploy
+Four commits shipped on April 25 expanded the agentic-boost pipeline from 4 to **7 sourcing channels**. Each is independently env-gated and failure-isolated.
+
+```
+Internal DB · Apollo · GitHub · Hugging Face · LinkedIn/Apify · YC/Apify · Web Agent
+```
+
+**⚠️ Pre-deploy blockers still open:**
+1. **Supabase schema migration** for Phase 2 (`ALTER TABLE candidates ADD COLUMN IF NOT EXISTS has_email ...` — 6 columns + 2 indexes) must be run in the SQL Editor before Railway redeploy of commit `2a9bf84`
+2. **`APIFY_TOKEN`** not set in Railway env vars — Apify channel never fires on Railway (only local). Add to Railway → Variables.
+3. **Anthropic balance** was $0.66 on 2026-04-26 (caused screener hang at 80/134). Top up to ≥ $20 for tier-2 headroom.
+
+Harvestapi normalizer was fixed on 2026-04-26 (commit `dd0e4f1`) — the April 25 Apify slice was broken against the real schema. Confirmed via $0.16 smoke test: 9/10 bullseye ServiceNow devs for "Bangalore" query.
+
+---
+
+### Haiku 4.5 now used for all candidate scoring (commit `5b6916b`) ✅
+Sonnet 4 → Haiku 4.5 swap for four scoring call sites. JD parsing and web extraction stay on Sonnet. Net effect: ~12× cheaper per screener batch, 2–3× faster. Routing rule encoded in `agents/screener.md` + `config/context_rules.md`.
+
+**Still open from April 26:** Add 60s timeout + 30s heartbeat to `_call_claude` (~10-line patch). Without it, any future rate-limit hang is invisible to the recruiter.
+
+---
+
+### Apollo India data confirmed good (2026-04-25) ✅
+The April 25 audit: Apollo's India coverage is ~95.5% email, ~70% direct-phone — the failure was entirely in our pipeline (fabricated `current_location`, discarded quality flags, never called `/people/match`). Fixed in commit `2a9bf84`. See [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]].
+
+---
+
+### Full RCO lifecycle → LIVE (2026-04-18, carried) ✅
 ```
 Requirement → Source → Shortlist → Sequence → Submit to TL → TL approves + sends to client
 ```
-Every step has a UI surface, persistent state in Supabase, and a status that propagates back to every card/chip/button referencing that candidate.
-
-**Phase 5 — Submit-to-TL:**
-- New Submit to TL button in candidate slide-over; gated on recruiter role + requirement context + no existing submission.
-- Backend rejects duplicate (candidate, requirement) submissions with 409. Frontend pre-checks `data.submissions` — button never misleads.
-- Status propagation: shortlist cards show `With TL / TL approved / Sent to client / TL rejected` tag. Slide-over chip updates across all states.
-- `data-requirement-id` stamped on source cards to carry requirement context through to the slide-over.
-
-**Phase 4 — Sequences wiring:**
-- Slide-over Sequences tab: real list of every outreach email with subject, "For \<role\> · \<client\>", timestamp, Replied/Awaiting chip.
-- Slide-over Activity tab: unified timeline (notes + emails + submissions + approvals) — client-side merge, no new endpoint.
-- Sidebar Sequences page redesigned: grouped by requirement, filter tabs (All / Awaiting / Replied), scope switch My/All (TL-only), 3 stat tiles, click → opens candidate.
-- Legacy Outreach & Inbox preserved at `/page-outreach`, unlinked from sidebar.
-
-Pattern extracted as [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — reusable for any future multi-role approval flow in the SaaS product.
-
-**Full details:** [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] · [[Raw/docs/Beroz-Session-2026-04-18]]
+Commits `ed63940` + `717e523`. No schema changes needed. Still fully operational.
 
 ---
 
-### Projects layer + sidebar refactor + Search hero → LIVE ✅ (2026-04-17, carried)
-Two commits: `423a01e` (Projects layer, sidebar, Search hero) + `56ba201` (frontend-saas mockup). Projects are real Supabase tables. Sidebar is 3-zone. Agent Home deleted. Search rebuilt as competitor-inspired hero with mode chips. Avatar at bottom-left sidebar, 5 items all wired. See [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]].
-
-### Planning artifact for Projects ship — preserved (2026-04-17)
-[[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — the morning planning session that drove the ship. Useful for understanding *why* the ship looks the way it does. [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]].
-
-### Beroz — 31/31 Playwright passing (carried)
-Commit `f2f0c0d` merged FastAPI into Flask, fixed the silent `api()` helper, corrected `experience_min` type, added Supabase healthcheck. Full chain healthy. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
-
-### v2 Recruitment architecture (carried, still in flight)
-8 sourcing channels, 7 agents, 4 implementation phases. Phase 1: Foundit EDGE API migration (**blocked on API key from Prayag**). See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
-
-### Competitor analysis — X0PA AI (carried)
-29 features across 3 platforms. Niksho's lane: end-to-end recruiter workflow automation. See [[Wiki/competitors/X0PA-AI]].
-
-### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — Full RCO lifecycle live in production. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — UI patterns reusable; Juicebox post-query layout next.
-- 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] v1 shipped, maintenance mode.
-- 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
-
 ### Open blockers / follow-ups
-- **Full Searches post-query layout** — second competitor screenshot pending from Nikhil.
-- **`/api/search` project scoping** — endpoint ignores `state.activeProject`; cosmetic for now. Do NOT wire without sign-off.
-- **Foundit EDGE API key** — still pending from Prayag.
-- **Apollo plan upgrade** — code ready; needs paid plan ($49 Basic).
-- **Legacy `/dashboard` route** — redirect / delete / leave pending.
-- **Invite members** — placeholder; no `POST /api/team/invite` yet.
-- **Requirement ↔ Project backfill** — old requirements have `project_id = NULL`; "Assign to project" deferred.
-- **Legacy `/page-outreach`** — preserved but unlinked; retirement decision pending.
-- **`supabase-py` has no DDL** — schema changes still need Supabase Console.
+
+| Priority | Item |
+|---|---|
+| 🔴 | Fix punch list items 5, 6, 8 before demo |
+| 🔴 | Run Supabase schema migration for commit `2a9bf84` (6 columns + 2 indexes) |
+| 🟠 | Add `APIFY_TOKEN` to Railway Variables |
+| 🟠 | Top up Anthropic to ≥ $20 |
+| 🟠 | Add 60s timeout + 30s heartbeat to `_call_claude` |
+| 🟡 | Tier 3 email loop test (features 19–24) |
+| 🟡 | Apollo paid plan upgrade ($49 Basic — code ready) |
+| 🟡 | Foundit EDGE API key — still pending from Prayag |
+| ⬜ | Full Searches post-query layout (waiting on second competitor screenshot from Nikhil) |
+| ⬜ | `/api/search` project scoping — do NOT wire without Nikhil sign-off |
+| ⬜ | Legacy `/page-outreach` — preserved but unlinked; retirement decision pending |
 
 ### Recently resolved
-- ~~Submit-to-TL UI~~ — ✅ Shipped 2026-04-18, commits `ed63940` + `717e523`. Full RCO lifecycle live.
-- ~~Projects layer / sidebar refactor / Search hero~~ — ✅ Shipped 2026-04-17, commits `423a01e` + `56ba201`.
-- ~~Create Requirement bug~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`. 31/31 tests passing.
+- ~~Apollo pipeline fabricating location data~~ — ✅ Fixed 2026-04-25, commit `2a9bf84`
+- ~~Screener hanging on Sonnet at tier-1~~ — ✅ Fixed 2026-04-26, commit `5b6916b`
+- ~~Harvestapi normalizer broken~~ — ✅ Fixed 2026-04-26, commit `dd0e4f1`
+- ~~Submit-to-TL UI~~ — ✅ Shipped 2026-04-18, commits `ed63940` + `717e523`
 
-### New to the vault today
-- [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]]
-- [[Wiki/concepts/Idempotent-Multi-Role-Handoff]]
-- [[Raw/docs/Beroz-Session-2026-04-18]]
+### New to the vault today (2026-04-28)
+- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]]
+- [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]]
+- [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]]
+- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]]
+- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]]
+- [[Raw/docs/Beroz-Session-2026-04-25]]
+- [[Raw/docs/Beroz-Session-2026-04-26]]
+- [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]]
+- [[Wiki/concepts/Candidate-Sourcing-Channels]] — updated to 7-channel table
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
 - Do not auto-send any email from any code path.
-- Do not build or suggest LinkedIn scraping. Ever.
+- Do not build or suggest LinkedIn *direct* scraping. Apify/harvestapi is the approved path — see [[Wiki/concepts/Candidate-Sourcing-Channels]] for the ToS risk note.
 - Do not rewrite the Railway codebase for architectural purity. Extend in `/ai_agents/` or as new Flask routes.
-- Do not wire `/api/search` to `state.activeProject` without Nikhil's sign-off — cosmetic scoping is intentional for now.
+- Do not wire `/api/search` to `state.activeProject` without Nikhil's sign-off.
 - Always add `generated-by: <tool>` frontmatter to AI-authored files.
 
 See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-18 — ingested Beroz-Session-2026-04-18 (Phase 5 Submit-to-TL + Phase 4 Sequences wiring; full RCO lifecycle live end-to-end). Created Idempotent-Multi-Role-Handoff concept. SESSION-2026-04-17 was already ingested (2026-04-17c); skipped re-processing. Previous (2026-04-17c): Beroz-Frontend-Planning-2026-04-17 ingested. Earlier: Projects layer + Search hero shipped; X0PA competitor analysis; Create Requirement bug resolved._
+_Updated 2026-04-28 — ingested Beroz-Session-2026-04-25 (Apollo audit + 5 gates + 7-channel expansion), Beroz-Session-2026-04-26 (harvestapi fix + Haiku swap), Beroz-Feature-Test-Log-2026-04-27 (feature test + 15-item punch list). Created Apollo-Pre-Reveal-Quality-Signals and Adaptive-Search-Progressive-Loosening concepts. Updated Candidate-Sourcing-Channels to 7-channel table. Previous (2026-04-18): Beroz-Session-2026-04-18 ingested; full RCO lifecycle live._

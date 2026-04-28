@@ -10,6 +10,27 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-28 — Apollo audit + 7-channel expansion + feature test ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:** 3 session notes (2026-04-25, 2026-04-26, 2026-04-27)
+
+**Raw docs created:** [[Raw/docs/Beroz-Session-2026-04-25]] · [[Raw/docs/Beroz-Session-2026-04-26]] · [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]]
+
+**Wiki notes created (3 digests, 2 concepts):**
+- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]] — Apollo India audit (pipeline was fabricating data; Apollo fine); 5 pipeline gates; 4→7 sourcing channels
+- [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]] — harvestapi normalizer fix; Haiku 4.5 swap for scoring
+- [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]] — 18-feature test; 15-item punch list; all 3 Searches tabs are same component
+- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]] — has_email / has_direct_phone pre-reveal gate pattern
+- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]] — 5-step query broadening with transparent iteration log
+
+**Wiki notes updated:**
+- [[Wiki/concepts/Candidate-Sourcing-Channels]] — updated to 7-channel table with auth and notes
+
+**Navigation files updated:** [[Wiki/index]] · [[Wiki/hot]] · [[Wiki/log]] (this entry)
+
+---
+
 ## 2026-04-18 — Beroz Phase 4 + 5 session ingestion (full RCO lifecycle live)
 
 **Skill:** [[AIOS/skills/ingest-source]]
