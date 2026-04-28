@@ -37,12 +37,9 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Projects-as-Scoping-Primitive]] — Projects as the top-level scoping unit; access model + sidebar 3-zone encoding
 - [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — browser-extension pattern (Juicebox) for logging outreach from a recruiter's personal Gmail/Outlook back to the platform; the deliverability-vs-build-cost trade
 - [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — backend 409 dedup + frontend pre-check + status propagation chain for multi-role approval workflows (submit-gate pattern)
-<<<<<<< HEAD
 - [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]] — has_email / has_direct_phone flags available at search tier (free); use them to gate paid /people/match reveal calls
 - [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]] — auto-broadening query strategy that walks ranked loosenings until result pool reaches minimum size; transparent iteration log
-=======
 - [[Wiki/concepts/Email-Tracking-Trifecta]] — pixel + click rewrite + bounce parse + AI intent classification: the four-part pattern for honest outreach engagement metrics
->>>>>>> origin/main
 
 ## Techniques
 
