@@ -1,12 +1,47 @@
 ---
 type: wiki-log
 generated-by: claude
-updated: 2026-04-18
+updated: 2026-04-28
 ---
 
 # Wiki — Log
 
 Append-only timeline of ingestion and wiki edits. New entries at the top.
+
+---
+
+## 2026-04-28 — Beroz Sequences redesign + 3-dot menu ingestion
+
+**Skill:** [[AIOS/skills/ingest-source]]
+**Sources processed:**
+- Handoff doc dated 2026-04-26 (Sequences end-to-end redesign + row 3-dot menu Pin/Star/Clone/Archive). Sequences and Beroz session log series — filed as `Beroz-Session-2026-04-26.md` to match the existing daily-slug convention.
+
+**Raw docs created:**
+- [[Raw/docs/Beroz-Session-2026-04-26]] — full handoff doc with section 5 verification plan, exact code paths, and "verification still pending" annotation in frontmatter.
+
+**Wiki notes created:**
+- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] — session digest with the full tracking pipeline diagram, ordering-rule callouts, Niksho relevance, and follow-ups.
+- [[Wiki/concepts/Email-Tracking-Trifecta]] — pixel + click rewrite + bounce parse + AI intent classification as a unified four-part pattern; includes the two ordering rules (bounce-before-reply; footer-before-rewrite) and the four-question "is the trifecta correctly applied?" checklist.
+
+**Navigation files updated:**
+- [[Wiki/index]] — added 1 concept, 1 digest, 1 raw doc; `updated:` bumped to 2026-04-28.
+- [[Wiki/hot]] — rewritten to lead with the Sequences redesign (flagged as shipped to repo, end-to-end verification pending); engagement trifecta + adjacent (signatures, unsubscribe, test-send) summarised; new blockers added (verification + env vars + detail-page 3-dot menu + `is_starred` filter); 04-18 + 04-17 entries carried.
+- [[Wiki/log]] — this entry.
+
+**Efforts files updated:**
+- [[Efforts/ExcelTech-Automation/Overview]] — 2026-04-26 decision entry added (Sequences redesign + row 3-dot menu; flagged "unverified — pending end-to-end test" per the user's choice).
+
+**Decisions captured:**
+- Bounce branch must run before reply branch in `_run_process_inbox` (Mailer-Daemon misclassification risk).
+- Unsubscribe footer is appended *before* link rewriting (otherwise the unsub URL gets wrapped in `/track/click/...` and the unsub click is recorded as engagement before suppression).
+- Test-send is a separate path (`test_send_step`), not a flag on `sequence_tick` — keeps test traffic out of engagement metrics.
+- Pre-send `is_email_unsubscribed` guard at top of `sequence_tick`; suppressed runs marked `skipped` for auditability.
+- Pin/star are first-class columns + a partial index, not derived state (cheap reads, rare writes).
+- Clone is a deep copy with `status='draft'`, `source='clone'`, name `"<original> (copy)"`.
+- 3-dot menu is overview-only this round; detail-page menu deferred.
+
+**Status note:**
+- The verification plan in section 5 of the handoff doc has not yet been executed against a running stack. Code is in the repo. Before treating the feature as live: apply the migration (`apply_schema.py sequence_tracking.sql`), set `PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` env vars on Railway, then walk section 5.
 
 ---
 

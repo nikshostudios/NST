@@ -1,7 +1,7 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-18
+updated: 2026-04-28
 max-words: 1000
 ---
 
@@ -11,75 +11,77 @@ Small recency buffer. Rewritten by [[AIOS/skills/lint-wiki]] whenever it runs. I
 
 ---
 
-## Right now — 2026-04-18
+## Right now — 2026-04-28
 
-### Full RCO lifecycle → LIVE end-to-end in ExcelTech production ✅
-Two commits shipped to `origin/main` and auto-deployed via Railway: **`ed63940`** (Phase 5 — Submit-to-TL) and **`717e523`** (Phase 4 — Sequences wiring complete). No schema changes — both commits run on existing `submissions` and `outreach_log` tables.
+### Sequences redesign + row 3-dot menu → SHIPPED to repo, verification pending ⚠️
+Two pushes in one session on 2026-04-26 — Sequences moves from "list of emails sent" to a real engagement-tracking surface, and rows pick up Pin / Star / Clone / Archive. **Code is in the repo. End-to-end verification (section 5 of the handoff doc) has not yet been run against a running stack** — treat as wired-up but unverified.
 
-**The complete pipeline is now operational:**
-```
-Requirement → Source → Shortlist → Sequence → Submit to TL → TL approves + sends to client
-```
-Every step has a UI surface, persistent state in Supabase, and a status that propagates back to every card/chip/button referencing that candidate.
+**The engagement trifecta (new, all four needed for honest metrics):**
+1. **Pixel** — every send gets a `tracking_token` saved on `outreach_log`; 1×1 GIF at `/track/open/<token>.gif`. Directional signal (image-blocking distorts).
+2. **Click rewrite** — every `<a href>` rewritten to `/track/click/<token>?u=<orig>`, skips mailto/tel/already-tracked/unsubscribe. Higher-fidelity than opens.
+3. **Bounce parse** — `_run_process_inbox` checks bounce sender/subject/Final-Recipient patterns *before* the reply branch. Order matters: Mailer-Daemon emails would otherwise be misclassified as "no" replies.
+4. **AI intent (Haiku)** — non-bounce replies → `interested | not_interested | out_of_office | other` + confidence, stamped on `sequence_runs.intent`.
 
-**Phase 5 — Submit-to-TL:**
-- New Submit to TL button in candidate slide-over; gated on recruiter role + requirement context + no existing submission.
-- Backend rejects duplicate (candidate, requirement) submissions with 409. Frontend pre-checks `data.submissions` — button never misleads.
-- Status propagation: shortlist cards show `With TL / TL approved / Sent to client / TL rejected` tag. Slide-over chip updates across all states.
-- `data-requirement-id` stamped on source cards to carry requirement context through to the slide-over.
+Pattern extracted as [[Wiki/concepts/Email-Tracking-Trifecta]] — load-bearing for the SaaS port.
 
-**Phase 4 — Sequences wiring:**
-- Slide-over Sequences tab: real list of every outreach email with subject, "For \<role\> · \<client\>", timestamp, Replied/Awaiting chip.
-- Slide-over Activity tab: unified timeline (notes + emails + submissions + approvals) — client-side merge, no new endpoint.
-- Sidebar Sequences page redesigned: grouped by requirement, filter tabs (All / Awaiting / Replied), scope switch My/All (TL-only), 3 stat tiles, click → opens candidate.
-- Legacy Outreach & Inbox preserved at `/page-outreach`, unlinked from sidebar.
+**Adjacent shipped this round:**
+- **Signatures library** — `user_signatures` table, partial unique index on default, `/api/signatures` CRUD, dropdown in editor.
+- **Unsubscribe flow** — token-signed footer (HMAC of `run_id:email`), global `email_unsubscribes` suppression list, pre-send guard at top of `sequence_tick`. Footer goes in *before* link rewrite (otherwise the unsub URL gets tracked).
+- **Test-send** — `[TEST]`-prefixed preview to current user; no log/run/tracking. Keeps test traffic out of metrics.
+- **UI rebuild** — overview cards (Total/Active/Opened/Clicked/Replied/Interested), 7/14/30-day chart on overview + detail, 7-card detail page with embedded chart, editor signature dropdown + unsub checkbox + Preview-and-test button.
+- **Row 3-dot menu** — `sequences.is_pinned` / `is_starred` / `pinned_at` columns + partial index, deep-copy `clone_sequence_row`, popover Pin/Star/Edit/Clone/Archive (Archive red), purple pin icon + amber star on row name. `data-stop="1"` separates row-click drilldown from menu-click.
 
-Pattern extracted as [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — reusable for any future multi-role approval flow in the SaaS product.
+**Full details:** [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] · [[Raw/docs/Beroz-Session-2026-04-26]]
 
-**Full details:** [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] · [[Raw/docs/Beroz-Session-2026-04-18]]
+**Before relying on this in production:** apply the migration (`apply_schema.py sequence_tracking.sql`), set `PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` env vars on Railway, then walk section 5 of the handoff doc.
 
 ---
 
-### Projects layer + sidebar refactor + Search hero → LIVE ✅ (2026-04-17, carried)
-Two commits: `423a01e` (Projects layer, sidebar, Search hero) + `56ba201` (frontend-saas mockup). Projects are real Supabase tables. Sidebar is 3-zone. Agent Home deleted. Search rebuilt as competitor-inspired hero with mode chips. Avatar at bottom-left sidebar, 5 items all wired. See [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]].
+### Full RCO lifecycle → LIVE end-to-end ✅ (2026-04-18, carried)
+Two commits to `origin/main`: `ed63940` (Phase 5 — Submit-to-TL) and `717e523` (Phase 4 — Sequences wiring). The complete pipeline `Requirement → Source → Shortlist → Sequence → Submit to TL → TL approves + sends` is operational with persistent state and propagating status. Submit-to-TL backend rejects duplicate (candidate, requirement) with 409; frontend pre-checks `data.submissions`. Pattern: [[Wiki/concepts/Idempotent-Multi-Role-Handoff]]. See [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]].
 
-### Planning artifact for Projects ship — preserved (2026-04-17)
-[[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — the morning planning session that drove the ship. Useful for understanding *why* the ship looks the way it does. [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]].
+### Projects layer + sidebar refactor + Search hero → LIVE ✅ (2026-04-17, carried)
+Commits `423a01e` + `56ba201`. Projects are real Supabase tables. Sidebar is 3-zone. Agent Home deleted. Avatar at bottom-left, 5 items wired. See [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]].
 
 ### Beroz — 31/31 Playwright passing (carried)
-Commit `f2f0c0d` merged FastAPI into Flask, fixed the silent `api()` helper, corrected `experience_min` type, added Supabase healthcheck. Full chain healthy. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
+Commit `f2f0c0d`. FastAPI merged into Flask, silent `api()` fixed, `experience_min` type fixed, Supabase healthcheck. See [[Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16]].
 
-### v2 Recruitment architecture (carried, still in flight)
-8 sourcing channels, 7 agents, 4 implementation phases. Phase 1: Foundit EDGE API migration (**blocked on API key from Prayag**). See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
+### v2 Recruitment architecture (carried)
+8 sourcing channels, 7 agents, 4 phases. Phase 1 Foundit EDGE API migration **blocked on API key from Prayag**. See [[Raw/docs/ExcelTech-Recruitment-Agent-Architecture-v3.html]].
 
 ### Competitor analysis — X0PA AI (carried)
-29 features across 3 platforms. Niksho's lane: end-to-end recruiter workflow automation. See [[Wiki/competitors/X0PA-AI]].
+29 features across 3 platforms. See [[Wiki/competitors/X0PA-AI]].
 
 ### In motion (by intensity)
-- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — Full RCO lifecycle live in production. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — UI patterns reusable; Juicebox post-query layout next.
+- 🔥 **Active** — [[Efforts/ExcelTech-Automation/Overview|ExcelTech Automation]] — Sequences redesign in repo, awaiting verification. [[Efforts/Niksho-SaaS-Product/Overview|Niksho SaaS Product]] — engagement trifecta is the load-bearing pattern for the SaaS port.
 - 🌀 **Ongoing** — [[Efforts/Second-Brain-Setup/Overview|Second Brain Setup]] v1 shipped, maintenance mode.
 - 💤 **Sleeping** — [[Efforts/Fundraising/Prep-2027|Fundraising 2027]].
 
 ### Open blockers / follow-ups
-- **Full Searches post-query layout** — second competitor screenshot pending from Nikhil.
-- **`/api/search` project scoping** — endpoint ignores `state.activeProject`; cosmetic for now. Do NOT wire without sign-off.
+- **Sequences end-to-end verification** — section 5 of the 04-26 handoff doc not yet executed. Top priority.
+- **`PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` env vars** — must be set on Railway before tracking works.
+- **Detail-page 3-dot menu** — overview list only this round.
+- **`is_starred` filter / Starred scope chip** — backend not wired.
+- **Bulk row actions** — not yet in scope; will likely accompany the Starred filter.
+- **Settings panel inside editor** — still deferred.
 - **Foundit EDGE API key** — still pending from Prayag.
 - **Apollo plan upgrade** — code ready; needs paid plan ($49 Basic).
-- **Legacy `/dashboard` route** — redirect / delete / leave pending.
+- **Full Searches post-query layout** — second competitor screenshot pending from Nikhil.
+- **`/api/search` project scoping** — endpoint ignores `state.activeProject`; cosmetic. Do NOT wire without sign-off.
 - **Invite members** — placeholder; no `POST /api/team/invite` yet.
-- **Requirement ↔ Project backfill** — old requirements have `project_id = NULL`; "Assign to project" deferred.
-- **Legacy `/page-outreach`** — preserved but unlinked; retirement decision pending.
-- **`supabase-py` has no DDL** — schema changes still need Supabase Console.
+- **Legacy `/page-outreach`** — preserved unlinked from 04-18; retirement decision pending.
+- **`supabase-py` has no DDL** — schema changes still need Supabase Console or `apply_schema.py`.
 
 ### Recently resolved
-- ~~Submit-to-TL UI~~ — ✅ Shipped 2026-04-18, commits `ed63940` + `717e523`. Full RCO lifecycle live.
+- ~~Sequences redesign + 3-dot menu (code)~~ — ⚠️ Shipped to repo 2026-04-26; verification pending.
+- ~~Submit-to-TL UI~~ — ✅ Shipped 2026-04-18, commits `ed63940` + `717e523`.
 - ~~Projects layer / sidebar refactor / Search hero~~ — ✅ Shipped 2026-04-17, commits `423a01e` + `56ba201`.
-- ~~Create Requirement bug~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`. 31/31 tests passing.
+- ~~Create Requirement bug~~ — ✅ Fixed 2026-04-16, commit `f2f0c0d`.
 
 ### New to the vault today
-- [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]]
-- [[Wiki/concepts/Idempotent-Multi-Role-Handoff]]
-- [[Raw/docs/Beroz-Session-2026-04-18]]
+- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]]
+- [[Wiki/concepts/Email-Tracking-Trifecta]]
+- [[Raw/docs/Beroz-Session-2026-04-26]]
 
 ### Guardrails for the AI reading this
 - Do not edit anything in `Raw/`. It is sacred.
@@ -87,10 +89,11 @@ Commit `f2f0c0d` merged FastAPI into Flask, fixed the silent `api()` helper, cor
 - Do not build or suggest LinkedIn scraping. Ever.
 - Do not rewrite the Railway codebase for architectural purity. Extend in `/ai_agents/` or as new Flask routes.
 - Do not wire `/api/search` to `state.activeProject` without Nikhil's sign-off — cosmetic scoping is intentional for now.
+- Do not assume the 04-26 Sequences feature is verified — section 5 of the handoff doc has not been run end-to-end. Treat as wired-up only.
 - Always add `generated-by: <tool>` frontmatter to AI-authored files.
 
 See [[mi]] for the full guardrail set.
 
 ---
 
-_Updated on 2026-04-18 — ingested Beroz-Session-2026-04-18 (Phase 5 Submit-to-TL + Phase 4 Sequences wiring; full RCO lifecycle live end-to-end). Created Idempotent-Multi-Role-Handoff concept. SESSION-2026-04-17 was already ingested (2026-04-17c); skipped re-processing. Previous (2026-04-17c): Beroz-Frontend-Planning-2026-04-17 ingested. Earlier: Projects layer + Search hero shipped; X0PA competitor analysis; Create Requirement bug resolved._
+_Updated on 2026-04-28 — ingested Beroz-Session-2026-04-26 (Sequences end-to-end redesign: engagement tracking trifecta, signatures + unsubscribe, overview/detail/editor rebuild, Pin/Star/Clone/Archive 3-dot menu). Created Email-Tracking-Trifecta concept. Verification status: code in repo, end-to-end test pending. Previous (2026-04-18): Phase 4+5 RCO lifecycle live; Idempotent-Multi-Role-Handoff concept._
