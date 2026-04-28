@@ -10,59 +10,28 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
-<<<<<<< HEAD
-## 2026-04-28 — Apollo audit + 7-channel expansion + feature test ingestion
+## 2026-04-28 — Merged ingest: Sequences redesign + Apollo audit + feature test
 
-**Skill:** [[AIOS/skills/ingest-source]]
-**Sources processed:** 3 session notes (2026-04-25, 2026-04-26, 2026-04-27)
+Two parallel ingests from different sessions — merged on conflict resolution.
 
-**Raw docs created:** [[Raw/docs/Beroz-Session-2026-04-25]] · [[Raw/docs/Beroz-Session-2026-04-26]] · [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]]
+**Ingest A (Nikhil's session — Sequences redesign):**
+- [[Raw/docs/Beroz-Session-2026-04-26]] Session A — Sequences redesign + 3-dot menu handoff doc
+- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] — engagement trifecta, signature library, unsubscribe, row menu
+- [[Wiki/concepts/Email-Tracking-Trifecta]] — pixel + click rewrite + bounce parse + AI intent as unified pattern
+- Status: code in repo, end-to-end verification (section 5) still pending
 
-**Wiki notes created (3 digests, 2 concepts):**
-- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]] — Apollo India audit (pipeline was fabricating data; Apollo fine); 5 pipeline gates; 4→7 sourcing channels
-- [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]] — harvestapi normalizer fix; Haiku 4.5 swap for scoring
-- [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]] — 18-feature test; 15-item punch list; all 3 Searches tabs are same component
-- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]] — has_email / has_direct_phone pre-reveal gate pattern
-- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]] — 5-step query broadening with transparent iteration log
-
-**Wiki notes updated:**
-- [[Wiki/concepts/Candidate-Sourcing-Channels]] — updated to 7-channel table with auth and notes
+**Ingest B (Shoham's session — Apollo + feature test):**
+- [[Raw/docs/Beroz-Session-2026-04-25]] — Apollo India audit (3 sessions); 5 gates; 4→7 channels
+- [[Raw/docs/Beroz-Session-2026-04-26]] Session B — harvestapi fix + Haiku 4.5 swap
+- [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]] — 18-feature test, 15-item punch list
+- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]]
+- [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]]
+- [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]]
+- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]]
+- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]]
+- [[Wiki/concepts/Candidate-Sourcing-Channels]] — updated to 7-channel table
 
 **Navigation files updated:** [[Wiki/index]] · [[Wiki/hot]] · [[Wiki/log]] (this entry)
-=======
-## 2026-04-28 — Beroz Sequences redesign + 3-dot menu ingestion
-
-**Skill:** [[AIOS/skills/ingest-source]]
-**Sources processed:**
-- Handoff doc dated 2026-04-26 (Sequences end-to-end redesign + row 3-dot menu Pin/Star/Clone/Archive). Sequences and Beroz session log series — filed as `Beroz-Session-2026-04-26.md` to match the existing daily-slug convention.
-
-**Raw docs created:**
-- [[Raw/docs/Beroz-Session-2026-04-26]] — full handoff doc with section 5 verification plan, exact code paths, and "verification still pending" annotation in frontmatter.
-
-**Wiki notes created:**
-- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] — session digest with the full tracking pipeline diagram, ordering-rule callouts, Niksho relevance, and follow-ups.
-- [[Wiki/concepts/Email-Tracking-Trifecta]] — pixel + click rewrite + bounce parse + AI intent classification as a unified four-part pattern; includes the two ordering rules (bounce-before-reply; footer-before-rewrite) and the four-question "is the trifecta correctly applied?" checklist.
-
-**Navigation files updated:**
-- [[Wiki/index]] — added 1 concept, 1 digest, 1 raw doc; `updated:` bumped to 2026-04-28.
-- [[Wiki/hot]] — rewritten to lead with the Sequences redesign (flagged as shipped to repo, end-to-end verification pending); engagement trifecta + adjacent (signatures, unsubscribe, test-send) summarised; new blockers added (verification + env vars + detail-page 3-dot menu + `is_starred` filter); 04-18 + 04-17 entries carried.
-- [[Wiki/log]] — this entry.
-
-**Efforts files updated:**
-- [[Efforts/ExcelTech-Automation/Overview]] — 2026-04-26 decision entry added (Sequences redesign + row 3-dot menu; flagged "unverified — pending end-to-end test" per the user's choice).
-
-**Decisions captured:**
-- Bounce branch must run before reply branch in `_run_process_inbox` (Mailer-Daemon misclassification risk).
-- Unsubscribe footer is appended *before* link rewriting (otherwise the unsub URL gets wrapped in `/track/click/...` and the unsub click is recorded as engagement before suppression).
-- Test-send is a separate path (`test_send_step`), not a flag on `sequence_tick` — keeps test traffic out of engagement metrics.
-- Pre-send `is_email_unsubscribed` guard at top of `sequence_tick`; suppressed runs marked `skipped` for auditability.
-- Pin/star are first-class columns + a partial index, not derived state (cheap reads, rare writes).
-- Clone is a deep copy with `status='draft'`, `source='clone'`, name `"<original> (copy)"`.
-- 3-dot menu is overview-only this round; detail-page menu deferred.
-
-**Status note:**
-- The verification plan in section 5 of the handoff doc has not yet been executed against a running stack. Code is in the repo. Before treating the feature as live: apply the migration (`apply_schema.py sequence_tracking.sql`), set `PUBLIC_BASE_URL` and `UNSUBSCRIBE_SECRET` env vars on Railway, then walk section 5.
->>>>>>> origin/main
 
 ---
 
