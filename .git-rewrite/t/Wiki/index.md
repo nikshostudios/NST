@@ -1,7 +1,7 @@
 ---
 type: wiki-index
 generated-by: claude
-updated: 2026-04-18
+updated: 2026-04-28
 ---
 
 # Wiki — Index
@@ -37,6 +37,9 @@ Big ideas extracted from source material.
 - [[Wiki/concepts/Projects-as-Scoping-Primitive]] — Projects as the top-level scoping unit; access model + sidebar 3-zone encoding
 - [[Wiki/concepts/Personal-Inbox-Outreach-Tracking]] — browser-extension pattern (Juicebox) for logging outreach from a recruiter's personal Gmail/Outlook back to the platform; the deliverability-vs-build-cost trade
 - [[Wiki/concepts/Idempotent-Multi-Role-Handoff]] — backend 409 dedup + frontend pre-check + status propagation chain for multi-role approval workflows (submit-gate pattern)
+- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]] — has_email / has_direct_phone flags available at search tier (free); use them to gate paid /people/match reveal calls
+- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]] — auto-broadening query strategy that walks ranked loosenings until result pool reaches minimum size; transparent iteration log
+- [[Wiki/concepts/Email-Tracking-Trifecta]] — pixel + click rewrite + bounce parse + AI intent classification: the four-part pattern for honest outreach engagement metrics
 
 ## Techniques
 
@@ -65,6 +68,14 @@ Video/podcast summaries with extracted knowledge and Niksho relevance.
 - [[Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17]] — Projects layer + sidebar 3-zone restructure + Search hero shipped to production (commits 423a01e, 56ba201)
 - [[Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17]] — planning artifact for the Projects layer ship: 4 TODOs (avatar dropdown, Projects nav, All Projects page, kill Agent Home), gating decision on Project ↔ Agent, deferred Chrome extension question
 - [[Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18]] — Phase 5 Submit-to-TL gate + Phase 4 Sequences wiring; full RCO lifecycle (Requirement → Source → Shortlist → Sequence → Submit to TL → TL approve + send) live end-to-end (commits ed63940, 717e523)
+<<<<<<< HEAD
+- [[Wiki/digests/Session-Beroz-Sequences-DB-Cleanup-2026-04-19]] — 8 commits: full multi-step sequence builder (5-table schema), DB cleanup (20→18 tables), several UX + infra improvements
+- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]] — Apollo India audit (pipeline was fabricating data, Apollo is fine); 5 pipeline gates shipped; sourcing expanded from 4 to 7 channels (HF, Apify/LinkedIn, Apify/YC, Web Agent)
+- [[Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26]] — harvestapi normalizer fixed against live actor schema; Sonnet 4 → Haiku 4.5 swap for scoring (~12× cheaper, 2–3× faster)
+- [[Wiki/digests/Session-Beroz-Feature-Test-2026-04-27]] — full feature test walkthrough (18 features, Tier 3 deferred); 15-item punch list; key finding: all 3 Searches tabs are the same component
+=======
+- [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]] — Sequences end-to-end redesign: engagement tracking trifecta (pixel + click + bounce + AI intent), signature library, unsubscribe flow, overview/detail/editor rebuild, row 3-dot menu (Pin/Star/Clone/Archive). Shipped to repo, end-to-end verification pending.
+>>>>>>> origin/main
 
 ## Tools
 
@@ -120,6 +131,13 @@ Raw material captured in the vault. This is the input side of the compile loop.
 - [[Raw/docs/Beroz-Session-2026-04-17]] — Beroz session log: Projects layer, sidebar 3-zone refactor, Search hero, avatar dropdown (commits 423a01e + 56ba201)
 - [[Raw/docs/Beroz-Frontend-Planning-2026-04-17]] — planning session that preceded the Projects layer ship: 4 TODOs, Claude Code prompt, open Project ↔ Agent question, Chrome extension deferred
 - [[Raw/docs/Beroz-Session-2026-04-18]] — Phase 5 Submit-to-TL + Phase 4 Sequences wiring session: full RCO lifecycle live, smoke-test checklist, file Δ table (commits ed63940, 717e523)
+<<<<<<< HEAD
+- [[Raw/docs/Beroz-Session-2026-04-25]] — Apollo India audit (3 sessions): audit data, 5 pipeline gates (commit 2a9bf84), 3 new sourcing channels — HF, Apify, Web Agent (commits 345d5c4, 52d5620, e597279)
+- [[Raw/docs/Beroz-Session-2026-04-26]] — harvestapi normalizer fix (commit dd0e4f1), Haiku 4.5 swap for scoring (commit 5b6916b), open items
+- [[Raw/docs/Beroz-Feature-Test-Log-2026-04-27]] — full feature test: 18 features tested across Requirements/Searches/Sequences/Settings; 15-item punch list
+=======
+- [[Raw/docs/Beroz-Session-2026-04-26]] — Sequences redesign + row 3-dot menu handoff doc: tracking schema, pixel/click/bounce/intent backend, signature + unsubscribe wiring, frontend rebuild, Pin/Star/Clone/Archive menu. Verification plan in section 5 still pending end-to-end.
+>>>>>>> origin/main
 
 ### Competitor analysis
 - [[Raw/docs/X0PA-AI-Recruiter-Features-2026-04-17]] — X0PA AI full feature extraction from sales deck (29 features, 3 platforms, Singapura Finance presentation)

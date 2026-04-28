@@ -113,6 +113,7 @@ README.md
 Raw/clippings/context-audit-skill-bradley-bonanno.md
 Raw/clippings/karpathy-llm-knowledge-bases.md
 Raw/docs/Beroz-Build-Session-2026-04-15.md
+Raw/docs/Beroz-Feature-Test-Log-2026-04-27.md
 Raw/docs/Beroz-Features-Guide-2026-04-15.md
 Raw/docs/Beroz-Frontend-Planning-2026-04-17.md
 Raw/docs/Beroz-Playwright-Fix-Analysis-2026-04-16.md
@@ -121,6 +122,8 @@ Raw/docs/Beroz-RCO-Workflow-2026-04-17.md
 Raw/docs/Beroz-Session-2026-04-17.md
 Raw/docs/Beroz-Session-2026-04-18.md
 Raw/docs/Beroz-Session-2026-04-19.md
+Raw/docs/Beroz-Session-2026-04-25.md
+Raw/docs/Beroz-Session-2026-04-26.md
 Raw/docs/Beroz-Testing-Guide-2026-04-15.md
 Raw/docs/Beroz-Workflow-Diagrams-2026-04-15.md
 Raw/docs/ExcelTech_Master_Knowledge_Base.md
@@ -146,12 +149,15 @@ Templates/Weekly Review.md
 Templates/Wiki Concept.md
 Wiki/competitors/X0PA-AI.md
 Wiki/concepts/AI-GTM-Stack.md
+Wiki/concepts/Adaptive-Search-Progressive-Loosening.md
 Wiki/concepts/Agent-Traffic-Arbitrage.md
+Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals.md
 Wiki/concepts/Authenticated-SPA-Capture.md
 Wiki/concepts/Bot-Detection-vs-Scraping.md
 Wiki/concepts/Candidate-Sourcing-Channels.md
 Wiki/concepts/Compiler-Analogy.md
 Wiki/concepts/Context-Window-Management.md
+Wiki/concepts/Email-Tracking-Trifecta.md
 Wiki/concepts/Expert-In-The-Loop.md
 Wiki/concepts/File-Over-AI-Portable-Identity.md
 Wiki/concepts/Five-Filter-Rule-Audit.md
@@ -166,12 +172,16 @@ Wiki/concepts/Scale-for-Productivity.md
 Wiki/concepts/Search-First-Hero-Mode-Chips.md
 Wiki/concepts/Search-First-SaaS-UI.md
 Wiki/concepts/Seven-Levels-of-Web-Design.md
+Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25.md
 Wiki/digests/Session-Beroz-E2E-Testing-2026-04-15.md
+Wiki/digests/Session-Beroz-Feature-Test-2026-04-27.md
 Wiki/digests/Session-Beroz-Fix-Analysis-2026-04-16.md
 Wiki/digests/Session-Beroz-Frontend-Planning-2026-04-17.md
+Wiki/digests/Session-Beroz-Harvestapi-Haiku-2026-04-26.md
 Wiki/digests/Session-Beroz-Phase4-Phase5-2026-04-18.md
 Wiki/digests/Session-Beroz-Projects-Layer-2026-04-17.md
 Wiki/digests/Session-Beroz-Sequences-DB-Cleanup-2026-04-19.md
+Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26.md
 Wiki/digests/Session-Juicebox-Teardown-2026-04-15.md
 Wiki/digests/YT-AI-GTM-Stack-2026-04-14.md
 Wiki/digests/YT-Agents-Skills-Clearly-Explained-2026-04-14.md

@@ -1,8 +1,11 @@
 ---
-type: concept
+type: wiki-concept
 generated-by: ingest-source
-sources: ["[[Raw/docs/sourcing-troubleshooting-2026-04-11]]", "[[Raw/docs/sourcing-architecture]]"]
-updated: 2026-04-11
+sources:
+  - "[[Raw/docs/sourcing-troubleshooting-2026-04-11]]"
+  - "[[Raw/docs/sourcing-architecture]]"
+  - "[[Raw/docs/Beroz-Session-2026-04-25]]"
+updated: 2026-04-28
 ---
 
 # Candidate Sourcing Channels
@@ -27,15 +30,30 @@ Always answer these questions **before** writing pipeline code for a new channel
 
 ## Channel categories for ExcelTech
 
-**Actually returns candidates:** Foundit Recruiter (SG only, cookie auth), Apollo.io (global, paid API), Internal DB (historical candidates), Naukri RMS (India, subscription required)
+**Active in production (as of 2026-04-25):** 7 channels, each independently env-gated and failure-isolated in the agentic-boost pipeline:
 
-**Returns job postings only:** MyCareersFuture, Foundit Public, Scrape.do + Foundit
+| Channel | Auth | Coverage | Notes |
+|---|---|---|---|
+| Internal DB | — | historical candidates | Always queried first |
+| Apollo.io | API key | global; India ~95% email coverage | Adaptive search + pre-reveal quality flags |
+| GitHub | token (optional) | technical roles globally | Searches by language + skill |
+| Hugging Face | none / `HF_TOKEN` | ML/AI practitioners globally | Upserts by name (no email at search tier) |
+| LinkedIn via Apify | `APIFY_TOKEN` | global; India well-covered | ⚠️ LinkedIn ToS risk; swap for Naukri if needed |
+| YC directory via Apify | `APIFY_TOKEN` | founder/early-stage roles | Only fires on keyword match |
+| Web Agent | Brave/SerpAPI key | unconstrained; AI-native | Claude Haiku query gen → Sonnet extraction |
 
-**Manual only:** LinkedIn (hard rule — no automation)
+**Returns job postings only (not candidates):** MyCareersFuture, Foundit Public, Scrape.do + Foundit
+
+**Manual only (hard rule — no automation ever):** LinkedIn direct
+
+**Planned / blocked:** Foundit Recruiter (SG only, cookie auth — bot-detection issues), Naukri RMS (India, subscription required — pending Prayag's API key), Apollo paid plan upgrade ($49 Basic, code ready)
 
 ## Related
+- [[Wiki/concepts/Apollo-Pre-Reveal-Quality-Signals]] — two-phase flag-inspect-then-reveal pattern
+- [[Wiki/concepts/Adaptive-Search-Progressive-Loosening]] — progressive query broadening for Apollo
 - [[Wiki/tools/Firecrawl]]
 - [[Wiki/concepts/Bot-Detection-vs-Scraping]]
 - [[Wiki/techniques/Direct-API-Interception]]
 - [[Atlas/Product/Sourcing-Channels]]
 - [[Raw/docs/sourcing-troubleshooting-2026-04-11]]
+- [[Wiki/digests/Session-Beroz-Apollo-MultiSource-2026-04-25]]
