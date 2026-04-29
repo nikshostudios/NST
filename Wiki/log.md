@@ -10,6 +10,37 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-29 — Walkthrough checkpoint 2 — Agent flow fully captured
+
+Major capture batch. Complete Agent creation pipeline walked end-to-end with full narration. ~12 new UI surfaces specced in one session.
+
+**New surfaces added to feature map:**
+- Launch New Agent modal + Edit Agent modal (with Change Owner)
+- Agent setup screen (with focused vs unfocused states)
+- Live NL query parsing with field-extraction chips
+- Initial matches confirmation
+- Edit Filters modal (12 categories, Exclude Profiles section)
+- Review Profiles 3-up calibration carousel with citations + Skill Map
+- Edit Criteria modal (rank-ordered + pinnable)
+- Sequence selection + dropdown opened state with Incomplete state
+- Create Sequence template chooser
+- Sequence editor (full toolbar, personalisation tags, calendar banner)
+- Daily volume preset (15/25/35 Low/Balanced/High)
+- Approval mode binary (Review individually / Reach out automatically)
+- Final "Yes, start sourcing" confirmation
+
+**Open questions resolved this session:** Agent search modes (NL only), padlock icon (Private), status transitions (Configuring/Active/Paused/Finished), hidden profile exclusion mechanism (via Edit Filters).
+
+**Strategic findings:** calibration loop pattern, live query parsing solves Bug #5, citations pattern, rank-ordered criteria, daily volume preset cards, confidence-building over-explanation as Juicebox's playbook.
+
+**Updates:**
+- [[Efforts/Niksho-SaaS-Product/JUICEBOX-FEATURE-MAP]] — added "Walkthrough Capture Log — 2026-04-29 Session 2" section with full agent flow spec
+- [[Wiki/hot]] — full rewrite reflecting current walkthrough state + pickup point
+
+**Pickup signal:** Nikhil says "let's continue the walkthrough" → resume at "Yes, start sourcing" click → see active-agent UI → Tab 3 (Project root → Searches).
+
+---
+
 ## 2026-04-29 — Walkthrough checkpoint 1 of 3
 
 Mid-walkthrough vault update. Tab 1 (All Projects) fully specced. Tab 2 (All Agents) partially captured (empty state).

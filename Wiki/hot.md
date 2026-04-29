@@ -1,8 +1,8 @@
 ---
 type: wiki-hot-cache
 generated-by: claude
-updated: 2026-04-28
-max-words: 1000
+updated: 2026-04-29
+max-words: 1500
 ---
 
 # Wiki — Hot Cache
@@ -11,81 +11,122 @@ Small recency buffer. Rewritten by [[AIOS/skills/ingest-source]] whenever it run
 
 ---
 
-## Right now — 2026-04-28 (late evening)
+## Right now — 2026-04-29 (mid-session)
 
-### Strategic pivot logged: pure clone, IA included 🔴 supersedes 04-15 hybrid plan
+### 🔴 ACTIVE TASK: Live walkthrough of Juicebox in Cowork — checkpoint 2 just saved
 
-Nikhil overrode the 2026-04-15 hybrid-clone decision in favour of **pure 1:1 clone (visual + IA) → differentiate in Phase 4**. The 04-27 punch list (15 bugs, 3 demo-blockers) showed the cost of hybrid: mixing Juicebox patterns with Niksho behaviour before either was understood. Pure clone forces understanding first. ADR signed by Nikhil this session, **pending Shoham confirmation**.
+Nikhil is performing a structured screen-by-screen walkthrough of Juicebox while Claude (this session) screenshots his real Chrome via computer-use, asks questions per the question template, and writes the *Workflow why* into [[Efforts/Niksho-SaaS-Product/JUICEBOX-FEATURE-MAP]] in real time.
 
-ADR: [[Efforts/Niksho-SaaS-Product/decisions/2026-04-28-pivot-to-pure-clone]]
+**Pickup signal for next session:** Nikhil says "let's continue the walkthrough" → Claude re-requests Chrome access → screenshots → continues from **Tab 3 (Project root → Searches)** which is the next major surface to walk.
 
-**Frontend rebuild only** — backend/agents/data layer all stay (mi.md hard rule). The clone goes in `/Brand New Website/beroz/Clone/` alongside existing Beroz; no production risk.
+**Current state of the agent Nikhil just configured:** "Nikhil Agent" is at the **"Yes, start sourcing"** confirmation step. Hasn't been started yet. When walkthrough resumes, the next click is Yes → see what the running-agent state looks like → then move to Tab 3.
 
-**IA decision (load-bearing):** Project is the routing primitive at `/project/<id>`. No Client primitive. Phase 4 multi-client extension path = `projects.client_id` nullable column, Client as tag/filter not routing parent. Same pattern Beroz already used for Projects layer.
+### What's been captured (across both sessions)
+
+**🟢 specced:**
+- Sidebar (full structure, 17 elements, collapsed icon-only state)
+- Logo behaviour (no-op)
+- Getting Started Checklist Modal (all 6 steps with images + CTAs)
+- All Projects (full button inventory, 3-dot menu, Edit Project modal, hover tooltips, Hidden vs Rejected concept)
+- Connect Mailbox sequencing gate
+- **All Agents — FULL Agent creation pipeline** (just captured this session):
+  - Launch New Agent modal
+  - Edit Agent modal
+  - Agent setup screen (with focused vs unfocused states)
+  - **Live query parsing with field extraction chips** (Bug #5 fix candidate)
+  - Initial matches confirmation
+  - **Edit Filters modal — 12 categories** (answers Hidden Profile exclusion question)
+  - **Review Profiles 3-up calibration carousel** with citations
+  - **Edit Criteria modal** (rank-ordered + pinnable)
+  - Sequence selection (with "Don't use sequences" escape hatch)
+  - Sequence dropdown with Incomplete state
+  - Create Sequence template chooser
+  - Sequence editor (full toolbar + features)
+  - Daily volume preset (15/25/35 Low/Balanced/High)
+  - Manual vs auto reach-out
+  - Final confirmation
+- Sidebar transformation when inside Agent (Agent + Shortlist instead of Searches + Shortlist)
+
+**🟡 partial:**
+- Candidate detail drawer (one screenshot from 04-28 — full walkthrough needed)
+- Skill Map (referenced but partial — only Back-End and Data Science seen)
+- Sequence editor (captured but Settings button content TBD)
+
+**🔴 not walked yet:**
+- Project root → Searches (THE biggest gap — most-time-spent surface)
+- Shortlist (project-scoped, with populated state)
+- Contacts
+- Sequences (list view, 3-dot menu, populated editor)
+- Network (gated — may be limited)
+- Analytics + sub-tabs (Talent Insights specifically)
+- Integrations
+- Account / Settings (all sub-tabs: User, Team, Billing, Workspace, Notifications, API)
+- Support
+
+### Strategic findings worth recalling on next session start
+
+**1. Calibration loop pattern (Juicebox's most clever UX).** Before agent commits to autonomy, user must approve/reject 3 profiles. Trains the quality bar by example. Replicate exactly.
+
+**2. Live NL query parsing with chips** — solves Bug #5 from 04-27 punch list. NL → structured fields shown as ✓ chips in real time. **Highest-priority replication for our Search.**
+
+**3. Why-we-matched citations** — numbered [1] [2] linking to specific evidence in profile. Trust-building UI for AI scoring. Beroz lacks this; needs replicating.
+
+**4. Criteria are rank-ordered + pinnable**, not binary required/preferred. Most-Important → Least-Important spectrum. Update Niksho scoring model.
+
+**5. Daily volume = preset cards** (15 Low / 25 Balanced / 35 High), not number input.
+
+**6. Confidence-building over-explanation pattern.** Calibration + citations + "doesn't send emails" reassurance + parsing chips. When AI is opaque, over-communicate.
+
+**7. Agents and Projects are siblings in IA.** Both are top-level routing primitives. Sidebar transforms to Agent-mode (Agent tab + Shortlist) vs Project-mode (Searches tab + Shortlist). Phase 4 multi-client extension applies to both equally.
+
+**8. Hidden profiles concept — partially answered.** Edit Filters → Exclude Profiles → Hidden checkbox is *where excluded*, but where a profile gets *marked* hidden in UI is still TBD (likely candidate row 3-dot or detail drawer — resolve in Tab 3 walkthrough).
+
+### Niksho-relevance of agent flow captures
+
+The agent flow effectively gives us **a complete spec for the most differentiating feature in Juicebox** that Beroz currently doesn't have a full-fledged equivalent of. Three things this maps to:
+
+1. **Beroz Bug #5 fix:** the live query parsing chips pattern is the visual treatment that fixes "Source Now passes 5 words." Build this.
+2. **Phase 4 Niksho Agent feature:** the entire Agent pipeline gives us the spec. Status lifecycle (Configuring/Active/Paused/Finished), criteria management, calibration loop, sequence-or-no-sequence choice.
+3. **Agency-flavoured agent:** when we add this in our SaaS, the "Reach out automatically" path needs an extra step asking which TL approves before sending — that's the Niksho moat layered on top.
 
 ---
 
-### Capture pipeline complete ✅
+### Strategic decisions still active
 
-Playwright capture toolkit built and run against Juicebox in this session. Toolkit at `/Brand New Website/beroz/Clone/`:
+**Pivot to pure clone (visual + IA), then differentiate Phase 4** — ADR at [[Efforts/Niksho-SaaS-Product/decisions/2026-04-28-pivot-to-pure-clone]]. Still pending Shoham confirmation.
 
-- `auth.ts` (real Chrome + persistent profile)
-- `crawl.ts` (with self-diagnostic `doctor()` + manual route override — see [[Wiki/concepts/Self-Diagnosing-Crawler]])
-- `interact.ts` (90% scripted flows with click/fill/wait actions)
-- `analyze.ts` (REPORT.md + per-page autofill)
+**IA: Project + Agent as siblings, both top-level.** Updated this session to reflect that Agent has its own sidebar context, not a sub-feature of Project.
 
-Captured: **11 pages × 428 interactives × 102 API endpoints × 7 flow traces.**
-
-**Design system corrections to 04-15 teardown** (load-bearing — would have built wrong):
-
-| Property | Was | Real |
-|---|---|---|
-| Font stack | Inter | Helvetica/Arial system stack |
-| Brand purple | `#7600bc` | `#6B2F8D` (`rgb(107, 47, 141)`) |
-| Base font size | 14px implied | 16px |
-| Border radius default | 4px | 0px dominant |
-
-**API manifest:** 102 unique endpoints, ~25 are real product routes (`/api/user`, `/api/search`, `/api/sequence/list`, `/api/contact`, `/api/integration`, etc.). This is the spec for backend extensions.
-
----
-
-### Walkthrough ~85% remaining — pickup point for next session 🟡
-
-Walkthrough kicked off at end of session. Took one screenshot — Nikhil was on the candidate detail drawer for Dan Kaplun, showing one of the most important uncaptured surfaces (we missed it in the crawl). Nikhil deferred to next session for two-screen setup.
-
-**Pickup signal:** Nikhil says "let's do the walkthrough" → I re-request Chrome access → screenshot → start at top, work top-down through sidebar.
-
-**Pre-walkthrough checklist for Nikhil:** Juicebox open in real Chrome (logged in, mailbox connected), populated sequence running, shortlist with 2-3 candidates, executed search visible, Typewhisper ready, two screens.
-
-**~50-60 missing surfaces** the walkthrough has to capture: modals (Create Sequence, Filter editor, Criteria editor, Share, Status dropdown), drawers (Candidate Detail with 4 profile tabs + 5-tab right panel), populated states (Search Results, populated sequence list, populated shortlist), sub-tabs within Settings, 3-dot row menus.
-
----
-
-### New concept notes from this session
-
-- [[Wiki/concepts/Self-Diagnosing-Crawler]] — doctor() + manual routes.json: structurally prevents DOM-heuristic-failure loops
-- [[Wiki/concepts/Crawl-Walkthrough-Capture-Pipeline]] — 3-layer methodology for cloning authenticated SaaS
-- [[Wiki/concepts/Authenticated-SPA-Capture]] — UPDATED with Playwright auth findings (channel:'chrome' + persistent profile + networkidle pitfall + lock-cleanup)
-
----
-
-### Workflow gate discovered ⚠ Niksho-relevant
-
-**Juicebox gates sequencing behind mailbox connection.** Add to Sequence / New Sequence with no connected mailbox → modal: Connect Gmail / Outlook / IMAP / Do this later. The full sequence editor is unreachable without connection.
-
-For Niksho: Beroz already has Microsoft Graph connections for ExcelTech's 10 inboxes — gate is reversed. SaaS multi-tenant Phase 4 needs equivalent gate. Add to backlog.
+**Frontend rebuild only.** Backend/agents/data layer all stay (mi.md hard rule).
 
 ---
 
 ### Carried from previous hot.md (still active)
 
-**04-27 feature test punch list** — 3 demo-blockers (Bug #5 Source Now passes 5-word summary; Bug #6 three Searches tabs are same component; Bug #8 Apollo page-size too small). The pure-clone rebuild supersedes these: when the new clone is built it replaces the surfaces these bugs lived in. Don't fix in old Beroz.
+**04-27 feature test punch list** — three demo-blockers (Bug #5 Source Now passes 5 words; Bug #6 three Searches tabs are same component; Bug #8 Apollo page-size too small). Pure-clone rebuild supersedes; don't fix in old Beroz.
 
 **Sequences engagement trifecta** (pixel + click + bounce + AI intent) — code shipped to repo on 04-26, end-to-end verification still pending. See [[Wiki/digests/Session-Beroz-Sequences-Redesign-2026-04-26]].
 
-**7-channel sourcing** live on main as of 04-25 — awaiting Railway deploy with schema migration (commit `2a9bf84`), `APIFY_TOKEN`, Anthropic top-up.
+**7-channel sourcing** live on main as of 04-25 — awaiting Railway deploy with schema migration `2a9bf84`, `APIFY_TOKEN`, Anthropic top-up.
 
 **Haiku 4.5 for candidate scoring** ✅ shipped — ~12× cheaper, 2-3× faster.
+
+---
+
+### Open questions parked for resolution in remaining walkthrough
+
+20. Where in UI does a recruiter MARK a profile as Hidden? (likely Tab 3 candidate detail)
+21. Sequence editor Settings button content
+22. AI Command chip in sequence editor
+23. Active agent's main screen UI
+24. Agent ↔ Project shortlist scope relationship
+25. Per-agent 3-dot menu items
+26. Skill Map full taxonomy
+27. Sequence "Incomplete" state trigger
+28. Settings sub-tabs (User/Team/Billing/Workspace/Notifications/API)
+29. Talent Insights full layout (referenced from Getting Started modal but not walked)
+30. Network gated content
+31. Quick Find ⌘K palette content
 
 ---
 
@@ -93,26 +134,32 @@ For Niksho: Beroz already has Microsoft Graph connections for ExcelTech's 10 inb
 
 | Priority | Item |
 |---|---|
-| 🔴 | **Walkthrough — resume next session.** ~85% remaining. Two-screen setup. |
+| 🔴 | **Resume walkthrough next session** — Tab 3 (Project root → Searches), then Tabs 4-11 |
 | 🔴 | Shoham confirms pivot ADR before any further build |
-| 🟠 | After walkthrough: targeted capture flow for ~10-15 high-value missing surfaces |
+| 🟠 | After walkthrough completes: targeted capture flow for ~10-15 high-value missing surfaces |
 | 🟠 | Build tokens.css + ~10 primitive components before any page-build PR (drift prevention) |
 | 🟠 | Per-page visual diff gate before merge |
-| 🟡 | Cross-link pivot ADR from Niksho-SaaS Overview + reading copy of hot.md tomorrow |
+| 🟡 | Cross-link pivot ADR from Niksho-SaaS Overview |
 | 🟡 | Diff 102-endpoint API manifest against Beroz's existing FastAPI routes → backend extension list |
 | 🟡 | Run Supabase schema migration `2a9bf84`, set Railway env vars |
 | 🟡 | Foundit EDGE API key (chase Prayag) |
 
-### Recently resolved this session
+### Recently resolved this session 2
 
-- ✅ Strategy hybrid-vs-clone re-decided (pure clone, IA included)
-- ✅ Playwright capture toolkit built end-to-end
-- ✅ 11 pages captured with full DOM/styles/interactives/network/hover
-- ✅ 7 flow traces with 90%-scripted automation
-- ✅ Design system extracted from real computed styles (corrects 04-15 guesses)
-- ✅ IA confirmed: Project primitive + 8 sub-routes + 1 workspace-scoped
-- ✅ 102-endpoint API manifest produced
-- ✅ Self-diagnosing crawler pattern with doctor() + manual route override
+- ✅ Tab 1 (All Projects) fully specced
+- ✅ Sidebar fully specced including collapsed state
+- ✅ Getting Started checklist (all 6 steps) specced
+- ✅ Edit Project modal specced
+- ✅ Tab 2 (All Agents) FULL Agent creation pipeline specced — ~12 new UI surfaces in one batch
+- ✅ Open questions 13, 14, 15 (agent search modes, padlock, status transitions) resolved
+- ✅ Open question 1 (hidden profile exclusion mechanism) partially resolved
+- ✅ Live query parsing pattern documented (Bug #5 fix candidate)
+- ✅ Calibration loop pattern documented (most valuable UX insight)
+- ✅ Citations pattern documented (trust-building for AI scoring)
+- ✅ 12-category Edit Filters captured comprehensively
+- ✅ Rank-ordered Criteria pattern captured
+- ✅ Daily volume preset pattern captured
+- ✅ Niksho-Agents-vs-Projects sibling IA insight
 
 ### Guardrails for the AI reading this
 
@@ -120,12 +167,23 @@ For Niksho: Beroz already has Microsoft Graph connections for ExcelTech's 10 inb
 - The pivot to pure clone is the active strategy as of 2026-04-28. Do NOT extend the 04-15 hybrid plan — it has been superseded. Read the ADR before suggesting changes.
 - The clone code lives at `/Users/nikhilkumar/Claude Workspace/exceltech-ai/Brand New Website/beroz/Clone/` (outside vault).
 - `auth-session/chrome-profile/` keeps Nikhil's Juicebox session — re-auth only if Firebase Auth expires (typically ~24h).
-- Frontend rebuild only; backend stays. mi.md hard rule. Don't propose backend rewrites.
+- Frontend rebuild only; backend stays. mi.md hard rule.
 - The walkthrough is the primary mechanism for filling sub-surface gaps. Don't propose alternative discovery methods that bypass it.
+- Read [[Efforts/Niksho-SaaS-Product/JUICEBOX-FEATURE-MAP]] (the canonical feature map) for the full spec before answering any question about Juicebox structure.
 - Always `generated-by:` frontmatter on AI-authored files.
 
 See [[mi]] for the full guardrail set.
 
+### How to resume the walkthrough on a fresh Cowork session
+
+1. Read this hot.md
+2. Read [[Efforts/Niksho-SaaS-Product/JUICEBOX-FEATURE-MAP]] — the "Walkthrough Capture Log — 2026-04-29 Session 2" section is the latest
+3. Re-request Chrome access via computer-use
+4. Take screenshot to confirm Nikhil's Juicebox state
+5. Resume at: Nikhil clicks "Yes, start sourcing" → see active-agent UI → then move to Tab 3 (Project root → Searches)
+6. Use the question template (identity, workflow, per-button, connection, edge cases, inventory) per tab
+7. Update feature map every 2-3 tabs
+
 ---
 
-_Updated 2026-04-28 (late) — full ingest of the Beroz Clone Capture Session: pivot ADR, capture pipeline complete, 2 new concept notes, 1 concept note updated, walkthrough deferred._
+_Updated 2026-04-29 (mid walkthrough session 2) — full ingest of agent creation pipeline, ~12 new UI surfaces captured, walkthrough ~30% complete (Tabs 1-2 done, Tabs 3-11 pending). Next session resumes at "Yes, start sourcing" → Tab 3._

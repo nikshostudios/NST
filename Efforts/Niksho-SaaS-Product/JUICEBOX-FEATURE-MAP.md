@@ -32,6 +32,408 @@ walkthrough-progress:
 
 ---
 
+# 🆕 Walkthrough Capture Log — 2026-04-29 Session 2
+
+The most important capture batch of the project so far. The complete Agent creation pipeline (Juicebox's flagship feature) was walked end-to-end with full narration. ~12 new UI surfaces captured in one batch. Key strategic findings live in this section.
+
+## Strategic findings worth quoting verbatim for the build
+
+**1. Calibration loop pattern (the most valuable UX insight).** Before an agent commits to autonomy, the user MUST approve/reject 3 profiles to teach the quality bar. UI footer text: *"This only calibrates the agent and does not send emails."* This is genuine UX wisdom — the human sets the threshold by example, not by parameters. **Replicate exactly.**
+
+**2. Live NL query parsing with confirmation chips.** When you type a natural-language query, structured fields get extracted live and shown as ✓ chips (Location, Job Title, Years of Experience, Industry, Skills). Each chip starts grey and turns green/checked as it's confirmed. **This solves Bug #5 from the 04-27 punch list (Source Now passes 5 words).** Critical to replicate.
+
+**3. Why-we-matched with numbered citations.** Each match criterion shows numbered citations [1] [2] linking to specific evidence in the profile (Skills tab, Experience entries). Trust-building UI for AI scoring. **Beroz currently shows numbers without provenance — this is the missing piece.**
+
+**4. Criteria are rank-ordered + pinnable, not binary.** Most-Important → Least-Important continuum, drag-to-reorder, pin icon for mandatory. More nuanced than binary required/preferred. Update Niksho scoring model accordingly.
+
+**5. Daily volume as Low/Balanced/High not number input.** Three preset cards (15/25/35) instead of asking for a number. Friendlier for non-power users.
+
+**6. Confidence-building over-explanation.** The whole agent flow over-explains AI behaviour: calibration loop, citations, "doesn't send emails" reassurance, parsing chips, criteria visibility. Juicebox's playbook is: when AI is opaque, over-communicate. **Apply this everywhere.**
+
+---
+
+## Tab 2 — All Agents — FULL FLOW (specced)
+
+### Launch New Agent Modal
+
+Trigger: Click "+ Create Your First Agent" or "Create new agent +"
+Layout: Centered modal, ~500-600px
+
+| Field | Type | Default | Notes |
+|---|---|---|---|
+| Agent Title (required) | Text input | "New Agent N" auto-incremented | |
+| Access Level (required) | Radio binary | Shared | Private adds 🔒 padlock to card |
+| Collaborators (optional) | Multi-select dropdown | "No collaborators selected" | Subtitle has "project" copy bug — UX inconsistency, **don't perpetuate in clone** |
+
+CTA: **Create Agent →** (purple). Close: ✕
+
+**Note:** structurally identical to Edit Project modal. Reuse a single `EntityCreationForm` component for both Projects and Agents.
+
+### Edit Agent Modal (post-creation)
+
+Same as Launch but with one extra field:
+- **Change Owner** dropdown (current owner: Nikhil Kumar) — "Transfer ownership of this agent to another team member"
+- CTA changes to "Save Changes →"
+- Window title: "Edit Agent" (correctly named — only Launch has the "project" copy bug)
+
+### Agent Setup Screen (project-equivalent landing)
+
+Route: `/agent/<id>` (parallel to `/project/<id>`)
+
+**Sidebar context (changes when inside an Agent):**
+- All Projects, All Agents (top, unchanged)
+- Agent selector dropdown ("Nikhil Agent" with selector arrow)
+- ✦ **Agent** (active, purple — replaces "Searches" in project mode)
+- 👤 Shortlist
+- ─── divider ───
+- Standard global items: Contacts, Sequences, Network NEW, Analytics ▶, Integrations
+- ─── divider ───
+- Bottom utility items unchanged
+
+**Project selector dropdown opened state (newly captured):**
+- "Find projects" search input
+- ✦ Nikhil Agent (current, with sparkle icon, highlighted)
+- 👥 New Project (with people icon)
+- ─── divider ───
+- "View all projects →" link
+
+**Page content:**
+- Greeting: "Hi Nikhil, please **describe the profile** you're looking for."
+- Subtitle: example NL query showing the format
+- **Description input** "Describe who you're looking for..." with → submit arrow
+- 5 example queries (same global pool as Searches page)
+
+**Two visual states:**
+- **Empty/blurred state:** when sidebar dropdown is open OR when navigating into the agent first time → no purple band, no examples shown (just input + submit)
+- **Active/focused state:** when input is focused → purple ring around input + 5 example queries shown below
+
+### Live Query Parsing State (CRITICAL — newly captured)
+
+When user types and submits a NL query, the page transitions to a parsing state:
+
+- Input retains the query text
+- Below the input: **field extraction chips** showing what's being parsed
+  - Each chip: small green checkmark icon + field name (Location, Job Title, Years of Experience, Industry, Skills)
+  - Chips appear progressively as the LLM extracts each field — gives a sense of live processing
+- Below chips: **"Processing your search criteria..."** loading text
+- Submit arrow becomes purple loading indicator
+
+This is the live parsing UX that solves Bug #5 from the 04-27 punch list. **Replicate exactly in Beroz Search.**
+
+### Initial Matches Confirmation
+
+After parsing, page transitions to:
+- "I've found initial matches. Please **review these profiles** and share your feedback."
+- "Approve all three profiles to continue."
+- **Review Profiles ↗** (purple primary button)
+- **Edit Filters** link (below)
+
+This is the entry to the **calibration loop**. The agent has run a preliminary search but won't proceed to autonomous mode until user approves 3 profiles.
+
+### Edit Filters Modal (deep filter editor — 12 categories)
+
+Trigger: Click "Edit Filters" link
+Layout: Centered modal ~1100px wide, with sidebar + main content
+
+**Header:**
+- Title: "Edit Your Search Filters"
+- Right side: "**1.3k matches**" live counter + **Save Changes →** purple button
+
+**Left sidebar — 12 category navigation:**
+| Icon | Category | Has active filter (radio indicator) |
+|---|---|---|
+| ⚙️ | General | yes |
+| 📍 | Locations | yes |
+| 💼 | Job | yes |
+| 🏢 | Company | no |
+| 🏭 | Industry | no |
+| 💲 | Funding & Revenue | yes |
+| ➕ | Skills or Keywords | no |
+| ⚡ | Power Filters | no |
+| ⭐ | Likely to Switch | no |
+| `</>` | Developer Data | no |
+| 🎓 | Education | no |
+| 🌐 | Languages | no |
+| Tt | Boolean & Name | no |
+
+Footer of sidebar: "☐ Hide inactive filters" checkbox
+
+**Main content (showing General):**
+- **Min Experience (Years)** input · **Max Experience (Years)** input
+- **Required Contact Info** with "Match Any" dropdown · "Select contact info types" dropdown
+- **Exclude Profiles** section with 4 checkboxes, each with two scope dropdowns:
+  - ☑ **Hidden** by [anyone in this project ▼] [at any time ▼] ← **THIS IS WHERE HIDDEN PROFILES ARE EXCLUDED FROM SEARCH**
+  - ☐ **Viewed** by [anyone in this project] [at any time]
+  - ☐ **Shortlisted** by [anyone in this project] [at any time]
+  - ☐ **Contacted** by [anyone in this project] [at any time]
+- **Filter by Network** ⓘ — "None" dropdown
+- **Location(s)** section:
+  - "Within 25 miles" dropdown
+  - "Clear all · Select Preset" links (top-right)
+  - Input: "Examples: San Francisco / United States / NYC / California"
+  - Already-added chip: "🌆 San Francisco ✕"
+
+**Niksho-relevant insight:** the Exclude Profiles section is sophisticated dedup. Both **scope** (anyone vs me vs collaborators) AND **timing** (any time vs last 30 days etc.) are configurable. Mirror this in our SaaS Phase 4.
+
+### Review Profiles Carousel (3-profile calibration)
+
+Layout: Three-column full-page surface
+
+**Top bar:**
+- ← back arrow + "Review Profiles" title (left)
+- Profile counter "Profile 1/3" with ← / → arrows (right)
+
+**Left column (~50% — Full profile):**
+- **Profile header:** Name + "Full profile" badge + LinkedIn / X icons
+- Location string · Current company badge · Education badge
+- **Profile tabs (5 captured):** Experience / Education / Skills (Skill Map confirmed as another tab from earlier Getting Started capture)
+- **Experience header:** "Experience · N years total · M years average tenure"
+- **Tenure tags** (chip-style insights extracted from profile):
+  - 🚀 Early + Growth (Series A through B history)
+  - ⏱ High Avg. Tenure
+  - 💼 Top Investment Bank
+  - 🗄 Backend
+  - 🎓 Top 10 US Uni
+- **Skills inline list:** comma-separated skills
+- **3-column stat cards:** Avg tenure · Current tenure · Total experience
+- **Job entries** (each):
+  - Company logo + Job title bolded
+  - Company name
+  - Date range · duration calculated
+  - Location
+  - Inline action chips: [Unlock Compensation Estimate] [Series A through Series B] for the company stage
+- **Education section** (each):
+  - Institution logo + name
+  - Degree + field
+  - Date range
+- **Skill Map** (the NEW tab confirmed):
+  - Skills clustered by category: **Back-End** (Python, Vba, Java, Node.js, Express) · **Data Science** (Matlab, Data Analysis) · more categories below
+
+**Middle column (~30% — Why we matched):**
+- "Why we matched this profile" header + **Edit Criteria** link (top-right)
+- For each criterion: Match-quality badge ("👍 Good Match" green / "👌 Potential Fit" amber / "👎 Not a Match" red) + criterion text + numbered citations [1] [2] + explanation paragraph
+- **Citations link to specific evidence** in the left-column profile (Skills section, Experience entry, etc.)
+
+**Right column (~20% — Approve/Reject):**
+- **Approve A** button (green outline) + keyboard hint
+- **Reject R** button (red outline) + keyboard hint
+- Disclaimer: "This only calibrates the agent and does not send emails."
+- Footer: "You can **pin criteria** if it is a mandatory requirement or **re-order** by importance using **Edit Criteria**."
+
+**Workflow:** approve/reject 3 profiles in sequence → returned to next setup step (sequence selection)
+
+### Edit Criteria Modal (rank-ordered + pinnable)
+
+Trigger: "Edit Criteria" link in Review Profile (or other surfaces TBD)
+Layout: Centered modal ~600px
+
+**Header:**
+- "Criteria" title
+- Right side: "📋 Select Preset" · "💾 Save Preset" · ✕ close
+
+**Body:**
+- **MOST IMPORTANT** section header (purple text)
+- Each criterion row: 📌 pin icon · ⋮⋮ drag handle · "1" rank number · criterion text input · ✕ remove icon
+- Visual gradient/spectrum from MOST → LEAST IMPORTANT (criteria toward the bottom are weighted lower)
+- **LEAST IMPORTANT** section header (grey text)
+- "**+ Add Criterion**" button (left) · "**Update →**" purple button (right)
+
+**Workflow:**
+- Drag criteria to reorder (changes weighting)
+- Click pin icon to mark as mandatory (must match)
+- Add new criterion via button
+- Save with Update — re-runs scoring on existing matches
+
+### Sequence Selection Screen
+
+After 3-profile approval:
+- Heading: "Please select an **email sequence** to use for this project."
+- **Sequence dropdown** (empty by default) + **Confirm** button (purple)
+- Below: "**Don't use sequences, I just want to create a shortlist**" link (purple)
+
+**Critical decoupling:** Agents can run with OR without email sequences. The "Don't use sequences" path makes the agent a pure shortlist generator — no outreach. Important escape hatch for compliance-strict use cases.
+
+### Sequence Dropdown (opened state)
+
+When clicked:
+- Search input at top
+- List of available sequences (each row: name + "Created [date] by [owner]")
+- **"Incomplete" sequences** are tagged with ⓘ info icon and orange "Incomplete" label — partially saved sequences can be resumed
+- Bottom: "✉ **Create new sequence**" link (purple)
+
+### Create Sequence Modal — Template Chooser
+
+Layout: Full-screen overlay
+**Header:** "Create sequence" title + "Close" button (top right)
+
+**Body:**
+- Heading: "Choose a sequence template"
+- Three creation options (cards with icons):
+  - ✦ **Generate with AI**
+  - ➕ **Start from scratch**
+  - 📋 **Clone an existing sequence**
+- Divider + "**Templates**" subheader
+- Two pre-built templates:
+  - 📧 **Focused outreach** — "3 steps · 6 days in sequence"
+  - 📧 **Multi-channel outreach** — "4 steps · 8 days in sequence"
+
+### Sequence Editor (full canvas)
+
+After "Start from scratch" or template choice:
+
+**Top banner (when active):** "Email drafts are now smarter with calendar integration!" + "Enable now" button + ✕ dismiss
+
+**Top bar:**
+- "Create sequence" title (or sequence name if editing)
+- **Cancel** button + **Save** purple button (top-right)
+
+**Sub-header:**
+- Sequence name (editable inline): "Nikhil Agent - 04/29/2026" + ✏️ edit pencil
+- Subtitle: "Created by [owner] [date]"
+- **Settings** button (top-right) — TBD what's inside
+
+**Layout: 2 columns**
+
+**Left panel (~30% — Steps list):**
+- Recommendation banner: "We recommend at least having 3 steps in your sequence"
+- Drag handle ⋮⋮ for each step
+- **Step 1: Email** card with:
+  - Sender email
+  - Scheduled time ("Apr 30, 12:18 AM (+08 +08:00)")
+- **+ Add step** button at bottom
+
+**Right panel (~70% — Step editor):**
+- **Timing pill at top:** "Start [immediately ▼]"
+- **Step header:** Step 1 / Email type / **Preview and test** button + 🗑 delete
+- **From dropdown:** sender email (e.g. thenikhil0505@gmail.com)
+- **Subject:** input field (e.g. "Let's stay in touch!") + Cc / Bcc links
+- **AI Command** + **Snippets** action chips
+- **Personalization tags** (comma-separated chips):
+  - Spintax Greeting · First Name · Current Company · Job Title · Education · Sender First Name · More...
+- **Rich text toolbar:** ↶ undo · ↷ redo · **B** · *I* · U · ☰ bullet list · 🔗 link · 🖼 image · Arial dropdown · 14px size dropdown · A̲ text colour · 🖍 highlight · ☰ list · ABC ✓ spell check
+- **Body textarea:** "Start typing your email body here..."
+- **Footer row:** Signature dropdown (None) · ☐ Include unsubscribe checkbox
+
+### Daily Contact Volume Selection
+
+After sequence selected/created:
+- Heading: "How many profiles do you want to contact every day?"
+- Three preset cards centered:
+  - **15** / Low (white border)
+  - **25** / Balanced (purple border — selected by default)
+  - **35** / High (white border)
+
+**Niksho note:** The framing is presets not number input. Three-point scale with friendly labels (Low/Balanced/High) is more accessible than asking for a numeric value.
+
+### Approval Mode Selection
+
+After volume:
+- Heading: "Would you like to **manually approve** each profile, or let the agent reach out **automatically**?"
+- Subtitle: "We will automatically exclude anyone you have previously shortlisted or contacted."
+- Two buttons side-by-side:
+  - **Review individually** (white)
+  - **Reach out automatically** (white, purple border = current selection)
+
+**Niksho note:** Explicit at agent setup, not buried in settings. Copy emphasises the auto-exclusion to reduce paranoia about double-contacts.
+
+### Final Confirmation
+
+- Heading: "We're all set! Would you like to **start sourcing**?"
+- **Yes, start sourcing** (purple primary button)
+
+After confirmation: agent transitions from Configuring → Active state, begins autonomous operation.
+
+---
+
+## Updated Status Lifecycle (clarified)
+
+| Status | Meaning | Triggers |
+|---|---|---|
+| 🔵 **Configuring** | New agent in setup. Choosing sequence, cadence, manual-vs-auto. | Created but not yet "Yes, start sourcing" |
+| 🟢 **Active** | Ready and running. Sourcing per cadence. | "Yes, start sourcing" clicked |
+| 🟡 **Paused** | State preserved, no polling. | Requirement on hold; low tokens; manually paused |
+| ⚫ **Finished** | Terminal. Run-once agents that completed. | Reached completion criteria; manually stopped |
+
+---
+
+## Resolved & New Open Questions
+
+### Resolved this session:
+
+| Q | Answer |
+|---|---|
+| Do Agents support 4 search modes? | No, NL only. |
+| Padlock icon? | Private agent. |
+| Status transitions? | See lifecycle table above. |
+| Hidden profiles excluded where? | Edit Filters → Exclude Profiles → Hidden checkbox. |
+
+### Still open:
+
+20. **Where in UI does a recruiter MARK a profile as Hidden?** Excluding hidden profiles is via Edit Filters; *creating* a hidden profile is TBD. Likely on candidate row 3-dot menu or detail drawer — resolve when walking Search Results / Candidate Detail.
+21. **Sequence editor "Settings" button** content — TBD.
+22. **AI Command** action chip in sequence editor — what does it open?
+23. **Agent → Search results** post-launch UI — what does the Active agent's main screen show? (Polling status? Latest profiles? Approval queue?)
+24. **Agent ↔ Project relationship.** Can an agent's outputs be added to a Project's shortlist, or only to the agent's own shortlist?
+25. **Agent's Shortlist tab** vs Project's Shortlist tab content scope.
+26. **Per-agent 3-dot menu** items (parallel to Project menu — TBD).
+27. **Skill Map full categories** — only saw Back-End and Data Science partial. Need a richer profile.
+28. **Sequence Incomplete state** — what makes a sequence "incomplete"? Missing required field? Save button not pressed?
+
+---
+
+## Updated Component Inventory (additions from this session)
+
+| Component | Variants | First seen |
+|---|---|---|
+| `LiveQueryChip` | grey (parsing), green (confirmed), with-icon | Agent setup live parsing |
+| `MatchBadge` | Good Match (green), Potential Fit (amber), Not a Match (red) | Review Profile |
+| `Citation` | numbered [1] [2] inline | Why we matched |
+| `TenureTag` | with emoji + label | Profile experience header |
+| `StatCard` | 3-up (Avg/Current/Total) | Profile experience |
+| `JobEntry` | with company logo, dates, duration, location, action chips | Profile timeline |
+| `SkillMap` | category cluster (Back-End, Data Science, etc.) | Profile bottom |
+| `CriterionRow` | with pin, drag handle, rank, text, remove | Edit Criteria |
+| `RankedList` | Most→Least Important spectrum | Edit Criteria |
+| `FilterCategoryItem` | with active-state radio indicator | Edit Filters sidebar |
+| `ExcludeRule` | checkbox + actor scope dropdown + timing scope dropdown | Edit Filters → Exclude |
+| `LiveMatchCounter` | "1.3k matches" updating live | Edit Filters header |
+| `PresetCard` | numeric + descriptor (15/Low) with selected state | Daily Volume |
+| `ApprovalChoice` | binary card (Review individually / Reach out automatically) | Agent setup |
+| `TemplateCard` | icon + title + meta ("3 steps · 6 days") | Create Sequence |
+| `SequenceStep` | type + sender + scheduled time + drag handle | Sequence editor left panel |
+| `PersonalizationTag` | inline chip with token name | Sequence editor |
+| `RichTextToolbar` | full set with font/size/colour/highlight/list/spellcheck | Sequence editor |
+| `ProjectSelectorOpenState` | search + list + create-new link | Sidebar dropdown |
+
+---
+
+## Walkthrough remaining (top-to-bottom from sidebar)
+
+🔴 = not yet walked. After "Yes, start sourcing" we should resume with:
+
+- **Tab 3** Project root → Searches view (the most-time-spent surface — biggest crawl gap)
+  - Empty search state · Find Similar / JD / Boolean / Select Manually
+  - Search results state (NEW from current session — agent's analog had similar match scoring; need Project version)
+  - Filters editor, Criteria editor — likely shared with Agent flow already captured
+  - Candidate detail drawer (partial from 04-28 — needs full walkthrough including Skill Map)
+  - Shortlist tab
+  - Status dropdown options
+- **Tab 4** Shortlist (project-scoped)
+- **Tab 5** Contacts
+- **Tab 6** Sequences (list view + Pin/Star/3-dot menu — partial from earlier sessions)
+- **Tab 7** Network
+- **Tab 8** Analytics + sub-tabs
+- **Tab 9** Integrations
+- **Tab 10** Account / Settings sub-tabs (User / Team / Billing / Workspace / Notifications / API)
+- **Tab 11** Support
+
+---
+
+# (continued — original feature map below)
+
+
+---
+
 ## How to read this document
 
 Each page or flow section has the same structure:
