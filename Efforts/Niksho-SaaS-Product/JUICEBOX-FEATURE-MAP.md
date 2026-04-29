@@ -13,8 +13,9 @@ related:
   - "[[Efforts/Niksho-SaaS-Product/Submissions-Page-Spec]]"
 walkthrough-progress:
   - "Tab 1 — All Projects: 🟢 specced (full button + workflow capture)"
-  - "Tab 2 — All Agents: 🟡 partially captured (empty state only; Create Agent flow next)"
-  - "Tabs 3-11: 🔴 pending (Project root, Search, Shortlist, Contacts, Sequences, Network, Analytics, Integrations, Settings, Support)"
+  - "Tab 2 — All Agents: 🟢 specced (FULL Agent creation pipeline captured 2026-04-29: Launch modal → setup → live parsing → calibration loop → sequence selection + creation + editor → daily volume → approval mode → start sourcing)"
+  - "Tabs 3-11: 🔴 pending (Project root → Searches, Shortlist, Contacts, Sequences list+editor, Network, Analytics, Integrations, Settings sub-tabs, Support)"
+  - "Side-effects of the Agent walkthrough: also captured Edit Filters modal (12 categories — answers Hidden Profile question partially), Edit Criteria modal (rank-ordered + pinnable), Review Profiles carousel, Create Sequence template chooser, Sequence editor with full toolbar, Skill Map (NEW feature confirmed), Why-we-matched citations pattern"
 ---
 
 # Juicebox Feature Map
