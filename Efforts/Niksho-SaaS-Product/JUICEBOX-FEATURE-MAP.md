@@ -456,36 +456,36 @@ Each page or flow section has the same structure:
 
 The 2026-04-15 teardown got several values wrong. These are the **real computed-style values** captured from Juicebox by the crawler:
 
-| Token | Original guess | Corrected value | Notes |
-|---|---|---|---|
-| `--bg-primary` | `#FCFCFC` | `rgb(255, 255, 255)` (white) | Pure white, not near-white |
-| `--bg-secondary` | `#F8F8F8` | `lab(100 0 0)` ≈ white | Same as primary in practice |
-| `--accent-primary` | `#7600bc` | **`rgb(107, 47, 141)` = `#6B2F8D`** | Slightly different shade |
-| `--accent-secondary` | (not captured) | `rgb(118, 0, 188)` | Used for some accents |
-| `--text-primary` | `#000000` | `rgb(51, 51, 51)` | Near-black grey, NOT pure black (33 occurrences) |
-| `--text-strong` | (n/a) | `rgb(0, 0, 0)` | True black for emphasis (9 occurrences) |
-| `--text-muted` | `rgba(0,0,0,0.7)` | `rgba(0, 0, 0, 0.87)` | MUI default disabled state |
-| `--border` | `rgba(0,0,0,0.12)` | `lab(90.952 0 -0.0000119209)` ≈ near-white grey | 40 occurrences — dominant border colour |
-| `--shadow-sm` | `0 1px 3px rgba(0,0,0,0.08)` | mostly `none` (61×) | **Juicebox is largely shadowless** — flat design |
-| `--shadow-card` | (n/a) | `rgba(0, 0, 0, 0.1) 0px 4px 20px 0px` | Used rarely |
-| `--font-body` | `Inter, system-ui, sans-serif` | **`Helvetica, Arial, "Hiragino Sans GB", STXihei, "Microsoft YaHei", "WenQuanYi Micro Hei", Hind, "MS Gothic", "Apple SD Gothic Neo", NanumBarunGothic, sans-serif`** | System stack, NOT Inter (44 occurrences vs 3× Inter) |
-| `--font-system` | (n/a) | `-apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif` | 16 occurrences — secondary stack |
-| `--font-base-size` | implied 14px | **16px (56 occurrences)** | Larger than typical SaaS |
-| `--font-h1` | (n/a) | `22px` | 2 occurrences |
-| `--font-h2` | (n/a) | `20px` | 2 occurrences |
-| `--font-h3` | (n/a) | `18px` | 2 occurrences |
-| `--font-small` | (n/a) | `14px` | 1 occurrence |
-| `--font-weight-normal` | (n/a) | `400` (58×) | Dominant |
-| `--font-weight-medium` | (n/a) | `500` (2×) | Rare |
-| `--font-weight-bold` | (n/a) | `600` (3×) | Rare |
-| `--radius-default` | `4px` | **`0px` dominant (40×)**, `4px` secondary (10×) | **Juicebox uses sharp corners more than rounded** |
-| `--radius-circular` | (n/a) | `50%` (11×) | Avatars and chips |
-| `--radius-large` | (n/a) | `8px` (1×), `14px` (1×) | Rare |
-| `--transition-default` | `250ms cubic-bezier(0.4, 0, 0.2, 1)` | `transform 0.2s ease-out, color 0.2s ease-out, background-color 0.2s ease-out, stroke 0.2s ease-out, stroke-width 0.2s ease-out` | Multi-property transitions are common (11×) |
-| `--transition-color` | (n/a) | `color 0.2s ease-out` | 11 occurrences |
-| `--transition-all` | (n/a) | `all` | 39 occurrences |
-| `--sidebar-w` | `220px` | **220px confirmed** (sidebar item width) | Fixed |
-| `--breakpoint-mobile` | `600px` | TBD | Not verified in this run |
+| Token                  | Original guess                       | Corrected value                                                                                                                                                       | Notes                                                |
+| ---------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `--bg-primary`         | `#FCFCFC`                            | `rgb(255, 255, 255)` (white)                                                                                                                                          | Pure white, not near-white                           |
+| `--bg-secondary`       | `#F8F8F8`                            | `lab(100 0 0)` ≈ white                                                                                                                                                | Same as primary in practice                          |
+| `--accent-primary`     | `#7600bc`                            | **`rgb(107, 47, 141)` = `#6B2F8D`**                                                                                                                                   | Slightly different shade                             |
+| `--accent-secondary`   | (not captured)                       | `rgb(118, 0, 188)`                                                                                                                                                    | Used for some accents                                |
+| `--text-primary`       | `#000000`                            | `rgb(51, 51, 51)`                                                                                                                                                     | Near-black grey, NOT pure black (33 occurrences)     |
+| `--text-strong`        | (n/a)                                | `rgb(0, 0, 0)`                                                                                                                                                        | True black for emphasis (9 occurrences)              |
+| `--text-muted`         | `rgba(0,0,0,0.7)`                    | `rgba(0, 0, 0, 0.87)`                                                                                                                                                 | MUI default disabled state                           |
+| `--border`             | `rgba(0,0,0,0.12)`                   | `lab(90.952 0 -0.0000119209)` ≈ near-white grey                                                                                                                       | 40 occurrences — dominant border colour              |
+| `--shadow-sm`          | `0 1px 3px rgba(0,0,0,0.08)`         | mostly `none` (61×)                                                                                                                                                   | **Juicebox is largely shadowless** — flat design     |
+| `--shadow-card`        | (n/a)                                | `rgba(0, 0, 0, 0.1) 0px 4px 20px 0px`                                                                                                                                 | Used rarely                                          |
+| `--font-body`          | `Inter, system-ui, sans-serif`       | **`Helvetica, Arial, "Hiragino Sans GB", STXihei, "Microsoft YaHei", "WenQuanYi Micro Hei", Hind, "MS Gothic", "Apple SD Gothic Neo", NanumBarunGothic, sans-serif`** | System stack, NOT Inter (44 occurrences vs 3× Inter) |
+| `--font-system`        | (n/a)                                | `-apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`                                  | 16 occurrences — secondary stack                     |
+| `--font-base-size`     | implied 14px                         | **16px (56 occurrences)**                                                                                                                                             | Larger than typical SaaS                             |
+| `--font-h1`            | (n/a)                                | `22px`                                                                                                                                                                | 2 occurrences                                        |
+| `--font-h2`            | (n/a)                                | `20px`                                                                                                                                                                | 2 occurrences                                        |
+| `--font-h3`            | (n/a)                                | `18px`                                                                                                                                                                | 2 occurrences                                        |
+| `--font-small`         | (n/a)                                | `14px`                                                                                                                                                                | 1 occurrence                                         |
+| `--font-weight-normal` | (n/a)                                | `400` (58×)                                                                                                                                                           | Dominant                                             |
+| `--font-weight-medium` | (n/a)                                | `500` (2×)                                                                                                                                                            | Rare                                                 |
+| `--font-weight-bold`   | (n/a)                                | `600` (3×)                                                                                                                                                            | Rare                                                 |
+| `--radius-default`     | `4px`                                | **`0px` dominant (40×)**, `4px` secondary (10×)                                                                                                                       | **Juicebox uses sharp corners more than rounded**    |
+| `--radius-circular`    | (n/a)                                | `50%` (11×)                                                                                                                                                           | Avatars and chips                                    |
+| `--radius-large`       | (n/a)                                | `8px` (1×), `14px` (1×)                                                                                                                                               | Rare                                                 |
+| `--transition-default` | `250ms cubic-bezier(0.4, 0, 0.2, 1)` | `transform 0.2s ease-out, color 0.2s ease-out, background-color 0.2s ease-out, stroke 0.2s ease-out, stroke-width 0.2s ease-out`                                      | Multi-property transitions are common (11×)          |
+| `--transition-color`   | (n/a)                                | `color 0.2s ease-out`                                                                                                                                                 | 11 occurrences                                       |
+| `--transition-all`     | (n/a)                                | `all`                                                                                                                                                                 | 39 occurrences                                       |
+| `--sidebar-w`          | `220px`                              | **220px confirmed** (sidebar item width)                                                                                                                              | Fixed                                                |
+| `--breakpoint-mobile`  | `600px`                              | TBD                                                                                                                                                                   | Not verified in this run                             |
 
 **Implications for the clone:**
 - Build with **Helvetica/Arial system stack**, NOT Inter. Inter is wrong.
