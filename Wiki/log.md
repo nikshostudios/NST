@@ -10,6 +10,20 @@ Append-only timeline of ingestion and wiki edits. New entries at the top.
 
 ---
 
+## 2026-04-29 — Walkthrough checkpoint 1 of 3
+
+Mid-walkthrough vault update. Tab 1 (All Projects) fully specced. Tab 2 (All Agents) partially captured (empty state).
+
+**Updated:**
+- [[Efforts/Niksho-SaaS-Product/JUICEBOX-FEATURE-MAP]] — substantial population of Sidebar (global), Getting Started modal (6 steps fully captured), Edit Project modal, All Projects (full per-button + workflow), All Agents (empty state), Connect Mailbox gate modal, design tokens corrected from REPORT.md (Helvetica/Arial system stack, brand purple `#6B2F8D`, 16px base, mostly shadowless flat design, sharp 0px corners default)
+- 12 open questions parked for later resolution
+
+**Still pending:** Tab 2 Create Agent flow → Tab 3 Project root → Search → Shortlist → Contacts → Sequences (post-mailbox) → Network → Analytics → Integrations → Settings sub-tabs → Support.
+
+Walkthrough resumes after this checkpoint.
+
+---
+
 ## 2026-04-28 (late) — Beroz Clone Capture Session ingest
 
 Multi-hour Cowork session with Nikhil. Strategy pivot + Playwright capture toolkit + successful capture run against Juicebox + walkthrough kickoff.
